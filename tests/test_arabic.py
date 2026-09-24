@@ -135,3 +135,26 @@ def test_arabic_mixed_fragment_uses_llm_only_for_the_rest(settings):
     assert form.steps[0].note.startswith("pregroup:")
     assert form.steps[1].kind == "skip"
     assert trace.status == "verified"
+
+
+def test_agreement_features_reject_what_bare_types_accept():
+    """Python twin of Lean's coarse_accepts_bad_agreement / indexed_rejects_bad_agreement."""
+    assert arabic.formalize_step("العدد ١٢ يساوي ١٢")[0] == "(12:ℚ) = (12:ℚ)"  # masc/masc
+    assert arabic.formalize_step("النتيجة ١٢ تساوي ١٢")[0] == "(12:ℚ) = (12:ℚ)"  # fem/fem
+    assert arabic.formalize_step("العدد ١٢ تساوي ١٢") is None  # masc noun, fem verb
+    assert arabic.formalize_step("النتيجة ١٢ يساوي ١٢") is None  # fem noun, masc verb
+    # bare numerals carry no gender feature, so either verb form is accepted
+    assert arabic.formalize_step("١٢ تساوي ١٢") is not None
+
+
+def test_arabic_yes_no_grading_is_not_vacuous():
+    from falconverifier.bench import answers_match
+
+    assert answers_match("نعم", "نعم")
+    assert answers_match("لا", "لا")
+    assert not answers_match("نعم", "لا")
+    assert not answers_match("لا", "نعم")
+    assert answers_match("لا، غير صحيح", "لا")
+    assert not answers_match("غير صحيح", "نعم")
+    assert answers_match("٣٩١", "391")
+    assert not answers_match("شيء آخر", "لا")

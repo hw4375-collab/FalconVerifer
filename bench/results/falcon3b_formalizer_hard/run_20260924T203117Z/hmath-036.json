@@ -1,0 +1,167 @@
+{
+ "problem": "A rectangle has perimeter 360 and its length is 2 times its width. What is its area?",
+ "expected_answer": "7200",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "**Step 1: فهم المعطيات**  \n- محيط المستطيل = 360 وحدة.\n- طول المستطيل (L) هو ضعف عرضه (W).\n\n**Step 2: صياغة المعادلات**  \n- نعلم أن محيط المستطيل يُحسب بالصيغة: \\( P = 2L + 2W \\).\n- نعبر عن الطول بالعرض: \\( L = 2W \\).\n- بالتعويض في صيغة المحيط: \\( 360 = 2(2W) + 2W \\).\n\n**Step 3: حل المعادلة**  \n- نبسط المعادلة: \\( 360 = 4W + 2W \\).\n- \\( 360 = 6W \\).\n- بقسمة الطرفين على 6: \\( W = \\frac{360}{6} = 60 \\).\n\n**Step 4: إيجاد الطول**  \n- بما أن \\( L = 2W \\)، فإن \\( L = 2 \\times 60 = 120 \\).\n\n**Step 5: حساب المساحة**  \n- مساحة المستطيل تُحسب بالصيغة: \\( A = L \\times W \\).\n- بالتعويض: \\( A = 120 \\times 60 = 7200 \\).\n\n**FINAL ANSWER:** 7200\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "فهم المعطيات** - محيط المستطيل = 360 وحدة. - طول المستطيل (L) هو ضعف عرضه (W)."
+     },
+     {
+      "index": 2,
+      "text": "صياغة المعادلات** - نعلم أن محيط المستطيل يُحسب بالصيغة: \\( P = 2L + 2W \\). - نعبر عن الطول بالعرض: \\( L = 2W \\). - بالتعويض في صيغة المحيط: \\( 360 = 2(2W) + 2W \\)."
+     },
+     {
+      "index": 3,
+      "text": "حل المعادلة** - نبسط المعادلة: \\( 360 = 4W + 2W \\). - \\( 360 = 6W \\). - بقسمة الطرفين على 6: \\( W = \\frac{360}{6} = 60 \\)."
+     },
+     {
+      "index": 4,
+      "text": "إيجاد الطول** - بما أن \\( L = 2W \\)، فإن \\( L = 2 \\times 60 = 120 \\)."
+     },
+     {
+      "index": 5,
+      "text": "حساب المساحة** - مساحة المستطيل تُحسب بالصيغة: \\( A = L \\times W \\). - بالتعويض: \\( A = 120 \\times 60 = 7200 \\)."
+     }
+    ],
+    "final_answer": "7200",
+    "latency_s": 6.092332363128662,
+    "tokens": 351
+   },
+   "formalization": {
+    "problem_prop": "(2:ℝ) * 60 * 60 = 7200",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "understanding the problem"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "setting up equations"
+     },
+     {
+      "index": 3,
+      "kind": "algebra",
+      "lean_prop": "360 = 6 * (60:ℕ)",
+      "note": "solving for width"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(2:ℝ) * 60 = 120",
+      "note": "finding length"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "120 * 60 = 7200",
+      "note": "calculating area"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(2:ℝ) * 60 * 60 = 7200\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"understanding the problem\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"setting up equations\"},\n    {\"index\": 3, \"kind\": \"algebra\", \"lean_prop\": \"360 = 6 * (60:ℕ)\", \"note\": \"solving for width\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(2:ℝ) * 60 = 120\", \"note\": \"finding length\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"120 * 60 = 7200\", \"note\": \"calculating area\"}\n  ]\n}\n",
+    "latency_s": 13.723104238510132
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "فهم المعطيات** - محيط المستطيل = 360 وحدة. - طول المستطيل (L) هو ضعف عرضه (W).",
+      "detail": "understanding the problem"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "صياغة المعادلات** - نعلم أن محيط المستطيل يُحسب بالصيغة: \\( P = 2L + 2W \\). - نعبر عن الطول بالعرض: \\( L = 2W \\). - بالتعويض في صيغة المحيط: \\( 360 = 2(2W) + 2W \\).",
+      "detail": "setting up equations"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "360 = 6 * (60:ℕ)",
+      "step_text": "حل المعادلة** - نبسط المعادلة: \\( 360 = 4W + 2W \\). - \\( 360 = 6W \\). - بقسمة الطرفين على 6: \\( W = \\frac{360}{6} = 60 \\).",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(2:ℝ) * 60 = 120",
+      "step_text": "إيجاد الطول** - بما أن \\( L = 2W \\)، فإن \\( L = 2 \\times 60 = 120 \\).",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "120 * 60 = 7200",
+      "step_text": "حساب المساحة** - مساحة المستطيل تُحسب بالصيغة: \\( A = L \\times W \\). - بالتعويض: \\( A = 120 \\times 60 = 7200 \\).",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s3_wf : 360 = 6 * (60:ℕ) := by sorry\ntheorem s3_pos : 360 = 6 * (60:ℕ) := by fv_auto\ntheorem s3_neg : ¬ (360 = 6 * (60:ℕ)) := by fv_auto\n\ntheorem s4_wf : (2:ℝ) * 60 = 120 := by sorry\ntheorem s4_pos : (2:ℝ) * 60 = 120 := by fv_auto\ntheorem s4_neg : ¬ ((2:ℝ) * 60 = 120) := by fv_auto\n\ntheorem s5_wf : 120 * 60 = 7200 := by sorry\ntheorem s5_pos : 120 * 60 = 7200 := by fv_auto\ntheorem s5_neg : ¬ (120 * 60 = 7200) := by fv_auto\n\ntheorem final_wf : (2:ℝ) * 60 * 60 = 7200 := by sorry\ntheorem final_pos : (2:ℝ) * 60 * 60 = 7200 := by fv_auto\ntheorem final_neg : ¬ ((2:ℝ) * 60 * 60 = 7200) := by fv_auto\n",
+    "lean_latency_s": 3.8699238300323486,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 360 = 6 * 60\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 2 * 60 = 120\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 120 * 60 = 7200\n⊢ False"
+     },
+     {
+      "line": 53,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 55,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 2 * 60 * 60 = 7200\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "7200",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 23.69
+}

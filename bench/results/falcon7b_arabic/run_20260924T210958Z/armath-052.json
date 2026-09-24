@@ -1,0 +1,160 @@
+{
+ "problem": "احسب قيمة ٢٦ + ٧ × ٥ − ٢² باتباع ترتيب العمليات.",
+ "expected_answer": "57",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الخطوة 1: 7 × 5 = 35  \nالخطوة 2: 26 + 35 = 61  \nالخطوة 3: 22 = 4 (حيث 2² = 4)  \nالخطوة 4: 61 - 4 = 57  \n\nالجواب النهائي: 57",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "7 × 5 = 35"
+     },
+     {
+      "index": 2,
+      "text": "26 + 35 = 61"
+     },
+     {
+      "index": 3,
+      "text": "22 = 4 (حيث 2² = 4)"
+     },
+     {
+      "index": 4,
+      "text": "61 - 4 = 57"
+     }
+    ],
+    "final_answer": "57",
+    "latency_s": 4.489380836486816,
+    "tokens": 89
+   },
+   "formalization": {
+    "problem_prop": "(26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(7:ℚ) * 5 = (35:ℚ)",
+      "note": "pregroup: n nʳ n nˡ n nʳ s nˡ n → s"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(26:ℚ) + 35 = (61:ℚ)",
+      "note": "pregroup: n nʳ n nˡ n nʳ s nˡ n → s"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(2:ℤ) ^ 2 = 4",
+      "note": "exponentiation"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(61:ℚ) - 4 = (57:ℚ)",
+      "note": "pregroup: n nʳ n nˡ n nʳ s nˡ n → s"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(7:ℤ) * (5:ℤ) = 35\", \"note\": \"multiplication first\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(26:ℤ) + 35 = 61\", \"note\": \"addition next\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(2:ℤ) ^ 2 = 4\", \"note\": \"exponentiation\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"61 - 4 = 57\", \"note\": \"subtraction\"}\n  ]\n}\n",
+    "latency_s": 11.213215112686157
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(7:ℚ) * 5 = (35:ℚ)",
+      "step_text": "7 × 5 = 35",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(26:ℚ) + 35 = (61:ℚ)",
+      "step_text": "26 + 35 = 61",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(2:ℤ) ^ 2 = 4",
+      "step_text": "22 = 4 (حيث 2² = 4)",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(61:ℚ) - 4 = (57:ℚ)",
+      "step_text": "61 - 4 = 57",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s1_wf : (7:ℚ) * 5 = (35:ℚ) := by sorry\ntheorem s1_pos : (7:ℚ) * 5 = (35:ℚ) := by fv_auto\ntheorem s1_neg : ¬ ((7:ℚ) * 5 = (35:ℚ)) := by fv_auto\n\ntheorem s2_wf : (26:ℚ) + 35 = (61:ℚ) := by sorry\ntheorem s2_pos : (26:ℚ) + 35 = (61:ℚ) := by fv_auto\ntheorem s2_neg : ¬ ((26:ℚ) + 35 = (61:ℚ)) := by fv_auto\n\ntheorem s3_wf : (2:ℤ) ^ 2 = 4 := by sorry\ntheorem s3_pos : (2:ℤ) ^ 2 = 4 := by fv_auto\ntheorem s3_neg : ¬ ((2:ℤ) ^ 2 = 4) := by fv_auto\n\ntheorem s4_wf : (61:ℚ) - 4 = (57:ℚ) := by sorry\ntheorem s4_pos : (61:ℚ) - 4 = (57:ℚ) := by fv_auto\ntheorem s4_neg : ¬ ((61:ℚ) - 4 = (57:ℚ)) := by fv_auto\n\ntheorem final_wf : (26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57 := by sorry\ntheorem final_pos : (26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57 := by fv_auto\ntheorem final_neg : ¬ ((26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57) := by fv_auto\n",
+    "lean_latency_s": 3.9149253368377686,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 7 * 5 = 35\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 26 + 35 = 61\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 2 ^ 2 = 4\n⊢ False"
+     },
+     {
+      "line": 53,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 55,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 61 - 4 = 57\n⊢ False"
+     },
+     {
+      "line": 57,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 59,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 26 + 7 * 5 - 2 ^ 2 = 57\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "57",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 19.62
+}

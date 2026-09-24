@@ -19,8 +19,41 @@ ARM_LABELS = {
     "falcon_formalizer_hard": "Hard set · Falcon 7B",
     "falcon3b_formalizer_hard": "Hard set · Falcon 3B",
     "falcon3b_formalizer": "Standard set · Falcon 3B",
+    "falcon3b_v2": "Math slice · Falcon 3B · v2 guards",
+    "falcon7b_arabic": "Arabic set · Falcon 7B",
+    "falcon3b_arabic": "Arabic set · Falcon 3B",
     "openai_formalizer": "Standard set · GPT formalizer",
 }
+
+
+def arabic_slice(arms: dict[str, dict]) -> str:
+    present = [(k, arms[k]) for k in ("falcon7b_arabic", "falcon3b_arabic") if k in arms]
+    if not present:
+        return '<p class="note">Arabic benchmark: run <code>falconverifier bench --dataset bench/problems_ar.jsonl</code>.</p>'
+    rows = []
+    for name, d in present:
+        model = "7B" if "7b" in name else "3B"
+        for key, label in (
+            ("all", "all"),
+            ("math", "math"),
+            ("logic", "logic"),
+            ("fragment", "pregroup fragment"),
+            ("eastern-digits", "Eastern digits ٠-٩"),
+        ):
+            s = d["summary"].get(key)
+            if not s:
+                continue
+            rows.append(
+                f"<tr><th>{model}</th><th>{label}</th><td>{s['n']}</td><td>{pct(s['baseline_accuracy'])}</td>"
+                f"<td><b>{pct(s['verified_accuracy'])}</b></td><td>{s['wrong_detected_by_lean']}/{s['wrong_baseline']}</td>"
+                f"<td>{s['fixed_after_feedback']}/{s['wrong_baseline']}</td><td>{s['false_alarms_on_correct']}</td><td>{s['regressions']}</td></tr>"
+            )
+    return (
+        '<table class="kpi"><thead><tr><th>Falcon</th><th>slice</th><th>n</th><th>baseline</th><th>verified</th>'
+        "<th>caught</th><th>fixed</th><th>false alarms</th><th>regr.</th></tr></thead><tbody>"
+        + "".join(rows)
+        + "</tbody></table>"
+    )
 
 
 def latest() -> dict[str, dict]:
@@ -207,11 +240,13 @@ def build() -> str:
             '<tr><th>✗</th><td>✗</td><td><span class="v unk">unknown</span> → soft hint</td></tr>'
             '<tr><th colspan=2>type error</th><td><span class="v ill">ill-formed</span> → repair, then soft hint</td></tr>'
             "</tbody></table></div>"
-            '<div><div class="card"><h3>Two safety valves against false alarms</h3>'
-            "<ul><li><b>Faithfulness audit</b> — before a refutation is shown, the formalizer re-reads the NL step vs. the Lean prop "
-            "(polarity, numbers). Unfaithful → downgraded to <em>unknown</em>.</li>"
-            "<li><b>ℚ-lift recheck</b> — <code>(50:ℕ)/100·150 = 75</code> is false in ℕ (truncation) but true in ℚ; "
-            "refutations that vanish over ℚ are retracted deterministically.</li></ul></div>"
+            '<div><div class="card"><h3>Safety valves against false alarms</h3>'
+            "<ul><li><b>ℚ-lift recheck</b> — <code>(50:ℕ)/100·150 = 75</code> is false in ℕ (truncation) but true in ℚ; "
+            "refutations that vanish over ℚ are retracted deterministically.</li>"
+            "<li><b>Literal grounding</b> — a refuted prop built only from numbers Falcon itself wrote needs no LLM opinion.</li>"
+            "<li><b>Faithfulness audit</b> — otherwise the formalizer re-reads NL step vs. Lean prop (polarity, numbers); "
+            "unfaithful → downgraded to <em>unknown</em>.</li>"
+            "<li><b>Final-answer consistency</b> — Lean verified the derivation but <code>FINAL ANSWER</code> states a different number → refuted.</li></ul></div>"
             '<p class="note">Result: <b>zero regressions</b> across all benchmark arms — the verifier never turned a right answer wrong.</p></div></div>'
         ),
         slide(
@@ -260,10 +295,55 @@ def build() -> str:
             "<li><b>Assurance artefact</b> — the trace is what education, finance and government buyers need to deploy a 7B model.</li></ul>"
         ),
         slide(
+            "<h2>Arabic: why formal verification matters <em>more</em><small>Rich morphology, free word order, two digit systems — the NL→formal step is the fragile one</small></h2>"
+            '<div class="cols"><div><ul>'
+            "<li><b>VSO and SVO both grammatical</b> — «كتب أحمد الدرس» ≡ «أحمد كتب الدرس»; position is not a reliable cue for who-did-what.</li>"
+            "<li><b>Meaning lives in morphology</b> — the verb carries person/gender/number of its subject; pro-drop puts the subject <em>inside</em> the verb («كتبوا الدرس»).</li>"
+            "<li><b>Unwritten vowels &amp; case</b> — nominative/accusative endings that disambiguate subject from object are invisible on the page.</li>"
+            "<li><b>٠١٢٣٤٥٦٧٨٩ · ٫ · ٬ · ٪</b> — two digit systems and their own separators; «٣٫٥» vs «3,5» silently changes the number.</li>"
+            "<li><b>Small model, low-resource language</b> — more baseline errors, so more for an independent oracle to catch.</li></ul></div>"
+            '<div class="card"><h3>Our answer</h3><ul>'
+            "<li>A <b>pregroup grammar</b> (Lambek; Bargelli–Lambek for Arabic) translates the math/logic fragment to Lean <b>deterministically</b>, with a derivation certificate — no LLM in the loop.</li>"
+            "<li>Everything else falls back to an Arabic-aware LLM formalizer + the same guards.</li>"
+            "<li>Lean 4 remains the only judge; feedback to Falcon is written in Arabic.</li></ul></div></div>"
+        ),
+        slide(
+            "<h2>Pregroup syntax → typed meaning → Lean<small>The reduction is a proof; we store it in every trace</small></h2>"
+            '<div class="cols"><div>'
+            "<pre>«ما هو ناتج ١٧ × ٢٣؟»  +  FINAL ANSWER 391\n\n"
+            "ما هو : q nˡ     ناتج : n nˡ     ١٧ : n\n× : nʳ n nˡ     ٢٣ : n\n\n"
+            "q nˡ · n nˡ · n · nʳ n nˡ · n  →  q      (planar links)\n\n"
+            '<b style="color:#86efac">(17:ℚ) * 23 = 391</b>   → Lean: verified</pre>'
+            '<p class="note">Greedy left-to-right contraction gets this wrong (links «ناتج» to ١٧); the parser does the O(n³) planar matching, so the head scopes over the whole product.</p></div>'
+            '<div class="card"><h3>Word order, proved equivalent (Lean)</h3>'
+            "<pre>def kataba    := s₀ * oˡ * πˡ   -- VSO\ndef katabaSVO := πʳ * s₀ * oˡ   -- SVO\n"
+            "theorem vso_valid : Derivable (kataba*ahmad*alDarsa) s₀\ntheorem svo_valid : Derivable (ahmad*katabaSVO*alDarsa) s₀\n"
+            "theorem vso_svo_same_meaning :\n  meaningVSO v a b ↔ meaningSVO v a b := Iff.rfl</pre>"
+            '<p class="note">Any order Falcon writes the claim in yields the same Lean proposition — and the derivation says why.</p></div></div>'
+        ),
+        slide(
+            "<h2>Where pregroups lose faithfulness — and the fix, as theorems<small>Coarse types accept agreement violations; feature-indexed types reject them</small></h2>"
+            '<div class="cols"><div class="card"><h3>Loss</h3>'
+            "<pre>-- كتبتْ (fem.) + أحمد (masc.): ungrammatical Arabic\n"
+            "theorem coarse_accepts_bad_agreement :\n  Derivable (katabatCoarse * ahmad * alDarsa) s₀</pre>"
+            '<p class="note">One atom π for every subject: the morphology\'s “these words are not about the same referent” is erased.</p></div>'
+            '<div class="card"><h3>Remedy</h3>'
+            "<pre>-- atoms indexed by gender: πm, πf\ntheorem weight_preserved (w) (d : X ⊢ Y) :\n  weight w X = weight w Y      -- derivation invariant\n"
+            "theorem indexed_rejects_bad_agreement :\n  ¬ Derivable (katabatF * ahmadF * alDarsaF) fs₀</pre>"
+            '<p class="note">Not “we failed to find a derivation” — a proof that none exists. The Python lexicon mirrors it: «العدد ١٢ <b>ت</b>ساوي ٣» is rejected.</p></div></div>'
+            '<p class="note">Research direction: feature-indexed atoms as dependent types; Lambek calculus with modalities for pro-drop/clitics; VSO≡SVO as a 2-cell between derivations (bicategorical semantics).</p>'
+        ),
+        slide(
+            "<h2>Arabic evidence<small>76 Arabic problems (52 math, 24 logic), half with Eastern digits · Falcon 7B</small></h2>"
+            + arabic_slice(arms)
+            + '<p class="note">“pregroup fragment” = bare arithmetic questions translated with zero LLM calls in the formalizer. '
+            "Same grading as the English arms: exact answer match, «نعم»/«لا» for logic.</p>"
+        ),
+        slide(
             "<h2>Roadmap</h2>"
             '<div class="cols"><div class="card"><h3>Next 4 weeks</h3><ul>'
             "<li>Fine-tune a Falcon formalizer on the assurance traces (ill-formed rate ↓, coverage ↑).</li>"
-            "<li>Arabic problems end-to-end (Falcon-H1-Arabic).</li>"
+            "<li>Grow the Arabic pregroup fragment: full verb paradigms, quantifiers («كل/بعض») → Lean ∀/∃.</li>"
             "<li>Lean server mode: persistent Mathlib env, &lt;1 s per check.</li></ul></div>"
             '<div class="card"><h3>Next quarter</h3><ul>'
             "<li>Domains beyond arithmetic/logic: units &amp; finance formulas, set/graph puzzles, program invariants.</li>"

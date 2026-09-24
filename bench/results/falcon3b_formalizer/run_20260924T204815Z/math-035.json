@@ -1,0 +1,140 @@
+{
+ "problem": "Sara thinks of a number, multiplies it by 8, and adds 7. The result is 87. What was the original number?",
+ "expected_answer": "10",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "**Step 1:** Define the unknown number as \\( x \\).\n\n**Step 2:** According to the problem, Sara multiplies the number by 8 and then adds 7, which results in 87. This can be expressed as the equation:  \n\\[ 8x + 7 = 87 \\]\n\n**Step 3:** To find \\( x \\), first subtract 7 from both sides of the equation to isolate the term with \\( x \\):  \n\\[ 8x + 7 - 7 = 87 - 7 \\]  \n\\[ 8x = 80 \\]\n\n**Step 4:** Next, divide both sides by 8 to solve for \\( x \\):  \n\\[ \\frac{8x}{8} = \\frac{80}{8} \\]  \n\\[ x = 10 \\]\n\n**FINAL ANSWER:** 10\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Define the unknown number as \\( x \\)."
+     },
+     {
+      "index": 2,
+      "text": "According to the problem, Sara multiplies the number by 8 and then adds 7, which results in 87. This can be expressed as the equation: \\[ 8x + 7 = 87 \\]"
+     },
+     {
+      "index": 3,
+      "text": "To find \\( x \\), first subtract 7 from both sides of the equation to isolate the term with \\( x \\): \\[ 8x + 7 - 7 = 87 - 7 \\] \\[ 8x = 80 \\]"
+     },
+     {
+      "index": 4,
+      "text": "Next, divide both sides by 8 to solve for \\( x \\): \\[ \\frac{8x}{8} = \\frac{80}{8} \\] \\[ x = 10 \\]"
+     }
+    ],
+    "final_answer": "10",
+    "latency_s": 4.885588645935059,
+    "tokens": 207
+   },
+   "formalization": {
+    "problem_prop": "∀ x : ℝ, 8 * x + 7 = 87 → x = 10",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "defines variable"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "translates problem to equation"
+     },
+     {
+      "index": 3,
+      "kind": "algebra",
+      "lean_prop": "∀ x : ℝ, 8 * x + 7 - 7 = 87 - 7 → 8 * x = 80",
+      "note": "subtract 7"
+     },
+     {
+      "index": 4,
+      "kind": "algebra",
+      "lean_prop": "∀ x : ℝ, 8 * x = 80 → x = 10",
+      "note": "divide by 8"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"∀ x : ℝ, 8 * x + 7 = 87 → x = 10\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"defines variable\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"translates problem to equation\"},\n    {\"index\": 3, \"kind\": \"algebra\", \"lean_prop\": \"∀ x : ℝ, 8 * x + 7 - 7 = 87 - 7 → 8 * x = 80\", \"note\": \"subtract 7\"},\n    {\"index\": 4, \"kind\": \"algebra\", \"lean_prop\": \"∀ x : ℝ, 8 * x = 80 → x = 10\", \"note\": \"divide by 8\"}\n  ]\n}\n",
+    "latency_s": 10.697635650634766
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Define the unknown number as \\( x \\).",
+      "detail": "defines variable"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "According to the problem, Sara multiplies the number by 8 and then adds 7, which results in 87. This can be expressed as the equation: \\[ 8x + 7 = 87 \\]",
+      "detail": "translates problem to equation"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "∀ x : ℝ, 8 * x + 7 - 7 = 87 - 7 → 8 * x = 80",
+      "step_text": "To find \\( x \\), first subtract 7 from both sides of the equation to isolate the term with \\( x \\): \\[ 8x + 7 - 7 = 87 - 7 \\] \\[ 8x = 80 \\]",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "∀ x : ℝ, 8 * x = 80 → x = 10",
+      "step_text": "Next, divide both sides by 8 to solve for \\( x \\): \\[ \\frac{8x}{8} = \\frac{80}{8} \\] \\[ x = 10 \\]",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s3_wf : ∀ x : ℝ, 8 * x + 7 - 7 = 87 - 7 → 8 * x = 80 := by sorry\ntheorem s3_pos : ∀ x : ℝ, 8 * x + 7 - 7 = 87 - 7 → 8 * x = 80 := by fv_auto\ntheorem s3_neg : ¬ (∀ x : ℝ, 8 * x + 7 - 7 = 87 - 7 → 8 * x = 80) := by fv_auto\n\ntheorem s4_wf : ∀ x : ℝ, 8 * x = 80 → x = 10 := by sorry\ntheorem s4_pos : ∀ x : ℝ, 8 * x = 80 → x = 10 := by fv_auto\ntheorem s4_neg : ¬ (∀ x : ℝ, 8 * x = 80 → x = 10) := by fv_auto\n\ntheorem final_wf : ∀ x : ℝ, 8 * x + 7 = 87 → x = 10 := by sorry\ntheorem final_pos : ∀ x : ℝ, 8 * x + 7 = 87 → x = 10 := by fv_auto\ntheorem final_neg : ¬ (∀ x : ℝ, 8 * x + 7 = 87 → x = 10) := by fv_auto\n",
+    "lean_latency_s": 4.27358341217041,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : ∀ (x : ℝ), 8 * x + 7 - 7 = 87 - 7 → 8 * x = 80\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : ∀ (x : ℝ), 8 * x = 80 → x = 10\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : ∀ (x : ℝ), 8 * x + 7 = 87 → x = 10\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "10",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 19.86
+}

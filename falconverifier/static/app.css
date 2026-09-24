@@ -61,3 +61,4 @@ table.bench th { color: var(--muted); font-weight: 500; }
 .bar > i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
 .bar .base { background: #5c6785; } .bar .ver { background: var(--ok); opacity: .85; }
 @media (max-width: 900px) { .cols, .result { grid-template-columns: 1fr; } }
+.pregroup { font-size: 11px; margin-top: 4px; font-family: ui-monospace, monospace; }

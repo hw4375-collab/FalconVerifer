@@ -36,7 +36,9 @@ cp .env.example .env   # fill FALCON_API_KEY; optionally OPENAI_API_KEY
 falconverifier solve "A bakery makes 48 muffins per batch. It bakes 7 batches and sells 5 boxes of 12. How many are left?"
 falconverifier solve --formalizer openai "All doctors are educated. Some educated people are wealthy. Does it follow that some doctors are wealthy?"
 falconverifier check "(17:ℕ) * 23 = 391" "∀ (P Q : Prop), (P → Q) → Q → P"
+falconverifier solve "ما هو ناتج ١٧ × ٢٣؟"                 # Arabic: pregroup grammar → Lean, no LLM formalizer
 falconverifier bench --dataset bench/problems.jsonl --workers 4
+falconverifier bench --dataset bench/problems_ar.jsonl --workers 4   # Arabic set
 falconverifier serve            # web UI on http://localhost:8000
 ```
 
@@ -53,6 +55,25 @@ falconverifier serve            # web UI on http://localhost:8000
 | `FORMALIZER_BASE_URL/_API_KEY/_MODEL` | – | full override of the formalizer endpoint |
 | `MAX_ROUNDS` | `3` | verify → teach → revise rounds |
 | `LEAN_PROJECT_DIR` | `./lean` | Lake project with Mathlib |
+
+## Arabic track: pregroup grammar → Lean (see `docs/ARABIC.md`)
+
+Arabic input (detected by script) goes through a **deterministic pregroup-grammar parser**
+first (`falconverifier/arabic.py`): words get Lambek types (`n`, `nʳ s nˡ`, `q nˡ` …),
+the type string is reduced by planar contraction, and the reduction — a proof object —
+drives the construction of the Lean proposition. Steps in the supported arithmetic/logic
+fragment are translated with **zero LLM calls** and carry `note: "pregroup: … → s"` in
+the trace; everything else falls back to the Arabic-aware LLM formalizer. Falcon is prompted
+and taught in Arabic; Eastern Arabic digits, `٫`, `٬`, `٪` are normalised.
+
+`lean/FalconVerifier/Arabic/` holds the pregroup kernel (`Pregroup.lean`), Arabic VSO/SVO
+lexicon and derivations (`ArabicTypes.lean`) and the semantic theorems (`Semantics.lean`):
+`vso_svo_same_meaning` (word order does not change the proposition),
+`coarse_accepts_bad_agreement` (a gender-blind type accepts «كتبتْ أحمد» — the
+faithfulness loss of coarse pregroups on a morphologically rich language) and
+`indexed_rejects_bad_agreement` (feature-indexed atoms provably reject it, via a
+derivation-invariant weight). The Python lexicon mirrors this with gender features:
+«العدد ١٢ تساوي ٣» is rejected although its bare types reduce.
 
 ## How verification works
 

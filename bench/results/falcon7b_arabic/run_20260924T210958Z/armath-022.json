@@ -1,0 +1,157 @@
+{
+ "problem": "اشترى عمر 92 علبة تحتوي كل منها على 15 كرسياً، ثم أعطى 69 كرسياً من مجموعها لأصدقائه. كم كرسياً بقي لدى عمر؟",
+ "expected_answer": "1311",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الخطوة 1:\ttotal_boxes = 92\nالخطوة 2:\tseats_per_box = 15\nالخطوة 3:\ttotal_seats = total_boxes × seats_per_box = 92 × 15 = 1380\nالخطوة 4:\tgiven_seats = 69\nالخطوة 5:\tremaining_seats = total_seats - given_seats = 1380 - 69 = 1311\nالجواب النهائي: 1311",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "total_boxes = 92"
+     },
+     {
+      "index": 2,
+      "text": "seats_per_box = 15"
+     },
+     {
+      "index": 3,
+      "text": "total_seats = total_boxes × seats_per_box = 92 × 15 = 1380"
+     },
+     {
+      "index": 4,
+      "text": "given_seats = 69"
+     },
+     {
+      "index": 5,
+      "text": "remaining_seats = total_seats - given_seats = 1380 - 69 = 1311"
+     }
+    ],
+    "final_answer": "1311",
+    "latency_s": 4.3361146450042725,
+    "tokens": 142
+   },
+   "formalization": {
+    "problem_prop": "(92:ℕ) * 15 - 69 = 1311",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "defines total_boxes"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "defines seats_per_box"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(92:ℕ) * 15 = 1380",
+      "note": "calculates total_seats"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "defines given_seats"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "1380 - 69 = 1311",
+      "note": "calculates remaining_seats"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(92:ℕ) * 15 - 69 = 1311\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"defines total_boxes\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"defines seats_per_box\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(92:ℕ) * 15 = 1380\", \"note\": \"calculates total_seats\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"defines given_seats\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"1380 - 69 = 1311\", \"note\": \"calculates remaining_seats\"}\n  ]\n}\n",
+    "latency_s": 11.74621295928955
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "total_boxes = 92",
+      "detail": "defines total_boxes"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "seats_per_box = 15",
+      "detail": "defines seats_per_box"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(92:ℕ) * 15 = 1380",
+      "step_text": "total_seats = total_boxes × seats_per_box = 92 × 15 = 1380",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "given_seats = 69",
+      "detail": "defines given_seats"
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "1380 - 69 = 1311",
+      "step_text": "remaining_seats = total_seats - given_seats = 1380 - 69 = 1311",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s3_wf : (92:ℕ) * 15 = 1380 := by sorry\ntheorem s3_pos : (92:ℕ) * 15 = 1380 := by fv_auto\ntheorem s3_neg : ¬ ((92:ℕ) * 15 = 1380) := by fv_auto\n\ntheorem s5_wf : 1380 - 69 = 1311 := by sorry\ntheorem s5_pos : 1380 - 69 = 1311 := by fv_auto\ntheorem s5_neg : ¬ (1380 - 69 = 1311) := by fv_auto\n\ntheorem final_wf : (92:ℕ) * 15 - 69 = 1311 := by sorry\ntheorem final_pos : (92:ℕ) * 15 - 69 = 1311 := by fv_auto\ntheorem final_neg : ¬ ((92:ℕ) * 15 - 69 = 1311) := by fv_auto\n",
+    "lean_latency_s": 3.719881057739258,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 92 * 15 = 1380\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1380 - 69 = 1311\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 92 * 15 - 69 = 1311\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "1311",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 19.8
+}

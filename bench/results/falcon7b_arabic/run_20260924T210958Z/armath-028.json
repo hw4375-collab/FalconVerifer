@@ -1,0 +1,123 @@
+{
+ "problem": "حصلت هند على الدرجات ٧٢، ٤٥، ٥٨، ٤٤، ٧١ في ٥ اختبارات. ما هو متوسط درجاتها؟",
+ "expected_answer": "58",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الخطوة 1: جمع الدرجات: 72 + 45 + 58 + 44 + 71 = 290  \nالخطوة 2: عد عدد الاختبارات: 5  \nالخطوة 3: حساب المتوسط: 290 ÷ 5 = 58  \n\nالجواب النهائي: 58",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "جمع الدرجات: 72 + 45 + 58 + 44 + 71 = 290"
+     },
+     {
+      "index": 2,
+      "text": "عد عدد الاختبارات: 5"
+     },
+     {
+      "index": 3,
+      "text": "حساب المتوسط: 290 ÷ 5 = 58"
+     }
+    ],
+    "final_answer": "58",
+    "latency_s": 3.8462088108062744,
+    "tokens": 84
+   },
+   "formalization": {
+    "problem_prop": "((72:ℚ) + 45 + 58 + 44 + 71) / 5 = 58",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(72:ℚ) + 45 + 58 + 44 + 71 = 290",
+      "note": "sum of scores"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "counting tests"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(290:ℚ) / 5 = 58",
+      "note": "average calculation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"((72:ℚ) + 45 + 58 + 44 + 71) / 5 = 58\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(72:ℚ) + 45 + 58 + 44 + 71 = 290\", \"note\": \"sum of scores\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"counting tests\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(290:ℚ) / 5 = 58\", \"note\": \"average calculation\"}\n  ]\n}\n",
+    "latency_s": 10.47409176826477
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(72:ℚ) + 45 + 58 + 44 + 71 = 290",
+      "step_text": "جمع الدرجات: 72 + 45 + 58 + 44 + 71 = 290",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "عد عدد الاختبارات: 5",
+      "detail": "counting tests"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(290:ℚ) / 5 = 58",
+      "step_text": "حساب المتوسط: 290 ÷ 5 = 58",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s1_wf : (72:ℚ) + 45 + 58 + 44 + 71 = 290 := by sorry\ntheorem s1_pos : (72:ℚ) + 45 + 58 + 44 + 71 = 290 := by fv_auto\ntheorem s1_neg : ¬ ((72:ℚ) + 45 + 58 + 44 + 71 = 290) := by fv_auto\n\ntheorem s3_wf : (290:ℚ) / 5 = 58 := by sorry\ntheorem s3_pos : (290:ℚ) / 5 = 58 := by fv_auto\ntheorem s3_neg : ¬ ((290:ℚ) / 5 = 58) := by fv_auto\n\ntheorem final_wf : ((72:ℚ) + 45 + 58 + 44 + 71) / 5 = 58 := by sorry\ntheorem final_pos : ((72:ℚ) + 45 + 58 + 44 + 71) / 5 = 58 := by fv_auto\ntheorem final_neg : ¬ (((72:ℚ) + 45 + 58 + 44 + 71) / 5 = 58) := by fv_auto\n",
+    "lean_latency_s": 3.6842715740203857,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 72 + 45 + 58 + 44 + 71 = 290\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 290 / 5 = 58\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : (72 + 45 + 58 + 44 + 71) / 5 = 58\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "58",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 18.01
+}

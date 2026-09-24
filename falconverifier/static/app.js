@@ -8,6 +8,9 @@ const EXAMPLES = [
   ["Rain", "If it rains, the street is wet. The street is wet. Does it follow that it rained? Answer Yes or No.", "No"],
   ["Ages", "Tom is 3 times as old as Jerry. In 8 years Tom will be twice as old as Jerry. How old is Jerry now?", "8"],
   ["Divisible", "Is 7 * 12 + 5 divisible by 3? Answer Yes or No.", "No"],
+  ["عربي · حساب", "ما هو ناتج ١٧ × ٢٣؟", "391"],
+  ["عربي · نسبة", "سعر حقيبة ١٢٠ درهماً. خُفّض السعر بنسبة ٢٥٪ ثم أُضيفت ضريبة ١٠٪. ما السعر النهائي؟", "99"],
+  ["عربي · منطق", "كل الأطباء متعلمون، وبعض المتعلمين أثرياء. هل يلزم أن بعض الأطباء أثرياء؟ أجب بنعم أو لا.", "لا"],
 ];
 
 const state = { rounds: {}, es: null, ctrl: null };
@@ -32,7 +35,9 @@ function roundCard(n) {
 }
 
 function renderAnswer(card, a) {
-  card.querySelector(".answer").innerHTML = esc(a.raw);
+  const ans = card.querySelector(".answer");
+  ans.innerHTML = esc(a.raw);
+  ans.dir = /[\u0600-\u06FF]/.test(a.raw) ? "rtl" : "ltr";
   if (a.reasoning) {
     const d = card.querySelector(".cot");
     d.classList.remove("hidden");
@@ -46,8 +51,11 @@ function renderFormalization(card, f) {
   const byIdx = Object.fromEntries(f.steps.map((s) => [s.index, s]));
   const rows = steps.map((s) => {
     const fs = byIdx[s.index];
-    return `<tr data-idx="${s.index}"><td>${s.index}</td><td>${esc(s.text)}</td>
-      <td><code>${fs && fs.lean_prop ? esc(fs.lean_prop) : `<span class="muted">${esc(fs?.note || "skip")}</span>`}</code></td>
+    const grammar = fs && fs.note && fs.note.startsWith("pregroup:")
+      ? `<div class="muted pregroup" title="deterministic pregroup-grammar translation (no LLM)">${esc(fs.note)}</div>`
+      : "";
+    return `<tr data-idx="${s.index}"><td>${s.index}</td><td dir="auto">${esc(s.text)}</td>
+      <td><code>${fs && fs.lean_prop ? esc(fs.lean_prop) : `<span class="muted">${esc(fs?.note || "skip")}</span>`}</code>${grammar}</td>
       <td class="verdict"><span class="muted">Lean…</span></td></tr>`;
   });
   rows.push(`<tr data-idx="final"><td>final</td><td class="muted">final answer follows from the problem</td>
@@ -72,7 +80,9 @@ function renderReport(card, rep) {
 function renderFeedback(card, fb) {
   const d = card.querySelector(".feedback");
   d.classList.remove("hidden");
-  d.querySelector("pre").textContent = fb;
+  const pre = d.querySelector("pre");
+  pre.textContent = fb;
+  pre.dir = /[\u0600-\u06FF]/.test(fb) ? "rtl" : "ltr";
 }
 
 function renderResult(t) {

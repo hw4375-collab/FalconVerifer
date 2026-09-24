@@ -1,0 +1,637 @@
+{
+ "problem": "A tank holds 390 litres when full. It is currently 5/10 full. How many litres must be added to fill it?",
+ "expected_answer": "195",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "FINAL ANSWER: 90 litres\n\n**الشرح:**\n\n1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا.\n2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة.\n3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]\n4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]\n\nلذا، يجب إضافة 195 لترًا لملء الحوض.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "**الشرح:**"
+     },
+     {
+      "index": 2,
+      "text": "1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا."
+     },
+     {
+      "index": 3,
+      "text": "2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة."
+     },
+     {
+      "index": 4,
+      "text": "3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]"
+     },
+     {
+      "index": 5,
+      "text": "4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]"
+     },
+     {
+      "index": 6,
+      "text": "لذا، يجب إضافة 195 لترًا لملء الحوض."
+     }
+    ],
+    "final_answer": "90 litres",
+    "latency_s": 5.472775936126709,
+    "tokens": 296
+   },
+   "formalization": {
+    "problem_prop": "390 - 390 * (5:ℚ) / 10 = 195",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "explanation"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem data"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem data"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "390 * (5:ℚ) / 10 = 195",
+      "note": "current volume"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "390 - 195 = 195",
+      "note": "litres to add"
+     },
+     {
+      "index": 6,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "conclusion"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"390 - 390 * (5:ℚ) / 10 = 195\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"explanation\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem data\"},\n    {\"index\": 3, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem data\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"390 * (5:ℚ) / 10 = 195\", \"note\": \"current volume\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"390 - 195 = 195\", \"note\": \"litres to add\"},\n    {\"index\": 6, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"conclusion\"}\n  ]\n}\n",
+    "latency_s": 9.449060678482056
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "**الشرح:**",
+      "detail": "explanation"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا.",
+      "detail": "restates problem data"
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة.",
+      "detail": "restates problem data"
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "390 * (5:ℚ) / 10 = 195",
+      "step_text": "3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "390 - 195 = 195",
+      "step_text": "4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]",
+      "detail": ""
+     },
+     {
+      "index": 6,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "لذا، يجب إضافة 195 لترًا لملء الحوض.",
+      "detail": "conclusion"
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `390 - 390 * (5:ℚ) / 10 = 195`, which does not contain the stated FINAL ANSWER '90 litres'",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s4_wf : 390 * (5:ℚ) / 10 = 195 := by sorry\ntheorem s4_pos : 390 * (5:ℚ) / 10 = 195 := by fv_auto\ntheorem s4_neg : ¬ (390 * (5:ℚ) / 10 = 195) := by fv_auto\n\ntheorem s5_wf : 390 - 195 = 195 := by sorry\ntheorem s5_pos : 390 - 195 = 195 := by fv_auto\ntheorem s5_neg : ¬ (390 - 195 = 195) := by fv_auto\n\ntheorem final_wf : 390 - 390 * (5:ℚ) / 10 = 195 := by sorry\ntheorem final_pos : 390 - 390 * (5:ℚ) / 10 = 195 := by fv_auto\ntheorem final_neg : ¬ (390 - 390 * (5:ℚ) / 10 = 195) := by fv_auto\n",
+    "lean_latency_s": 3.7477378845214844,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 * 5 / 10 = 195\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 - 195 = 195\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 - 390 * 5 / 10 = 195\n⊢ False"
+     }
+    ]
+   },
+   "feedback": "Your FINAL ANSWER does not match what your own steps derive. Lean 4 verified `390 - 390 * (5:ℚ) / 10 = 195` — the number after FINAL ANSWER must be the result of that computation, so re-read your steps and state the value they actually produce.\nSteps verified correct by Lean 4: 4, 5.\nRecompute the refuted steps carefully (do the arithmetic digit by digit, or re-derive the logical inference from the premises) and give a corrected solution."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "FINAL ANSWER: 90 لترًا\n\n**الشرح:**\n\n1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا.\n2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة.\n3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]\n4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]\n\n**التصحيح:**\n\nيبدو أن هناك خطأ في الحساب السابق حيث تم تقديم الحجم الحالي كـ 195 لترًا، وهو ما يتوافق مع الحساب الصحيح. ومع ذلك، فإن النتيجة النهائية المقدمة (90 لترًا) لا تتطابق مع الحساب الصحيح.\n\nلذا، سأعيد الحساب بدقة من جديد:\n\n1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا.\n2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة.\n3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]\n4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]\n\nيبدو أن هناك خطأ في النتيجة النهائية المقدمة. الحساب الصحيح يشير إلى أن كمية الماء التي يجب إضافتها هي 195 لترًا، وليس 90 لترًا.\n\nلذا، الإجابة الصحيحة هي:\n\nFINAL ANSWER: 195 لترًا\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "**الشرح:**"
+     },
+     {
+      "index": 2,
+      "text": "1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا."
+     },
+     {
+      "index": 3,
+      "text": "2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة."
+     },
+     {
+      "index": 4,
+      "text": "3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]"
+     },
+     {
+      "index": 5,
+      "text": "4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]"
+     },
+     {
+      "index": 6,
+      "text": "**التصحيح:**"
+     },
+     {
+      "index": 7,
+      "text": "يبدو أن هناك خطأ في الحساب السابق حيث تم تقديم الحجم الحالي كـ 195 لترًا، وهو ما يتوافق مع الحساب الصحيح. ومع ذلك، فإن النتيجة النهائية المقدمة (90 لترًا) لا تتطابق مع الحساب الصحيح."
+     },
+     {
+      "index": 8,
+      "text": "لذا، سأعيد الحساب بدقة من جديد:"
+     },
+     {
+      "index": 9,
+      "text": "1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا."
+     },
+     {
+      "index": 10,
+      "text": "2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة."
+     },
+     {
+      "index": 11,
+      "text": "3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]"
+     },
+     {
+      "index": 12,
+      "text": "4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]"
+     }
+    ],
+    "final_answer": "90 لترًا",
+    "latency_s": 9.920271873474121,
+    "tokens": 686
+   },
+   "formalization": {
+    "problem_prop": "(390:ℚ) - (390:ℚ) * (5:ℚ) / (10:ℚ) = 195",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "explanation"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(390:ℚ) * (5:ℚ) / (10:ℚ) = 195",
+      "note": "current volume"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(390:ℚ) - 195 = 195",
+      "note": "litres to add"
+     },
+     {
+      "index": 5,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction"
+     },
+     {
+      "index": 6,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "explanation"
+     },
+     {
+      "index": 7,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 8,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "explanation"
+     },
+     {
+      "index": 9,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 10,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 11,
+      "kind": "arith",
+      "lean_prop": "(390:ℚ) * (5:ℚ) / (10:ℚ) = 195",
+      "note": "current volume"
+     },
+     {
+      "index": 12,
+      "kind": "arith",
+      "lean_prop": "(390:ℚ) - 195 = 195",
+      "note": "litres to add"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(390:ℚ) - (390:ℚ) * (5:ℚ) / (10:ℚ) = 195\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"explanation\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(390:ℚ) * (5:ℚ) / (10:ℚ) = 195\", \"note\": \"current volume\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(390:ℚ) - 195 = 195\", \"note\": \"litres to add\"},\n    {\"index\": 5, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction\"},\n    {\"index\": 6, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"explanation\"},\n    {\"index\": 7, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 8, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"explanation\"},\n    {\"index\": 9, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 10, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 11, \"kind\": \"arith\", \"lean_prop\": \"(390:ℚ) * (5:ℚ) / (10:ℚ) = 195\", \"note\": \"current volume\"},\n    {\"index\": 12, \"kind\": \"arith\", \"lean_prop\": \"(390:ℚ) - 195 = 195\", \"note\": \"litres to add\"}\n  ]\n}\n",
+    "latency_s": 18.88534164428711
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "**الشرح:**",
+      "detail": "explanation"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(390:ℚ) * (5:ℚ) / (10:ℚ) = 195",
+      "step_text": "2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(390:ℚ) - 195 = 195",
+      "step_text": "3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]",
+      "detail": "correction"
+     },
+     {
+      "index": 6,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "**التصحيح:**",
+      "detail": "explanation"
+     },
+     {
+      "index": 7,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "يبدو أن هناك خطأ في الحساب السابق حيث تم تقديم الحجم الحالي كـ 195 لترًا، وهو ما يتوافق مع الحساب الصحيح. ومع ذلك، فإن النتيجة النهائية المقدمة (90 لترًا) لا تتطابق مع الحساب الصحيح.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 8,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "لذا، سأعيد الحساب بدقة من جديد:",
+      "detail": "explanation"
+     },
+     {
+      "index": 9,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 10,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 11,
+      "verdict": "verified",
+      "lean_prop": "(390:ℚ) * (5:ℚ) / (10:ℚ) = 195",
+      "step_text": "3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]",
+      "detail": ""
+     },
+     {
+      "index": 12,
+      "verdict": "verified",
+      "lean_prop": "(390:ℚ) - 195 = 195",
+      "step_text": "4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `(390:ℚ) - (390:ℚ) * (5:ℚ) / (10:ℚ) = 195`, which does not contain the stated FINAL ANSWER '90 لترًا'",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s3_wf : (390:ℚ) * (5:ℚ) / (10:ℚ) = 195 := by sorry\ntheorem s3_pos : (390:ℚ) * (5:ℚ) / (10:ℚ) = 195 := by fv_auto\ntheorem s3_neg : ¬ ((390:ℚ) * (5:ℚ) / (10:ℚ) = 195) := by fv_auto\n\ntheorem s4_wf : (390:ℚ) - 195 = 195 := by sorry\ntheorem s4_pos : (390:ℚ) - 195 = 195 := by fv_auto\ntheorem s4_neg : ¬ ((390:ℚ) - 195 = 195) := by fv_auto\n\ntheorem s11_wf : (390:ℚ) * (5:ℚ) / (10:ℚ) = 195 := by sorry\ntheorem s11_pos : (390:ℚ) * (5:ℚ) / (10:ℚ) = 195 := by fv_auto\ntheorem s11_neg : ¬ ((390:ℚ) * (5:ℚ) / (10:ℚ) = 195) := by fv_auto\n\ntheorem s12_wf : (390:ℚ) - 195 = 195 := by sorry\ntheorem s12_pos : (390:ℚ) - 195 = 195 := by fv_auto\ntheorem s12_neg : ¬ ((390:ℚ) - 195 = 195) := by fv_auto\n\ntheorem final_wf : (390:ℚ) - (390:ℚ) * (5:ℚ) / (10:ℚ) = 195 := by sorry\ntheorem final_pos : (390:ℚ) - (390:ℚ) * (5:ℚ) / (10:ℚ) = 195 := by fv_auto\ntheorem final_neg : ¬ ((390:ℚ) - (390:ℚ) * (5:ℚ) / (10:ℚ) = 195) := by fv_auto\n",
+    "lean_latency_s": 3.7938027381896973,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 * 5 / 10 = 195\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 - 195 = 195\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 * 5 / 10 = 195\n⊢ False"
+     },
+     {
+      "line": 53,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 55,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 - 195 = 195\n⊢ False"
+     },
+     {
+      "line": 57,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 59,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 - 390 * 5 / 10 = 195\n⊢ False"
+     }
+    ]
+   },
+   "feedback": "Your FINAL ANSWER does not match what your own steps derive. Lean 4 verified `(390:ℚ) - (390:ℚ) * (5:ℚ) / (10:ℚ) = 195` — the number after FINAL ANSWER must be the result of that computation, so re-read your steps and state the value they actually produce.\nSteps verified correct by Lean 4: 3, 4, 11, 12.\nRecompute the refuted steps carefully (do the arithmetic digit by digit, or re-derive the logical inference from the premises) and give a corrected solution."
+  },
+  {
+   "round_index": 3,
+   "answer": {
+    "raw": "FINAL ANSWER: 195 لترًا\n\n**الشرح:**\n\n1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا.\n2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة.\n3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]\n4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]\n\nيبدو أن هناك خطأ في النتيجة النهائية المقدمة. الحساب الصحيح يشير إلى أن كمية الماء التي يجب إضافتها هي 195 لترًا، وليس 90 لترًا.\n\nلذا، الإجابة الصحيحة هي:\n\nFINAL ANSWER: 195 لترًا\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "**الشرح:**"
+     },
+     {
+      "index": 2,
+      "text": "1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا."
+     },
+     {
+      "index": 3,
+      "text": "2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة."
+     },
+     {
+      "index": 4,
+      "text": "3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]"
+     },
+     {
+      "index": 5,
+      "text": "4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]"
+     },
+     {
+      "index": 6,
+      "text": "يبدو أن هناك خطأ في النتيجة النهائية المقدمة. الحساب الصحيح يشير إلى أن كمية الماء التي يجب إضافتها هي 195 لترًا، وليس 90 لترًا."
+     },
+     {
+      "index": 7,
+      "text": "لذا، الإجابة الصحيحة هي:"
+     }
+    ],
+    "final_answer": "195 لترًا",
+    "latency_s": 6.664531230926514,
+    "tokens": 344
+   },
+   "formalization": {
+    "problem_prop": "(390:ℤ) - (390:ℤ) * 5 / 10 = 195",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "explanation"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem data"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem data"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(390:ℤ) * 5 / 10 = 195",
+      "note": "current volume"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "(390:ℤ) - 195 = 195",
+      "note": "liters to add"
+     },
+     {
+      "index": 6,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "comments on error"
+     },
+     {
+      "index": 7,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "final answer"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(390:ℤ) - (390:ℤ) * 5 / 10 = 195\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"explanation\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem data\"},\n    {\"index\": 3, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem data\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(390:ℤ) * 5 / 10 = 195\", \"note\": \"current volume\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"(390:ℤ) - 195 = 195\", \"note\": \"liters to add\"},\n    {\"index\": 6, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"comments on error\"},\n    {\"index\": 7, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"final answer\"}\n  ]\n}\n",
+    "latency_s": 12.549819231033325
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "**الشرح:**",
+      "detail": "explanation"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "1. **تحديد السعة الكاملة:** السعة الكاملة للحوض هي 390 لترًا.",
+      "detail": "restates problem data"
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "2. **حساب النسبة المئوية الحالية:** الحوض حاليًا ممتلئ بنسبة 5/10 (أو 50%) من سعته الكاملة.",
+      "detail": "restates problem data"
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(390:ℤ) * 5 / 10 = 195",
+      "step_text": "3. **حساب الحجم الحالي:** لحساب الحجم الحالي، نضرب السعة الكاملة في النسبة المئوية الحالية:\n   \\[\n   \\text{الحجم الحالي} = 390 \\, \\text{لتر} \\times \\frac{5}{10} = 390 \\times 0.5 = 195 \\, \\text{لتر}\n   \\]",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "(390:ℤ) - 195 = 195",
+      "step_text": "4. **حساب كمية الماء التي يجب إضافتها:** لملء الحوض بالكامل، نحتاج إلى الفرق بين السعة الكاملة والحجم الحالي:\n   \\[\n   \\text{كمية الماء المطلوبة} = 390 \\, \\text{لتر} - 195 \\, \\text{لتر} = 195 \\, \\text{لتر}\n   \\]",
+      "detail": ""
+     },
+     {
+      "index": 6,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "يبدو أن هناك خطأ في النتيجة النهائية المقدمة. الحساب الصحيح يشير إلى أن كمية الماء التي يجب إضافتها هي 195 لترًا، وليس 90 لترًا.",
+      "detail": "comments on error"
+     },
+     {
+      "index": 7,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "لذا، الإجابة الصحيحة هي:",
+      "detail": "final answer"
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s4_wf : (390:ℤ) * 5 / 10 = 195 := by sorry\ntheorem s4_pos : (390:ℤ) * 5 / 10 = 195 := by fv_auto\ntheorem s4_neg : ¬ ((390:ℤ) * 5 / 10 = 195) := by fv_auto\n\ntheorem s5_wf : (390:ℤ) - 195 = 195 := by sorry\ntheorem s5_pos : (390:ℤ) - 195 = 195 := by fv_auto\ntheorem s5_neg : ¬ ((390:ℤ) - 195 = 195) := by fv_auto\n\ntheorem final_wf : (390:ℤ) - (390:ℤ) * 5 / 10 = 195 := by sorry\ntheorem final_pos : (390:ℤ) - (390:ℤ) * 5 / 10 = 195 := by fv_auto\ntheorem final_neg : ¬ ((390:ℤ) - (390:ℤ) * 5 / 10 = 195) := by fv_auto\n",
+    "lean_latency_s": 3.7331879138946533,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 * 5 / 10 = 195\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 - 195 = 195\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 390 - 390 * 5 / 10 = 195\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "195 لترًا",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 74.22
+}

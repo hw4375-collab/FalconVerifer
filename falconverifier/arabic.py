@@ -135,6 +135,10 @@ LEXICON: list[Entry] = [
     Entry("حاصل ضرب", "n nˡ", "pre:*"),
     Entry("ناتج ضرب", "n nˡ", "pre:*"),
     Entry("ناتج", "n nˡ", "pre:id"),
+    Entry("العدد", "n nˡ", "pre:id", {"g": "m", "n": "sg"}),  # «العدد ١٢ يقبل ...»
+    Entry("المجموع", "n nˡ", "pre:id", {"g": "m", "n": "sg"}),
+    Entry("النتيجة", "n nˡ", "pre:id", {"g": "f", "n": "sg"}),
+    Entry("القيمة", "n nˡ", "pre:id", {"g": "f", "n": "sg"}),
     Entry("حاصل", "n nˡ", "pre:id"),
     Entry("نصف", "n nˡ", "pre:half"),
     Entry("ثلث", "n nˡ", "pre:third"),
@@ -305,6 +309,8 @@ def _assemble(words: list[Word]) -> tuple[str, str] | None:
         return None
     if rel:
         k = words.index(rel[0])
+        if not _agrees(words[:k], rel[0]):
+            return None
         lhs, rhs = _expr(words[:k]), _expr(words[k + 1 :])
         if lhs is None or rhs is None:
             return None
@@ -326,6 +332,17 @@ def _assemble(words: list[Word]) -> tuple[str, str] | None:
         return (e, "q") if e else None
     e = _expr(words)
     return (e, "n") if e else None
+
+
+def _agrees(subject: list[Word], verb: Word) -> bool:
+    """Subject–verb agreement: the head noun of the subject phrase must match the verb's
+    gender feature. The bare pregroup types accept «العدد ١٢ تساوي ٣» (masc. noun, fem. verb);
+    the feature record is what rejects it — cf. `indexed_rejects_bad_agreement` in Lean."""
+    vg = verb.entry.feat.get("g")
+    if vg is None:
+        return True
+    heads = [w for w in subject if w.entry.feat.get("g")]
+    return not heads or heads[0].entry.feat["g"] == vg
 
 
 _PREC = {"+": 1, "-": 1, "*": 2, "/": 2, "pct": 2}

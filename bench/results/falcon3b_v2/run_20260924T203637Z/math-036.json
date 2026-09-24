@@ -1,0 +1,113 @@
+{
+ "problem": "Fatima thinks of a number, multiplies it by 4, and adds 42. The result is 86. What was the original number?",
+ "expected_answer": "11",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "**Step 1:** فهم السؤال  \nالسؤال يطلب منا إيجاد عدد أصلي (نفترض أننا نرمز له بـ \\( x \\)) حيث قامت Fatima بضرب هذا العدد في 4 ثم أضافت 42، والنتيجة كانت 86.\n\n**Step 2:** ترجمة السؤال إلى معادلة  \nيمكننا ترجمة هذه المعلومات إلى المعادلة التالية:  \n\\( 4x + 42 = 86 \\)\n\n**Step 3:** حل المعادلة  \nأولاً، نطرح 42 من كلا طرفي المعادلة لعزل الحد الذي يحتوي على \\( x \\):  \n\\( 4x + 42 - 42 = 86 - 42 \\)  \n$$ 4x = 44 $$\n\nثم نقسم كلا الطرفين على 4 لحل \\( x \\):  \n\\( \\frac{4x}{4} = \\frac{44}{4} \\)  \n$$ x = 11 $$\n\n**FINAL ANSWER:** 11\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "فهم السؤال السؤال يطلب منا إيجاد عدد أصلي (نفترض أننا نرمز له بـ \\( x \\)) حيث قامت Fatima بضرب هذا العدد في 4 ثم أضافت 42، والنتيجة كانت 86."
+     },
+     {
+      "index": 2,
+      "text": "ترجمة السؤال إلى معادلة يمكننا ترجمة هذه المعلومات إلى المعادلة التالية: \\( 4x + 42 = 86 \\)"
+     },
+     {
+      "index": 3,
+      "text": "حل المعادلة أولاً، نطرح 42 من كلا طرفي المعادلة لعزل الحد الذي يحتوي على \\( x \\): \\( 4x + 42 - 42 = 86 - 42 \\) $$ 4x = 44 $$ ثم نقسم كلا الطرفين على 4 لحل \\( x \\): \\( \\frac{4x}{4} = \\frac{44}{4} \\) $$ x = 11 $$"
+     }
+    ],
+    "final_answer": "11",
+    "latency_s": 5.70509672164917,
+    "tokens": 251
+   },
+   "formalization": {
+    "problem_prop": "∀ x : ℝ, 4 * x + 42 = 86 → x = 11",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "understanding the problem"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "translating to equation"
+     },
+     {
+      "index": 3,
+      "kind": "algebra",
+      "lean_prop": "∀ x : ℝ, 4 * x + 42 = 86 → x = 11",
+      "note": "solving the equation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"∀ x : ℝ, 4 * x + 42 = 86 → x = 11\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"understanding the problem\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"translating to equation\"},\n    {\"index\": 3, \"kind\": \"algebra\", \"lean_prop\": \"∀ x : ℝ, 4 * x + 42 = 86 → x = 11\", \"note\": \"solving the equation\"}\n  ]\n}\n",
+    "latency_s": 9.48195767402649
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "فهم السؤال السؤال يطلب منا إيجاد عدد أصلي (نفترض أننا نرمز له بـ \\( x \\)) حيث قامت Fatima بضرب هذا العدد في 4 ثم أضافت 42، والنتيجة كانت 86.",
+      "detail": "understanding the problem"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "ترجمة السؤال إلى معادلة يمكننا ترجمة هذه المعلومات إلى المعادلة التالية: \\( 4x + 42 = 86 \\)",
+      "detail": "translating to equation"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "∀ x : ℝ, 4 * x + 42 = 86 → x = 11",
+      "step_text": "حل المعادلة أولاً، نطرح 42 من كلا طرفي المعادلة لعزل الحد الذي يحتوي على \\( x \\): \\( 4x + 42 - 42 = 86 - 42 \\) $$ 4x = 44 $$ ثم نقسم كلا الطرفين على 4 لحل \\( x \\): \\( \\frac{4x}{4} = \\frac{44}{4} \\) $$ x = 11 $$",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s3_wf : ∀ x : ℝ, 4 * x + 42 = 86 → x = 11 := by sorry\ntheorem s3_pos : ∀ x : ℝ, 4 * x + 42 = 86 → x = 11 := by fv_auto\ntheorem s3_neg : ¬ (∀ x : ℝ, 4 * x + 42 = 86 → x = 11) := by fv_auto\n\ntheorem final_wf : ∀ x : ℝ, 4 * x + 42 = 86 → x = 11 := by sorry\ntheorem final_pos : ∀ x : ℝ, 4 * x + 42 = 86 → x = 11 := by fv_auto\ntheorem final_neg : ¬ (∀ x : ℝ, 4 * x + 42 = 86 → x = 11) := by fv_auto\n",
+    "lean_latency_s": 4.3128440380096436,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : ∀ (x : ℝ), 4 * x + 42 = 86 → x = 11\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : ∀ (x : ℝ), 4 * x + 42 = 86 → x = 11\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "11",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 19.5
+}

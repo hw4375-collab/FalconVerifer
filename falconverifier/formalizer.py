@@ -59,6 +59,12 @@ Translation rules (follow strictly):
   Arabic digits ٠١٢٣٤٥٦٧٨٩). Translate the mathematics exactly as written; word order
   (VSO/SVO) does not change the claim. «نعم» = Yes, «لا» = No, «كل» = all, «بعض» = some,
   «ليس»/«لا» = not, «إذا ... فإن» = if ... then, «يقبل القسمة على» = is divisible by.
+  «لا أحد من A» = no A are ...; «بعض A» is ∃, NEVER ∀. Lean identifiers must be ASCII: a
+  named individual («خالد») becomes a bound variable `∀ (k : Fin 3), ...`, never an Arabic
+  identifier.
+- A premise that is simply asserted ("all doctors are educated") is NOT a universally
+  quantified schema over all predicates — that would be false. Encode a bare premise as
+  `"kind": "skip"`; only encode the INFERENCE (premises → conclusion) as a closed ∀-statement.
 """
 
 FEWSHOT_USER = """PROBLEM:

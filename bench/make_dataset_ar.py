@@ -71,8 +71,8 @@ def gen_math() -> list[dict]:
         a, b, c = rng.randint(23, 98), rng.randint(12, 49), rng.randint(50, 400)
         n, it = rng.choice(NAMES_M), rng.choice(ITEMS)
         add(
-            f"اشترى {n} {ar(a, e)} علبة تحتوي كل منها على {ar(b, e)} {it}، ثم أعطى {ar(c, e)} منها "
-            f"لأصدقائه. كم بقي لدى {n}؟",
+            f"اشترى {n} {ar(a, e)} علبة تحتوي كل منها على {ar(b, e)} {it}، ثم أعطى {ar(c, e)} {it} "
+            f"من مجموعها لأصدقائه. كم {it} بقي لدى {n}؟",
             a * b - c,
             ["arith", "multiply"],
             e,

@@ -46,9 +46,13 @@ def answers_match(pred: str | None, expected: str) -> bool:
     if pred is None:
         return False
     p, e = normalize_digits(pred).strip().lower(), normalize_digits(expected).strip().lower()
-    if e in {"yes", "no", "true", "false", "valid", "invalid"}:
+    syn = {
+        "yes": {"yes", "true", "valid", "نعم", "صحيح", "صح"},
+        "no": {"no", "false", "invalid", "لا", "خطأ", "خاطئ"},
+    }
+    if e in syn["yes"] | syn["no"]:
+        p = re.sub(r"(?:غير|ليس)\s+صحيح\w*", "خطأ", p)
         p_word = re.sub(r"[^a-z\u0621-\u064a]", " ", p).split()
-        syn = {"yes": {"yes", "true", "valid", "نعم"}, "no": {"no", "false", "invalid", "لا"}}
         key = "yes" if e in syn["yes"] else "no"
         other = "no" if key == "yes" else "yes"
         return any(w in syn[key] for w in p_word[:3]) and not any(
@@ -59,7 +63,8 @@ def answers_match(pred: str | None, expected: str) -> bool:
     pn, en = _to_number(p), _to_number(e)
     if pn is not None and en is not None:
         return pn == en
-    return re.sub(r"[^a-z0-9]", "", p) == re.sub(r"[^a-z0-9]", "", e)
+    p_key, e_key = (re.sub(r"[^a-z0-9\u0621-\u064a]", "", x) for x in (p, e))
+    return bool(e_key) and p_key == e_key
 
 
 # --- benchmark -----------------------------------------------------------------------

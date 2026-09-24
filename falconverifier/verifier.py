@@ -149,12 +149,17 @@ def literals_grounded(prop: str, *sources: str) -> bool:
     """True when every numeric literal in `prop` also occurs in the natural-language sources.
 
     A refutation of such a prop cannot be a translation artifact: Lean refuted an arithmetic
-    claim built only from the numbers the student actually wrote.
+    claim built only from the numbers the student actually wrote. Propositions without any
+    numeric literal (quantified logic) or with binders are never grounded this way: their
+    faithfulness hinges on quantifier choice, not on numbers, so they must be audited.
     """
+    lits = literals(prop)
+    if not lits or re.search(r"[∀∃λ]|\bfun\b", prop):
+        return False
     pool: set[Fraction] = set()
     for s in sources:
         pool |= literals(s)
-    return literals(prop) <= pool
+    return lits <= pool
 
 
 def check_final_grounding(

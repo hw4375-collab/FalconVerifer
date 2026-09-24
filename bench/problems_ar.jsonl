@@ -14,12 +14,12 @@
 {"id": "armath-014", "problem": "كم يساوي 20٪ من 240؟", "answer": "48", "tags": ["math", "arabic", "arith", "percent", "fragment"]}
 {"id": "armath-015", "problem": "كم يساوي ٢٥٪ من ٤٨٠؟", "answer": "120", "tags": ["math", "arabic", "arith", "percent", "fragment", "eastern-digits"]}
 {"id": "armath-016", "problem": "كم يساوي 50٪ من 200؟", "answer": "100", "tags": ["math", "arabic", "arith", "percent", "fragment"]}
-{"id": "armath-017", "problem": "اشترى خالد ٦٤ علبة تحتوي كل منها على ٢٤ زجاجة، ثم أعطى ١٦٨ منها لأصدقائه. كم بقي لدى خالد؟", "answer": "1368", "tags": ["math", "arabic", "arith", "multiply", "eastern-digits"]}
-{"id": "armath-018", "problem": "اشترى عمر 86 علبة تحتوي كل منها على 40 قلماً، ثم أعطى 65 منها لأصدقائه. كم بقي لدى عمر؟", "answer": "3375", "tags": ["math", "arabic", "arith", "multiply"]}
-{"id": "armath-019", "problem": "اشترى حمدان ٥٩ علبة تحتوي كل منها على ٤١ تمرة، ثم أعطى ١٢٨ منها لأصدقائه. كم بقي لدى حمدان؟", "answer": "2291", "tags": ["math", "arabic", "arith", "multiply", "eastern-digits"]}
-{"id": "armath-020", "problem": "اشترى يوسف 81 علبة تحتوي كل منها على 39 زجاجة، ثم أعطى 235 منها لأصدقائه. كم بقي لدى يوسف؟", "answer": "2924", "tags": ["math", "arabic", "arith", "multiply"]}
-{"id": "armath-021", "problem": "اشترى راشد ٧٤ علبة تحتوي كل منها على ٤٧ عملة، ثم أعطى ٢٣٦ منها لأصدقائه. كم بقي لدى راشد؟", "answer": "3242", "tags": ["math", "arabic", "arith", "multiply", "eastern-digits"]}
-{"id": "armath-022", "problem": "اشترى عمر 92 علبة تحتوي كل منها على 15 كرسياً، ثم أعطى 69 منها لأصدقائه. كم بقي لدى عمر؟", "answer": "1311", "tags": ["math", "arabic", "arith", "multiply"]}
+{"id": "armath-017", "problem": "اشترى خالد ٦٤ علبة تحتوي كل منها على ٢٤ زجاجة، ثم أعطى ١٦٨ زجاجة من مجموعها لأصدقائه. كم زجاجة بقي لدى خالد؟", "answer": "1368", "tags": ["math", "arabic", "arith", "multiply", "eastern-digits"]}
+{"id": "armath-018", "problem": "اشترى عمر 86 علبة تحتوي كل منها على 40 قلماً، ثم أعطى 65 قلماً من مجموعها لأصدقائه. كم قلماً بقي لدى عمر؟", "answer": "3375", "tags": ["math", "arabic", "arith", "multiply"]}
+{"id": "armath-019", "problem": "اشترى حمدان ٥٩ علبة تحتوي كل منها على ٤١ تمرة، ثم أعطى ١٢٨ تمرة من مجموعها لأصدقائه. كم تمرة بقي لدى حمدان؟", "answer": "2291", "tags": ["math", "arabic", "arith", "multiply", "eastern-digits"]}
+{"id": "armath-020", "problem": "اشترى يوسف 81 علبة تحتوي كل منها على 39 زجاجة، ثم أعطى 235 زجاجة من مجموعها لأصدقائه. كم زجاجة بقي لدى يوسف؟", "answer": "2924", "tags": ["math", "arabic", "arith", "multiply"]}
+{"id": "armath-021", "problem": "اشترى راشد ٧٤ علبة تحتوي كل منها على ٤٧ عملة، ثم أعطى ٢٣٦ عملة من مجموعها لأصدقائه. كم عملة بقي لدى راشد؟", "answer": "3242", "tags": ["math", "arabic", "arith", "multiply", "eastern-digits"]}
+{"id": "armath-022", "problem": "اشترى عمر 92 علبة تحتوي كل منها على 15 كرسياً، ثم أعطى 69 كرسياً من مجموعها لأصدقائه. كم كرسياً بقي لدى عمر؟", "answer": "1311", "tags": ["math", "arabic", "arith", "multiply"]}
 {"id": "armath-023", "problem": "يبلغ سعر معطف ١٥٠ درهماً. خُفِّض سعره بنسبة ١٠٪. ما هو السعر الجديد بالدرهم؟", "answer": "135", "tags": ["math", "arabic", "arith", "percent", "eastern-digits"]}
 {"id": "armath-024", "problem": "يبلغ سعر معطف 120 درهماً. خُفِّض سعره بنسبة 40٪. ما هو السعر الجديد بالدرهم؟", "answer": "72", "tags": ["math", "arabic", "arith", "percent"]}
 {"id": "armath-025", "problem": "يبلغ سعر معطف ٣٦٠ درهماً. خُفِّض سعره بنسبة ٢٠٪. ما هو السعر الجديد بالدرهم؟", "answer": "288", "tags": ["math", "arabic", "arith", "percent", "eastern-digits"]}

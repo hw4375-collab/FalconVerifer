@@ -42,6 +42,22 @@ Does it follow that some doctors are wealthy?"** (or run the baseline-wrong prob
 
 > "That is the loop: Falcon reasons, Lean judges, Falcon learns — in one conversation turn."
 
+## 3b. Arabic (60 s) — grammar, not guesswork
+
+Paste **«ما هو ناتج ١٧ × ٢٣؟»** (Eastern digits on purpose). Show:
+
+1. Falcon answers in Arabic (`الخطوة 1: … الجواب النهائي: ٣٩١`).
+2. Each step's Lean prop has `note: pregroup: q nˡ · n nˡ · n · nʳ n nˡ · n → q` — the
+   translation was done by the **pregroup grammar**, zero LLM calls; the reduction *is* the
+   faithfulness certificate.
+3. Optional catch: paste **«١٧ × ٢٣ يساوي ٣٨١»** as the problem → Lean refutes
+   `(17:ℚ) * 23 = (381:ℚ)` and the feedback card is in Arabic.
+
+> "Arabic has free word order and morphology that carries meaning — the translation step is
+> where hallucination hides. For the arithmetic fragment we removed the LLM from it entirely;
+> in Lean we proved both that VSO ≡ SVO and exactly where a coarse grammar loses
+> faithfulness (`docs/ARABIC.md`)."
+
 ## 4. Evidence (45 s)
 
 Scroll to the **Benchmark** panel (or open `docs/BENCHMARK.md`):

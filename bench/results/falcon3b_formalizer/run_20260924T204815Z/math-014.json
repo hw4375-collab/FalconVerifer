@@ -1,0 +1,111 @@
+{
+ "problem": "A laptop costs 1250 dirhams. During a sale its price is reduced by 40%. What is the sale price in dirhams?",
+ "expected_answer": "750",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "**Step 1:** Determine the discount amount.  \nThe discount is 40% of the original price.  \n\\[ \\text{Discount} = 1250 \\times 0.40 = 500 \\text{ dirhams} \\]\n\n**Step 2:** Calculate the sale price by subtracting the discount from the original price.  \n\\[ \\text{Sale Price} = 1250 - 500 = 750 \\text{ dirhams} \\]\n\n**FINAL ANSWER:** 750\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Determine the discount amount. The discount is 40% of the original price. \\[ \\text{Discount} = 1250 \\times 0.40 = 500 \\text{ dirhams} \\]"
+     },
+     {
+      "index": 2,
+      "text": "Calculate the sale price by subtracting the discount from the original price. \\[ \\text{Sale Price} = 1250 - 500 = 750 \\text{ dirhams} \\]"
+     }
+    ],
+    "final_answer": "750",
+    "latency_s": 3.9076411724090576,
+    "tokens": 131
+   },
+   "formalization": {
+    "problem_prop": "1250 - 1250 * 0.40 = 750",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "1250 * (40:ℚ) / 100 = 500",
+      "note": "discount calculation"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "1250 - 500 = 750",
+      "note": "sale price calculation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"1250 - 1250 * 0.40 = 750\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"1250 * (40:ℚ) / 100 = 500\", \"note\": \"discount calculation\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"1250 - 500 = 750\", \"note\": \"sale price calculation\"}\n  ]\n}\n",
+    "latency_s": 8.772089004516602
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "1250 * (40:ℚ) / 100 = 500",
+      "step_text": "Determine the discount amount. The discount is 40% of the original price. \\[ \\text{Discount} = 1250 \\times 0.40 = 500 \\text{ dirhams} \\]",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "1250 - 500 = 750",
+      "step_text": "Calculate the sale price by subtracting the discount from the original price. \\[ \\text{Sale Price} = 1250 - 500 = 750 \\text{ dirhams} \\]",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "unknown",
+    "final_answer_detail": "maximum recursion depth has been reached",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s1_wf : 1250 * (40:ℚ) / 100 = 500 := by sorry\ntheorem s1_pos : 1250 * (40:ℚ) / 100 = 500 := by fv_auto\ntheorem s1_neg : ¬ (1250 * (40:ℚ) / 100 = 500) := by fv_auto\n\ntheorem s2_wf : 1250 - 500 = 750 := by sorry\ntheorem s2_pos : 1250 - 500 = 750 := by fv_auto\ntheorem s2_neg : ¬ (1250 - 500 = 750) := by fv_auto\n\ntheorem final_wf : 1250 - 1250 * 0.40 = 750 := by sorry\ntheorem final_pos : 1250 - 1250 * 0.40 = 750 := by fv_auto\ntheorem final_neg : ¬ (1250 - 1250 * 0.40 = 750) := by fv_auto\n",
+    "lean_latency_s": 3.62536358833313,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1250 * 40 / 100 = 500\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1250 - 500 = 750\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 50,
+      "severity": "error",
+      "message": "maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "750",
+ "status": "unknown",
+ "assurance_score": 0.7,
+ "total_latency_s": 16.31
+}

@@ -63,7 +63,8 @@ def latest_runs() -> list[Path]:
 
 def svg_chart(rows: list[tuple[str, float, float]]) -> str:
     """Grouped bars: baseline vs verified accuracy per slice."""
-    w, h, pad, bw = 640, 260, 48, 46
+    h, pad, bw = 260, 48, 46
+    w = max(640, 2 * pad + 120 * len(rows))
     gap = (w - 2 * pad) / max(len(rows), 1)
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" '
@@ -95,11 +96,11 @@ def svg_chart(rows: list[tuple[str, float, float]]) -> str:
         )
     parts.append(
         f'<rect x="{w - 200}" y="14" width="12" height="12" fill="#64748b"/>'
-        f'<text x="{w - 182}" y="24" fill="#e2e8f0">Falcon 7B baseline</text>'
+        f'<text x="{w - 182}" y="24" fill="#e2e8f0">Falcon baseline</text>'
     )
     parts.append(
         f'<rect x="{w - 200}" y="34" width="12" height="12" fill="#22c55e"/>'
-        f'<text x="{w - 182}" y="44" fill="#e2e8f0">Falcon 7B + Lean verifier</text>'
+        f'<text x="{w - 182}" y="44" fill="#e2e8f0">Falcon + Lean verifier</text>'
     )
     parts.append("</svg>")
     return "\n".join(parts)
@@ -125,7 +126,12 @@ def main(paths: list[str]) -> None:
             f"max rounds {d['max_rounds']} · wall {d['wall_time_s']:.0f}s · errors {d['errors']}",
             "",
         ]
-        slices = [s for s in ("all", "math", "logic") if s in d["summary"]]
+        slices = [
+            s
+            for s in ("all", "math", "logic", "hard", "fragment", "eastern-digits")
+            if s in d["summary"]
+            and (s not in {"hard"} or d["summary"][s]["n"] != d["summary"]["all"]["n"])
+        ]
         md.append("| metric | " + " | ".join(slices) + " |")
         md.append("|---|" + "---|" * len(slices))
         for k, label in KEYS:

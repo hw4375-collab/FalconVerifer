@@ -1,0 +1,167 @@
+{
+ "problem": "Pipe A fills a tank in 10 hours and pipe B fills it in 15 hours. Working together, how many hours do they take?",
+ "expected_answer": "6",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "**Step 1: فهم المسألة**  \nنحن نريد معرفة الوقت الذي يستغرقه كل من الأنبوبين (A و B) لملء خزان بمفردهما، ثم نحسب الوقت الذي يستغرقانه معًا عند العمل معًا.\n\n**Step 2: تحديد المعدلات**  \n- معدل ملء الأنبوب A هو \\( \\frac{1}{10} \\) من الخزان في الساعة.\n- معدل ملء الأنبوب B هو \\( \\frac{1}{15} \\) من الخزان في الساعة.\n\n**Step 3: حساب المعدل المشترك**  \nعند العمل معًا، المعدل المشترك لملء الخزان هو مجموع معدلات الأنبوبين:\n$$\n\\text{المعدل المشترك} = \\frac{1}{10} + \\frac{1}{15}\n$$\n\n**Step 4: جمع الكسور**  \nنحوّل الكسور إلى مقام مشترك (30):\n$$\n\\frac{1}{10} = \\frac{3}{30}, \\quad \\frac{1}{15} = \\frac{2}{30}\n$$\nثم نجمع:\n$$\n\\frac{3}{30} + \\frac{2}{30} = \\frac{5}{30} = \\frac{1}{6}\n$$\n\n**Step 5: حساب الوقت المشترك**  \nالمعدل المشترك هو \\( \\frac{1}{6} \\) من الخزان في الساعة، لذا الوقت المشترك لملء الخزان هو:\n$$\n\\text{الوقت المشترك} = \\frac{1}{\\frac{1}{6}} = 6 \\text{ ساعات}\n$$\n\n**FINAL ANSWER:** 6 ساعات\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "فهم المسألة** نحن نريد معرفة الوقت الذي يستغرقه كل من الأنبوبين (A و B) لملء خزان بمفردهما، ثم نحسب الوقت الذي يستغرقانه معًا عند العمل معًا."
+     },
+     {
+      "index": 2,
+      "text": "تحديد المعدلات** - معدل ملء الأنبوب A هو \\( \\frac{1}{10} \\) من الخزان في الساعة. - معدل ملء الأنبوب B هو \\( \\frac{1}{15} \\) من الخزان في الساعة."
+     },
+     {
+      "index": 3,
+      "text": "حساب المعدل المشترك** عند العمل معًا، المعدل المشترك لملء الخزان هو مجموع معدلات الأنبوبين: $$ \\text{المعدل المشترك} = \\frac{1}{10} + \\frac{1}{15} $$"
+     },
+     {
+      "index": 4,
+      "text": "جمع الكسور** نحوّل الكسور إلى مقام مشترك (30): $$ \\frac{1}{10} = \\frac{3}{30}, \\quad \\frac{1}{15} = \\frac{2}{30} $$ ثم نجمع: $$ \\frac{3}{30} + \\frac{2}{30} = \\frac{5}{30} = \\frac{1}{6} $$"
+     },
+     {
+      "index": 5,
+      "text": "حساب الوقت المشترك** المعدل المشترك هو \\( \\frac{1}{6} \\) من الخزان في الساعة، لذا الوقت المشترك لملء الخزان هو: $$ \\text{الوقت المشترك} = \\frac{1}{\\frac{1}{6}} = 6 \\text{ ساعات} $$"
+     }
+    ],
+    "final_answer": "6 ساعات",
+    "latency_s": 6.203266859054565,
+    "tokens": 397
+   },
+   "formalization": {
+    "problem_prop": "1 / ((1/10:ℝ) + (1/15:ℝ)) = 6",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "understanding the problem"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "identifying rates"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(1/10:ℝ) + (1/15:ℝ) = 1/6",
+      "note": "combined rate"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(3/30:ℝ) + (2/30:ℝ) = 5/30",
+      "note": "adding fractions"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "1 / (1/6:ℝ) = 6",
+      "note": "total time"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"1 / ((1/10:ℝ) + (1/15:ℝ)) = 6\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"understanding the problem\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"identifying rates\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(1/10:ℝ) + (1/15:ℝ) = 1/6\", \"note\": \"combined rate\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(3/30:ℝ) + (2/30:ℝ) = 5/30\", \"note\": \"adding fractions\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"1 / (1/6:ℝ) = 6\", \"note\": \"total time\"}\n  ]\n}\n",
+    "latency_s": 11.654739141464233
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "فهم المسألة** نحن نريد معرفة الوقت الذي يستغرقه كل من الأنبوبين (A و B) لملء خزان بمفردهما، ثم نحسب الوقت الذي يستغرقانه معًا عند العمل معًا.",
+      "detail": "understanding the problem"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "تحديد المعدلات** - معدل ملء الأنبوب A هو \\( \\frac{1}{10} \\) من الخزان في الساعة. - معدل ملء الأنبوب B هو \\( \\frac{1}{15} \\) من الخزان في الساعة.",
+      "detail": "identifying rates"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(1/10:ℝ) + (1/15:ℝ) = 1/6",
+      "step_text": "حساب المعدل المشترك** عند العمل معًا، المعدل المشترك لملء الخزان هو مجموع معدلات الأنبوبين: $$ \\text{المعدل المشترك} = \\frac{1}{10} + \\frac{1}{15} $$",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(3/30:ℝ) + (2/30:ℝ) = 5/30",
+      "step_text": "جمع الكسور** نحوّل الكسور إلى مقام مشترك (30): $$ \\frac{1}{10} = \\frac{3}{30}, \\quad \\frac{1}{15} = \\frac{2}{30} $$ ثم نجمع: $$ \\frac{3}{30} + \\frac{2}{30} = \\frac{5}{30} = \\frac{1}{6} $$",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "1 / (1/6:ℝ) = 6",
+      "step_text": "حساب الوقت المشترك** المعدل المشترك هو \\( \\frac{1}{6} \\) من الخزان في الساعة، لذا الوقت المشترك لملء الخزان هو: $$ \\text{الوقت المشترك} = \\frac{1}{\\frac{1}{6}} = 6 \\text{ ساعات} $$",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s3_wf : (1/10:ℝ) + (1/15:ℝ) = 1/6 := by sorry\ntheorem s3_pos : (1/10:ℝ) + (1/15:ℝ) = 1/6 := by fv_auto\ntheorem s3_neg : ¬ ((1/10:ℝ) + (1/15:ℝ) = 1/6) := by fv_auto\n\ntheorem s4_wf : (3/30:ℝ) + (2/30:ℝ) = 5/30 := by sorry\ntheorem s4_pos : (3/30:ℝ) + (2/30:ℝ) = 5/30 := by fv_auto\ntheorem s4_neg : ¬ ((3/30:ℝ) + (2/30:ℝ) = 5/30) := by fv_auto\n\ntheorem s5_wf : 1 / (1/6:ℝ) = 6 := by sorry\ntheorem s5_pos : 1 / (1/6:ℝ) = 6 := by fv_auto\ntheorem s5_neg : ¬ (1 / (1/6:ℝ) = 6) := by fv_auto\n\ntheorem final_wf : 1 / ((1/10:ℝ) + (1/15:ℝ)) = 6 := by sorry\ntheorem final_pos : 1 / ((1/10:ℝ) + (1/15:ℝ)) = 6 := by fv_auto\ntheorem final_neg : ¬ (1 / ((1/10:ℝ) + (1/15:ℝ)) = 6) := by fv_auto\n",
+    "lean_latency_s": 3.719618320465088,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1 / 10 + 1 / 15 = 1 / 6\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 3 / 30 + 2 / 30 = 5 / 30\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1 / (1 / 6) = 6\n⊢ False"
+     },
+     {
+      "line": 53,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 55,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1 / (1 / 10 + 1 / 15) = 6\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "6 ساعات",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 21.58
+}
