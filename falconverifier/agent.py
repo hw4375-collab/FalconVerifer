@@ -112,6 +112,7 @@ class VerifyAndTeachAgent:
             report.final_answer_verdict == Verdict.REFUTED
             and form.problem_prop
             and form.raw != "pregroup"
+            and not form.problem_note.startswith("pregroup:")
             and not report.final_answer_detail.startswith("inconsistent final answer")
             and not literals_grounded(form.problem_prop, problem, final_answer or "")
         ):
@@ -131,6 +132,7 @@ class VerifyAndTeachAgent:
             report.final_answer_verdict == Verdict.VERIFIED
             and form.problem_prop
             and form.raw != "pregroup"
+            and not form.problem_note.startswith("pregroup:")
             and yes_no_polarity(final_answer) is not None
             and degenerate_inference(form.problem_prop)
         ):

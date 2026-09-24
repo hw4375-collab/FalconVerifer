@@ -4,7 +4,7 @@ import json
 import logging
 import re
 
-from . import arabic
+from . import arabic, arabic_logic
 from .llm import ChatModel, extract_json
 from .schemas import Formalization, FormalStep, ReasoningStep
 from .student import yes_no_polarity
@@ -247,6 +247,7 @@ class Formalizer:
     def __init__(self, model: ChatModel, max_tokens: int = 2500):
         self.model = model
         self.max_tokens = max_tokens
+        self._problem_hit: tuple[str, str] | None = None
 
     def _messages(self, problem: str, steps: list[ReasoningStep], final: str | None):
         return [
@@ -276,11 +277,15 @@ class Formalizer:
                 grammar[s.index] = FormalStep(
                     index=s.index, kind="arith", lean_prop=prop, note=f"pregroup: {deriv}"
                 )
-        problem_hit = arabic.formalize_problem(problem, final)
+        problem_hit = arabic.formalize_problem(
+            problem, final
+        ) or arabic_logic.formalize_logic_problem(problem)
+        self._problem_hit = problem_hit
 
         if len(grammar) == len(steps) and problem_hit:
             form = Formalization(
-                problem_prop=problem_hit[0],
+                problem_prop=align_polarity(problem_hit[0], final),
+                problem_note=f"pregroup: {problem_hit[1]}",
                 steps=[grammar[s.index] for s in steps],
                 raw="pregroup",
             )
@@ -294,6 +299,7 @@ class Formalizer:
         form.steps = [grammar.get(fs.index, fs) for fs in form.steps]
         if problem_hit:
             form.problem_prop = problem_hit[0]
+            form.problem_note = f"pregroup: {problem_hit[1]}"
         form.problem_prop = align_polarity(form.problem_prop, final)
         return form, messages
 
@@ -310,6 +316,9 @@ class Formalizer:
         messages.append({"role": "assistant", "content": resp.content})
         form = self._parse(resp.content, steps)
         form.latency_s = resp.latency_s
+        if self._problem_hit:  # the grammar's problem claim is not up for LLM revision
+            form.problem_prop = self._problem_hit[0]
+            form.problem_note = f"pregroup: {self._problem_hit[1]}"
         form.problem_prop = align_polarity(form.problem_prop, final)
         return form, messages
 

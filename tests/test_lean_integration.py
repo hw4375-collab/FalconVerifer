@@ -133,3 +133,28 @@ def test_counterexample_search_refutes_false_universals(runner: LeanRunner):
     assert v["div6_div3"] == Verdict.VERIFIED
     assert v["not_transitive"] == Verdict.REFUTED
     assert v["sq_nonneg"] == Verdict.VERIFIED
+
+
+@requires_lean
+def test_arabic_logic_fragment_is_decided_both_ways(runner):
+    """Every syllogism/propositional/order item of the Arabic set that the fragment covers is
+    settled by the kernel in the direction of its answer key, and its negation the other way."""
+    import json
+
+    from falconverifier.arabic_logic import formalize_logic_problem
+
+    claims, expected = {}, {}
+    for line in (LEAN_DIR.parent / "bench" / "problems_ar.jsonl").read_text().splitlines():
+        d = json.loads(line)
+        hit = formalize_logic_problem(d["problem"]) if d["id"].startswith("arlogic") else None
+        if hit:
+            k = d["id"].replace("-", "_")
+            claims[k + "_pos"], claims[k + "_neg"] = hit[0], f"¬ ({hit[0]})"
+            expected[k] = d["answer"] == "نعم"
+    assert len(expected) >= 16
+    res = runner.check_claims(claims)
+    for k, yes in expected.items():
+        pos, neg = res.outcomes[k + "_pos"].verdict, res.outcomes[k + "_neg"].verdict
+        assert (pos, neg) == (
+            (Verdict.VERIFIED, Verdict.REFUTED) if yes else (Verdict.REFUTED, Verdict.VERIFIED)
+        ), k

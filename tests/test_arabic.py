@@ -171,3 +171,78 @@ def test_long_decimal_equality_is_read_as_approximate():
     assert prop == "(387:ℚ) / 19 = (20.5:ℚ)"
     assert _fmt(Fraction("20.368421052631578")) == "20.368421052631578"
     assert _fmt(Fraction(1, 3)) == "(1 / 3)"
+
+
+SYLLOGISM = "كل المربعات مستطيلات، وكل المستطيلات أشكال رباعية. هل يلزم أن كل المربعات أشكال رباعية؟ أجب بنعم أو لا."
+UNDISTRIBUTED = (
+    "كل الأطباء متعلمون، وبعض المتعلمين فقراء. هل يلزم أن بعض الأطباء فقراء؟ أجب بنعم أو لا."
+)
+AFFIRM_CONSEQUENT = "إذا أمطرت فإن الأرض تبتل. الأرض مبتلة. هل يلزم أنها أمطرت؟ أجب بنعم أو لا."
+DISJ_SYLLOGISM = (
+    "إما أن يكون المفتاح في الحقيبة أو في السيارة. المفتاح ليس في الحقيبة. "
+    "هل يلزم أنه في السيارة؟ أجب بنعم أو لا."
+)
+ORDER = "عمر أطول من يوسف، وعمر أطول من خالد. هل يلزم أن يوسف أطول من خالد؟ أجب بنعم أو لا."
+NAMED = "كل الطلاب في الصف يتكلمون العربية، وسلطان طالب في الصف. هل يلزم أن سلطان يتكلم العربية؟ أجب بنعم أو لا."
+
+
+def test_arabic_logic_fragment_syllogisms_and_certificates():
+    from falconverifier.arabic_logic import formalize_logic_problem
+
+    prop, cert = formalize_logic_problem(SYLLOGISM)
+    assert prop == (
+        "∀ (A B C : Fin 3 → Bool), (∀ x, A x = true → B x = true) → "
+        "(∀ x, B x = true → C x = true) → (∀ x, A x = true → C x = true)"
+    )
+    assert "B := مستطيلات ≡ المستطيلات" in cert  # the morphological identification is explicit
+
+    prop, _ = formalize_logic_problem(UNDISTRIBUTED)
+    assert "(∃ x, B x = true ∧ C x = true) → (∃ x, A x = true ∧ C x = true)" in prop
+
+    prop, cert = formalize_logic_problem(NAMED)
+    assert prop == (
+        "∀ (A B : Fin 3 → Bool) (c0 : Fin 3), (∀ x, A x = true → B x = true) → "
+        "A c0 = true → B c0 = true"
+    )
+    assert "A := الطلاب في الصف ≡ طالب في الصف" in cert and "c0 := سلطان" not in cert
+
+
+def test_arabic_logic_fragment_propositional_and_order():
+    from falconverifier.arabic_logic import formalize_logic_problem
+
+    prop, _ = formalize_logic_problem(AFFIRM_CONSEQUENT)
+    assert prop == "∀ (P Q : Bool), (P = true → Q = true) → Q = true → P = true"
+    prop, _ = formalize_logic_problem(DISJ_SYLLOGISM)
+    assert prop == "∀ (P Q : Bool), (P = true ∨ Q = true) → P = false → Q = true"
+    prop, _ = formalize_logic_problem(ORDER)
+    assert prop == "∀ (v0 v1 v2 : Fin 4), v0 > v1 → v0 > v2 → v1 > v2"
+
+
+def test_arabic_logic_fragment_refuses_gaps():
+    from falconverifier.arabic_logic import formalize_logic_problem
+
+    # conclusion predicate («عدد أولي») is not identified with any premise: no verdict
+    assert (
+        formalize_logic_problem(
+            "كل الأعداد الأولية الأكبر من ٢ فردية، و٩ فردي. هل يلزم أن ٩ عدد أولي؟ أجب بنعم أو لا."
+        )
+        is None
+    )
+    # arithmetic content inside "propositions" is not a propositional variable
+    assert (
+        formalize_logic_problem(
+            "إذا كان العدد زوجياً فإنه يقبل القسمة على ٢. العدد ١٨ زوجي. "
+            "هل يلزم أن ١٨ يقبل القسمة على ٢؟ أجب بنعم أو لا."
+        )
+        is None
+    )
+    assert formalize_logic_problem("ما هو ناتج ١٧ × ٢٣؟") is None
+
+
+def test_logic_fragment_polarity_is_aligned_with_the_answer():
+    from falconverifier.arabic_logic import formalize_logic_problem
+    from falconverifier.formalizer import align_polarity
+
+    prop, _ = formalize_logic_problem(UNDISTRIBUTED)
+    assert align_polarity(prop, "نعم") == prop
+    assert align_polarity(prop, "لا") == f"¬ ({prop})"

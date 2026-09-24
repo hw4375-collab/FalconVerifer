@@ -43,6 +43,9 @@ class Formalization(BaseModel):
         default=None,
         description="Lean Prop asserting the problem's final answer claim (if formalizable)",
     )
+    problem_note: str = Field(
+        default="", description="`pregroup: …` derivation certificate when the grammar produced it"
+    )
     steps: list[FormalStep]
     raw: str = ""
     latency_s: float = 0.0
