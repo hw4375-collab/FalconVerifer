@@ -139,6 +139,17 @@ def bench(
     )
 
 
+@app.command("bench-regrade")
+def bench_regrade(
+    run_dir: list[Path] = typer.Argument(..., help="bench/results/<arm>/run_* directories"),
+) -> None:
+    """Re-grade stored benchmark runs with the current answer matcher (no model calls)."""
+    from .bench import print_summary, regrade_run
+
+    for d in run_dir:
+        print_summary(regrade_run(d)["summary"])
+
+
 @app.command()
 def serve(
     host: str = typer.Option("0.0.0.0"), port: int = typer.Option(8000), reload: bool = False

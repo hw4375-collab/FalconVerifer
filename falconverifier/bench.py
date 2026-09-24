@@ -53,6 +53,8 @@ def answers_match(pred: str | None, expected: str) -> bool:
         return any(w in syn[key] for w in p_word[:3]) and not any(
             w in syn[other] for w in p_word[:3]
         )
+    if "=" in p:  # "(a+b)/2 = 51" -> grade the stated result, not the expression
+        p = p.rsplit("=", 1)[1]
     pn, en = _to_number(p), _to_number(e)
     if pn is not None and en is not None:
         return pn == en
@@ -198,17 +200,14 @@ def run_benchmark(
                 f"(rounds={ev['rounds']}, status={ev['status']}, {ev['latency_s']:.0f}s)"
             )
 
-    ok_rows = [r for r in rows if "error" not in r]
-    summary = {"all": summarize(ok_rows)}
-    for t in sorted({t for r in ok_rows for t in r["tags"]}):
-        summary[t] = summarize([r for r in ok_rows if t in r["tags"]])
+    summary = summarize_by_tag(rows)
     result = {
         "dataset": str(dataset),
         "student_model": settings.student.model,
         "formalizer_model": settings.formalizer.model,
         "max_rounds": max_rounds or settings.max_rounds,
         "wall_time_s": round(time.time() - t0, 1),
-        "errors": len(rows) - len(ok_rows),
+        "errors": sum(1 for r in rows if "error" in r),
         "summary": summary,
         "rows": rows,
     }
@@ -216,6 +215,29 @@ def run_benchmark(
     (out_dir / "latest.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
     print_summary(summary)
     console.print(f"results written to {run_dir}")
+    return result
+
+
+def summarize_by_tag(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    ok_rows = [r for r in rows if "error" not in r]
+    summary = {"all": summarize(ok_rows)}
+    for t in sorted({t for r in ok_rows for t in r["tags"]}):
+        summary[t] = summarize([r for r in ok_rows if t in r["tags"]])
+    return summary
+
+
+def regrade_run(run_dir: Path) -> dict[str, Any]:
+    """Re-apply `answers_match` to a stored run (grader fixes) and rewrite its summary."""
+    path = run_dir / "results.json"
+    result = json.loads(path.read_text())
+    for r in result["rows"]:
+        if "error" in r:
+            continue
+        r["baseline_correct"] = answers_match(r["baseline_answer"], r["expected"])
+        r["final_correct"] = answers_match(r["final_answer"], r["expected"])
+    result["summary"] = summarize_by_tag(result["rows"])
+    path.write_text(json.dumps(result, ensure_ascii=False, indent=2))
+    (run_dir.parent / "latest.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
     return result
 
 

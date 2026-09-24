@@ -26,6 +26,8 @@ Translation rules (follow strictly):
 - Each `lean_prop` is a closed Lean 4 Prop: NO `theorem`, NO `:=`, NO proof, NO free variables.
 - Give every numeric literal a type: `(17:ℕ)`, `(3:ℤ)`, `(2.5:ℝ)`. Use ℕ only when there is no
   subtraction or division. Use ℚ or ℝ for fractions, percentages, decimals, division.
+- Parenthesize numerators and denominators: an average "(64+75+80+81)/4 = 75" must be
+  `((64:ℚ) + 75 + 80 + 81) / 4 = 75`, never `(64:ℚ) + 75 + 80 + 81 / 4 = 75`.
 - A step like "solve 2x+3=11, so x=4" becomes `(2:ℝ) * 4 + 3 = 11` (substitute the claimed
   value). A step "x=4 is the ONLY solution" becomes `∀ x : ℝ, 2 * x + 3 = 11 → x = 4`.
 - A step that claims an inequality: `(45:ℕ) < 60`.

@@ -201,3 +201,11 @@ def test_lift_to_rat_handles_bare_literals():
     assert lift_to_rat("17 * 23 = 391") is None
     assert lift_to_rat("(150:ℤ) - 75 = 75") == "(150:ℚ) - 75 = 75"
     assert lift_to_rat("∃ (n : ℕ), n / 2 = 3") is None
+
+
+def test_answers_match_uses_result_of_equation():
+    from falconverifier.bench import answers_match
+
+    assert answers_match("(48 + 41 + 40 + 59 + 67) / 5 = 255 / 5 = 51", "51")
+    assert not answers_match("(48 + 41) / 2 = 44", "51")
+    assert answers_match("x = 4", "4")
