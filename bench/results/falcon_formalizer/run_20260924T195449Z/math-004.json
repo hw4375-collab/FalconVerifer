@@ -1,0 +1,185 @@
+{
+ "problem": "Fatima buys 92 packs of cups with 27 in each pack, then gives away 79 of them. How many cups does Fatima have left?",
+ "expected_answer": "2405",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the total number of cups Fatima buys.\n\\[ \\text{Total cups} = 92 \\times 27 \\]\n\nStep 2: Perform the multiplication to find the total number of cups.\n\\[ 92 \\times 27 = 2484 \\]\n\nStep 3: Subtract the number of cups Fatima gives away from the total number of cups.\n\\[ \\text{Cups left} = 2484 - 79 \\]\n\nStep 4: Perform the subtraction to find the number of cups left.\n\\[ 2484 - 79 = 2405 \\]\n\nFINAL ANSWER: 2405",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the total number of cups Fatima buys. \\[ \\text{Total cups} = 92 \\times 27 \\]"
+     },
+     {
+      "index": 2,
+      "text": "Perform the multiplication to find the total number of cups. \\[ 92 \\times 27 = 2484 \\]"
+     },
+     {
+      "index": 3,
+      "text": "Subtract the number of cups Fatima gives away from the total number of cups. \\[ \\text{Cups left} = 2484 - 79 \\]"
+     },
+     {
+      "index": 4,
+      "text": "Perform the subtraction to find the number of cups left. \\[ 2484 - 79 = 2405 \\]"
+     }
+    ],
+    "final_answer": "2405",
+    "latency_s": 7.907384634017944,
+    "tokens": 163
+   },
+   "formalization": {
+    "problem_prop": "(92:ℕ) * 27 - 79 = 2405",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(92:ℕ) * 27 = 2484",
+      "note": "total cups bought"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "2484 = 2484",
+      "note": "multiplication result"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "2484 - 79 = 2405",
+      "note": "cups left after giving away"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "2405 = 2405",
+      "note": "subtraction result"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(92:ℕ) * 27 - 79 = 2405\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(92:ℕ) * 27 = 2484\", \"note\": \"total cups bought\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"2484 = 2484\", \"note\": \"multiplication result\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"2484 - 79 = 2405\", \"note\": \"cups left after giving away\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"2405 = 2405\", \"note\": \"subtraction result\"}\n  ]\n}\n",
+    "latency_s": 10.898812294006348
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(92:ℕ) * 27 = 2484",
+      "step_text": "Calculate the total number of cups Fatima buys. \\[ \\text{Total cups} = 92 \\times 27 \\]",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "2484 = 2484",
+      "step_text": "Perform the multiplication to find the total number of cups. \\[ 92 \\times 27 = 2484 \\]",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "2484 - 79 = 2405",
+      "step_text": "Subtract the number of cups Fatima gives away from the total number of cups. \\[ \\text{Cups left} = 2484 - 79 \\]",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "2405 = 2405",
+      "step_text": "Perform the subtraction to find the number of cups left. \\[ 2484 - 79 = 2405 \\]",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (92:ℕ) * 27 = 2484 := by sorry\ntheorem s1_pos : (92:ℕ) * 27 = 2484 := by fv_auto\ntheorem s1_neg : ¬ ((92:ℕ) * 27 = 2484) := by fv_auto\n\ntheorem s2_wf : 2484 = 2484 := by sorry\ntheorem s2_pos : 2484 = 2484 := by fv_auto\ntheorem s2_neg : ¬ (2484 = 2484) := by fv_auto\n\ntheorem s3_wf : 2484 - 79 = 2405 := by sorry\ntheorem s3_pos : 2484 - 79 = 2405 := by fv_auto\ntheorem s3_neg : ¬ (2484 - 79 = 2405) := by fv_auto\n\ntheorem s4_wf : 2405 = 2405 := by sorry\ntheorem s4_pos : 2405 = 2405 := by fv_auto\ntheorem s4_neg : ¬ (2405 = 2405) := by fv_auto\n\ntheorem final_wf : (92:ℕ) * 27 - 79 = 2405 := by sorry\ntheorem final_pos : (92:ℕ) * 27 - 79 = 2405 := by fv_auto\ntheorem final_neg : ¬ ((92:ℕ) * 27 - 79 = 2405) := by fv_auto\n",
+    "lean_latency_s": 4.092880725860596,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "2405",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 22.9
+}

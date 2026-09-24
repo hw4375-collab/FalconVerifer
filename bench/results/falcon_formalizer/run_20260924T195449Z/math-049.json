@@ -1,0 +1,219 @@
+{
+ "problem": "A tank holds 720 litres when full. It is currently 11/20 full. How many litres must be added to fill it?",
+ "expected_answer": "324",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the current amount of litres in the tank.  \nStep 2: \\( \\text{Current litres} = \\frac{11}{20} \\times 720 \\).  \nStep 3: \\( \\text{Current litres} = 396 \\).  \nStep 4: Calculate the amount of litres needed to fill the tank.  \nStep 5: \\( \\text{Litres needed} = 720 - 396 \\).  \nStep 6: \\( \\text{Litres needed} = 324 \\).  \n\nFINAL ANSWER: 324",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the current amount of litres in the tank."
+     },
+     {
+      "index": 2,
+      "text": "\\( \\text{Current litres} = \\frac{11}{20} \\times 720 \\)."
+     },
+     {
+      "index": 3,
+      "text": "\\( \\text{Current litres} = 396 \\)."
+     },
+     {
+      "index": 4,
+      "text": "Calculate the amount of litres needed to fill the tank."
+     },
+     {
+      "index": 5,
+      "text": "\\( \\text{Litres needed} = 720 - 396 \\)."
+     },
+     {
+      "index": 6,
+      "text": "\\( \\text{Litres needed} = 324 \\)."
+     }
+    ],
+    "final_answer": "324",
+    "latency_s": 6.635875701904297,
+    "tokens": 147
+   },
+   "formalization": {
+    "problem_prop": "720 - (11/20:ℚ) * 720 = 324",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(11/20:ℚ) * 720 = 396",
+      "note": "current litres"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "396 = 396",
+      "note": "simplification"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "720 - 396 = 324",
+      "note": "litres needed"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "324 = 324",
+      "note": "simplification"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"720 - (11/20:ℚ) * 720 = 324\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(11/20:ℚ) * 720 = 396\", \"note\": \"current litres\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"396 = 396\", \"note\": \"simplification\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"720 - 396 = 324\", \"note\": \"litres needed\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"324 = 324\", \"note\": \"simplification\"}\n  ]\n}\n",
+    "latency_s": 11.862931728363037
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Calculate the current amount of litres in the tank.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(11/20:ℚ) * 720 = 396",
+      "step_text": "\\( \\text{Current litres} = \\frac{11}{20} \\times 720 \\).",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "396 = 396",
+      "step_text": "\\( \\text{Current litres} = 396 \\).",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Calculate the amount of litres needed to fill the tank.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "720 - 396 = 324",
+      "step_text": "\\( \\text{Litres needed} = 720 - 396 \\).",
+      "detail": ""
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "324 = 324",
+      "step_text": "\\( \\text{Litres needed} = 324 \\).",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s2_wf : (11/20:ℚ) * 720 = 396 := by sorry\ntheorem s2_pos : (11/20:ℚ) * 720 = 396 := by fv_auto\ntheorem s2_neg : ¬ ((11/20:ℚ) * 720 = 396) := by fv_auto\n\ntheorem s3_wf : 396 = 396 := by sorry\ntheorem s3_pos : 396 = 396 := by fv_auto\ntheorem s3_neg : ¬ (396 = 396) := by fv_auto\n\ntheorem s5_wf : 720 - 396 = 324 := by sorry\ntheorem s5_pos : 720 - 396 = 324 := by fv_auto\ntheorem s5_neg : ¬ (720 - 396 = 324) := by fv_auto\n\ntheorem s6_wf : 324 = 324 := by sorry\ntheorem s6_pos : 324 = 324 := by fv_auto\ntheorem s6_neg : ¬ (324 = 324) := by fv_auto\n\ntheorem final_wf : 720 - (11/20:ℚ) * 720 = 324 := by sorry\ntheorem final_pos : 720 - (11/20:ℚ) * 720 = 324 := by fv_auto\ntheorem final_neg : ¬ (720 - (11/20:ℚ) * 720 = 324) := by fv_auto\n",
+    "lean_latency_s": 3.974774122238159,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\na : 11 / 20 * 720 = 396\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\na : 720 - 11 / 20 * 720 = 324\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "324",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 22.47
+}

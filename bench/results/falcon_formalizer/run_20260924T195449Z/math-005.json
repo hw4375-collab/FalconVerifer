@@ -1,0 +1,155 @@
+{
+ "problem": "Zayed buys 57 packs of tickets with 14 in each pack, then gives away 94 of them. How many tickets does Zayed have left?",
+ "expected_answer": "704",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the total number of tickets Zayed buys.\n\\[ \\text{Total tickets} = 57 \\text{ packs} \\times 14 \\text{ tickets per pack} \\]\n\nStep 2: Perform the multiplication to find the total number of tickets.\n\\[ 57 \\times 14 = 798 \\]\n\nStep 3: Subtract the number of tickets Zayed gives away from the total number of tickets.\n\\[ \\text{Tickets left} = 798 - 94 \\]\n\nStep 4: Perform the subtraction to find the number of tickets left.\n\\[ 798 - 94 = 704 \\]\n\nFINAL ANSWER: 704",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the total number of tickets Zayed buys. \\[ \\text{Total tickets} = 57 \\text{ packs} \\times 14 \\text{ tickets per pack} \\]"
+     },
+     {
+      "index": 2,
+      "text": "Perform the multiplication to find the total number of tickets. \\[ 57 \\times 14 = 798 \\]"
+     },
+     {
+      "index": 3,
+      "text": "Subtract the number of tickets Zayed gives away from the total number of tickets. \\[ \\text{Tickets left} = 798 - 94 \\]"
+     },
+     {
+      "index": 4,
+      "text": "Perform the subtraction to find the number of tickets left. \\[ 798 - 94 = 704 \\]"
+     }
+    ],
+    "final_answer": "704",
+    "latency_s": 7.775779724121094,
+    "tokens": 174
+   },
+   "formalization": {
+    "problem_prop": "(57:ℕ) * 14 - 94 = 704",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(57:ℕ) * 14 = 798",
+      "note": "total tickets bought"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "multiplication performed"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "798 - 94 = 704",
+      "note": "tickets left after giving away"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "subtraction performed"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(57:ℕ) * 14 - 94 = 704\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(57:ℕ) * 14 = 798\", \"note\": \"total tickets bought\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"multiplication performed\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"798 - 94 = 704\", \"note\": \"tickets left after giving away\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"subtraction performed\"}\n  ]\n}\n",
+    "latency_s": 10.08320164680481
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(57:ℕ) * 14 = 798",
+      "step_text": "Calculate the total number of tickets Zayed buys. \\[ \\text{Total tickets} = 57 \\text{ packs} \\times 14 \\text{ tickets per pack} \\]",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Perform the multiplication to find the total number of tickets. \\[ 57 \\times 14 = 798 \\]",
+      "detail": "multiplication performed"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "798 - 94 = 704",
+      "step_text": "Subtract the number of tickets Zayed gives away from the total number of tickets. \\[ \\text{Tickets left} = 798 - 94 \\]",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Perform the subtraction to find the number of tickets left. \\[ 798 - 94 = 704 \\]",
+      "detail": "subtraction performed"
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (57:ℕ) * 14 = 798 := by sorry\ntheorem s1_pos : (57:ℕ) * 14 = 798 := by fv_auto\ntheorem s1_neg : ¬ ((57:ℕ) * 14 = 798) := by fv_auto\n\ntheorem s3_wf : 798 - 94 = 704 := by sorry\ntheorem s3_pos : 798 - 94 = 704 := by fv_auto\ntheorem s3_neg : ¬ (798 - 94 = 704) := by fv_auto\n\ntheorem final_wf : (57:ℕ) * 14 - 94 = 704 := by sorry\ntheorem final_pos : (57:ℕ) * 14 - 94 = 704 := by fv_auto\ntheorem final_neg : ¬ ((57:ℕ) * 14 - 94 = 704) := by fv_auto\n",
+    "lean_latency_s": 3.9613072872161865,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "704",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 21.82
+}

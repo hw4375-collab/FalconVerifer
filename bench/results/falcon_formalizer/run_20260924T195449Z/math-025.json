@@ -1,0 +1,202 @@
+{
+ "problem": "967 tiles are packed into boxes of 23. How many full boxes are there, and how many are left over? Give the answer as the number left over.",
+ "expected_answer": "1",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Divide 967 by 23 to find the number of full boxes.\nStep 2: 967 ÷ 23 = 42 full boxes with a remainder.\nStep 3: Calculate the remainder by finding 967 - (42 × 23).\nStep 4: 42 × 23 = 966.\nStep 5: 967 - 966 = 1.\n\nFINAL ANSWER: 1",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Divide 967 by 23 to find the number of full boxes."
+     },
+     {
+      "index": 2,
+      "text": "967 ÷ 23 = 42 full boxes with a remainder."
+     },
+     {
+      "index": 3,
+      "text": "Calculate the remainder by finding 967 - (42 × 23)."
+     },
+     {
+      "index": 4,
+      "text": "42 × 23 = 966."
+     },
+     {
+      "index": 5,
+      "text": "967 - 966 = 1."
+     }
+    ],
+    "final_answer": "1",
+    "latency_s": 5.210480451583862,
+    "tokens": 117
+   },
+   "formalization": {
+    "problem_prop": "(967:ℕ) % 23 = 1",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(967:ℕ) / 23 = 42",
+      "note": "full boxes"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates division"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "967 - 42 * 23 = 1",
+      "note": "remainder calculation"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "42 * 23 = 966",
+      "note": "multiplication"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "967 - 966 = 1",
+      "note": "subtraction"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(967:ℕ) % 23 = 1\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(967:ℕ) / 23 = 42\", \"note\": \"full boxes\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates division\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"967 - 42 * 23 = 1\", \"note\": \"remainder calculation\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"42 * 23 = 966\", \"note\": \"multiplication\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"967 - 966 = 1\", \"note\": \"subtraction\"}\n  ]\n}\n",
+    "latency_s": 10.138901710510254
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(967:ℕ) / 23 = 42",
+      "step_text": "Divide 967 by 23 to find the number of full boxes.",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "967 ÷ 23 = 42 full boxes with a remainder.",
+      "detail": "restates division"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "967 - 42 * 23 = 1",
+      "step_text": "Calculate the remainder by finding 967 - (42 × 23).",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "42 * 23 = 966",
+      "step_text": "42 × 23 = 966.",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "967 - 966 = 1",
+      "step_text": "967 - 966 = 1.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (967:ℕ) / 23 = 42 := by sorry\ntheorem s1_pos : (967:ℕ) / 23 = 42 := by fv_auto\ntheorem s1_neg : ¬ ((967:ℕ) / 23 = 42) := by fv_auto\n\ntheorem s3_wf : 967 - 42 * 23 = 1 := by sorry\ntheorem s3_pos : 967 - 42 * 23 = 1 := by fv_auto\ntheorem s3_neg : ¬ (967 - 42 * 23 = 1) := by fv_auto\n\ntheorem s4_wf : 42 * 23 = 966 := by sorry\ntheorem s4_pos : 42 * 23 = 966 := by fv_auto\ntheorem s4_neg : ¬ (42 * 23 = 966) := by fv_auto\n\ntheorem s5_wf : 967 - 966 = 1 := by sorry\ntheorem s5_pos : 967 - 966 = 1 := by fv_auto\ntheorem s5_neg : ¬ (967 - 966 = 1) := by fv_auto\n\ntheorem final_wf : (967:ℕ) % 23 = 1 := by sorry\ntheorem final_pos : (967:ℕ) % 23 = 1 := by fv_auto\ntheorem final_neg : ¬ ((967:ℕ) % 23 = 1) := by fv_auto\n",
+    "lean_latency_s": 4.369256973266602,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "1",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 19.72
+}

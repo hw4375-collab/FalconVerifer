@@ -1,0 +1,150 @@
+{
+ "problem": "A laptop costs 480 dirhams. During a sale its price is reduced by 10%. What is the sale price in dirhams?",
+ "expected_answer": "432",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the discount amount. The discount is 10% of 480 dirhams.\nStep 2: 10% of 480 = 0.10 * 480 = 48 dirhams.\nStep 3: Subtract the discount from the original price to find the sale price.\nStep 4: 480 - 48 = 432 dirhams.\n\nFINAL ANSWER: 432",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the discount amount. The discount is 10% of 480 dirhams."
+     },
+     {
+      "index": 2,
+      "text": "10% of 480 = 0.10 * 480 = 48 dirhams."
+     },
+     {
+      "index": 3,
+      "text": "Subtract the discount from the original price to find the sale price."
+     },
+     {
+      "index": 4,
+      "text": "480 - 48 = 432 dirhams."
+     }
+    ],
+    "final_answer": "432",
+    "latency_s": 6.782696485519409,
+    "tokens": 113
+   },
+   "formalization": {
+    "problem_prop": "(480:ℝ) * (1 - 0.10) = 432",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "0.10 * 480 = 48",
+      "note": "discount calculation"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "480 - 48 = 432",
+      "note": "sale price calculation"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": ""
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(480:ℝ) * (1 - 0.10) = 432\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"0.10 * 480 = 48\", \"note\": \"discount calculation\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"480 - 48 = 432\", \"note\": \"sale price calculation\"}\n  ]\n}\n",
+    "latency_s": 8.28471827507019
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "0.10 * 480 = 48",
+      "step_text": "Calculate the discount amount. The discount is 10% of 480 dirhams.",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "10% of 480 = 0.10 * 480 = 48 dirhams.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "480 - 48 = 432",
+      "step_text": "Subtract the discount from the original price to find the sale price.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "480 - 48 = 432 dirhams.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : 0.10 * 480 = 48 := by sorry\ntheorem s1_pos : 0.10 * 480 = 48 := by fv_auto\ntheorem s1_neg : ¬ (0.10 * 480 = 48) := by fv_auto\n\ntheorem s3_wf : 480 - 48 = 432 := by sorry\ntheorem s3_pos : 480 - 48 = 432 := by fv_auto\ntheorem s3_neg : ¬ (480 - 48 = 432) := by fv_auto\n\ntheorem final_wf : (480:ℝ) * (1 - 0.10) = 432 := by sorry\ntheorem final_pos : (480:ℝ) * (1 - 0.10) = 432 := by fv_auto\ntheorem final_neg : ¬ ((480:ℝ) * (1 - 0.10) = 432) := by fv_auto\n",
+    "lean_latency_s": 33.430192947387695,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "(deterministic) timeout at `isDefEq`, maximum number of heartbeats (400000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_option diagnostics true` command."
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\na : 480 * (1 - 0.10) = 432\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "432",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 48.5
+}

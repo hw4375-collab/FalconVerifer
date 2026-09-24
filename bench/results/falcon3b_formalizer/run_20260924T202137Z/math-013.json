@@ -1,0 +1,121 @@
+{
+ "problem": "A laptop costs 640 dirhams. During a sale its price is reduced by 12%. What is the sale price in dirhams?",
+ "expected_answer": "563.2",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "**Step 1:** Determine the amount of the discount.  \nThe discount is 12% of the original price of 640 dirhams.  \nCalculation: \\( 640 \\times 0.12 = 76.8 \\) dirhams.\n\n**Step 2:** Subtract the discount from the original price to find the sale price.  \nSale Price = Original Price - Discount  \nCalculation: \\( 640 - 76.8 = 563.2 \\) dirhams.\n\n**FINAL ANSWER:** 563.2\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Determine the amount of the discount. The discount is 12% of the original price of 640 dirhams. Calculation: \\( 640 \\times 0.12 = 76.8 \\) dirhams."
+     },
+     {
+      "index": 2,
+      "text": "Subtract the discount from the original price to find the sale price. Sale Price = Original Price - Discount Calculation: \\( 640 - 76.8 = 563.2 \\) dirhams."
+     }
+    ],
+    "final_answer": "563.2",
+    "latency_s": 4.8660569190979,
+    "tokens": 139
+   },
+   "formalization": {
+    "problem_prop": "(640:ℝ) * (1 - 0.12) = 563.2",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(640:ℝ) * 0.12 = 76.8",
+      "note": "discount amount"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(640:ℝ) - 76.8 = 563.2",
+      "note": "sale price"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(640:ℝ) * (1 - 0.12) = 563.2\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(640:ℝ) * 0.12 = 76.8\", \"note\": \"discount amount\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(640:ℝ) - 76.8 = 563.2\", \"note\": \"sale price\"}\n  ]\n}\n",
+    "latency_s": 7.704344749450684
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(640:ℝ) * 0.12 = 76.8",
+      "step_text": "Determine the amount of the discount. The discount is 12% of the original price of 640 dirhams. Calculation: \\( 640 \\times 0.12 = 76.8 \\) dirhams.",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(640:ℝ) - 76.8 = 563.2",
+      "step_text": "Subtract the discount from the original price to find the sale price. Sale Price = Original Price - Discount Calculation: \\( 640 - 76.8 = 563.2 \\) dirhams.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (640:ℝ) * 0.12 = 76.8 := by sorry\ntheorem s1_pos : (640:ℝ) * 0.12 = 76.8 := by fv_auto\ntheorem s1_neg : ¬ ((640:ℝ) * 0.12 = 76.8) := by fv_auto\n\ntheorem s2_wf : (640:ℝ) - 76.8 = 563.2 := by sorry\ntheorem s2_pos : (640:ℝ) - 76.8 = 563.2 := by fv_auto\ntheorem s2_neg : ¬ ((640:ℝ) - 76.8 = 563.2) := by fv_auto\n\ntheorem final_wf : (640:ℝ) * (1 - 0.12) = 563.2 := by sorry\ntheorem final_pos : (640:ℝ) * (1 - 0.12) = 563.2 := by fv_auto\ntheorem final_neg : ¬ ((640:ℝ) * (1 - 0.12) = 563.2) := by fv_auto\n",
+    "lean_latency_s": 3.744013547897339,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\na : 640 * 0.12 = 76.8\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\na : 640 - 76.8 = 563.2\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\na : 640 * (1 - 0.12) = 563.2\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "563.2",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 16.31
+}

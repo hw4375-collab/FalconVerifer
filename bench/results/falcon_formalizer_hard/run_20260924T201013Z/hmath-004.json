@@ -1,0 +1,202 @@
+{
+ "problem": "Compute 791 × 343.",
+ "expected_answer": "271313",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Break down the multiplication into simpler parts. We can use the distributive property: 791 × 343 = 791 × (300 + 40 + 3).\n\nStep 2: Multiply 791 by 300. 791 × 300 = 237300.\n\nStep 3: Multiply 791 by 40. 791 × 40 = 31640.\n\nStep 4: Multiply 791 by 3. 791 × 3 = 2373.\n\nStep 5: Add the results from Steps 2, 3, and 4. 237300 + 31640 + 2373 = 271313.\n\nFINAL ANSWER: 271313",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Break down the multiplication into simpler parts. We can use the distributive property: 791 × 343 = 791 × (300 + 40 + 3)."
+     },
+     {
+      "index": 2,
+      "text": "Multiply 791 by 300. 791 × 300 = 237300."
+     },
+     {
+      "index": 3,
+      "text": "Multiply 791 by 40. 791 × 40 = 31640."
+     },
+     {
+      "index": 4,
+      "text": "Multiply 791 by 3. 791 × 3 = 2373."
+     },
+     {
+      "index": 5,
+      "text": "Add the results from Steps 2, 3, and 4. 237300 + 31640 + 2373 = 271313."
+     }
+    ],
+    "final_answer": "271313",
+    "latency_s": 10.04224157333374,
+    "tokens": 212
+   },
+   "formalization": {
+    "problem_prop": "(791:ℕ) * 343 = 271313",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "strategy explanation"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(791:ℕ) * 300 = 237300",
+      "note": "multiplication"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(791:ℕ) * 40 = 31640",
+      "note": "multiplication"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(791:ℕ) * 3 = 2373",
+      "note": "multiplication"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "237300 + 31640 + 2373 = 271313",
+      "note": "addition"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(791:ℕ) * 343 = 271313\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"strategy explanation\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(791:ℕ) * 300 = 237300\", \"note\": \"multiplication\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(791:ℕ) * 40 = 31640\", \"note\": \"multiplication\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(791:ℕ) * 3 = 2373\", \"note\": \"multiplication\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"237300 + 31640 + 2373 = 271313\", \"note\": \"addition\"}\n  ]\n}\n",
+    "latency_s": 11.415526866912842
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Break down the multiplication into simpler parts. We can use the distributive property: 791 × 343 = 791 × (300 + 40 + 3).",
+      "detail": "strategy explanation"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(791:ℕ) * 300 = 237300",
+      "step_text": "Multiply 791 by 300. 791 × 300 = 237300.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(791:ℕ) * 40 = 31640",
+      "step_text": "Multiply 791 by 40. 791 × 40 = 31640.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(791:ℕ) * 3 = 2373",
+      "step_text": "Multiply 791 by 3. 791 × 3 = 2373.",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "237300 + 31640 + 2373 = 271313",
+      "step_text": "Add the results from Steps 2, 3, and 4. 237300 + 31640 + 2373 = 271313.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s2_wf : (791:ℕ) * 300 = 237300 := by sorry\ntheorem s2_pos : (791:ℕ) * 300 = 237300 := by fv_auto\ntheorem s2_neg : ¬ ((791:ℕ) * 300 = 237300) := by fv_auto\n\ntheorem s3_wf : (791:ℕ) * 40 = 31640 := by sorry\ntheorem s3_pos : (791:ℕ) * 40 = 31640 := by fv_auto\ntheorem s3_neg : ¬ ((791:ℕ) * 40 = 31640) := by fv_auto\n\ntheorem s4_wf : (791:ℕ) * 3 = 2373 := by sorry\ntheorem s4_pos : (791:ℕ) * 3 = 2373 := by fv_auto\ntheorem s4_neg : ¬ ((791:ℕ) * 3 = 2373) := by fv_auto\n\ntheorem s5_wf : 237300 + 31640 + 2373 = 271313 := by sorry\ntheorem s5_pos : 237300 + 31640 + 2373 = 271313 := by fv_auto\ntheorem s5_neg : ¬ (237300 + 31640 + 2373 = 271313) := by fv_auto\n\ntheorem final_wf : (791:ℕ) * 343 = 271313 := by sorry\ntheorem final_pos : (791:ℕ) * 343 = 271313 := by fv_auto\ntheorem final_neg : ¬ ((791:ℕ) * 343 = 271313) := by fv_auto\n",
+    "lean_latency_s": 3.5770509243011475,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "271313",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 25.04
+}

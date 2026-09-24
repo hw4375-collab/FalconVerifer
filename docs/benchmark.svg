@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" width="640" height="260" font-family="Inter,Segoe UI,sans-serif" font-size="12">
+<rect width="640" height="260" fill="#0f172a" rx="8"/>
+<line x1="48" x2="592" y1="212.0" y2="212.0" stroke="#334155"/>
+<text x="40" y="216.0" fill="#94a3b8" text-anchor="end">0%</text>
+<line x1="48" x2="592" y1="171.0" y2="171.0" stroke="#334155"/>
+<text x="40" y="175.0" fill="#94a3b8" text-anchor="end">25%</text>
+<line x1="48" x2="592" y1="130.0" y2="130.0" stroke="#334155"/>
+<text x="40" y="134.0" fill="#94a3b8" text-anchor="end">50%</text>
+<line x1="48" x2="592" y1="89.0" y2="89.0" stroke="#334155"/>
+<text x="40" y="93.0" fill="#94a3b8" text-anchor="end">75%</text>
+<line x1="48" x2="592" y1="48.0" y2="48.0" stroke="#334155"/>
+<text x="40" y="52.0" fill="#94a3b8" text-anchor="end">100%</text>
+<rect x="138.0" y="51.2" width="46" height="160.8" fill="#64748b" rx="3"/>
+<text x="161.0" y="46.2" fill="#e2e8f0" text-anchor="middle">98%</text>
+<rect x="188.0" y="48.0" width="46" height="164.0" fill="#22c55e" rx="3"/>
+<text x="211.0" y="43.0" fill="#e2e8f0" text-anchor="middle">100%</text>
+<text x="184.0" y="230" fill="#e2e8f0" text-anchor="middle">F math</text>
+<rect x="410.0" y="56.6" width="46" height="155.4" fill="#64748b" rx="3"/>
+<text x="433.0" y="51.6" fill="#e2e8f0" text-anchor="middle">95%</text>
+<rect x="460.0" y="52.3" width="46" height="159.7" fill="#22c55e" rx="3"/>
+<text x="483.0" y="47.3" fill="#e2e8f0" text-anchor="middle">97%</text>
+<text x="456.0" y="230" fill="#e2e8f0" text-anchor="middle">F logic</text>
+<rect x="440" y="14" width="12" height="12" fill="#64748b"/><text x="458" y="24" fill="#e2e8f0">Falcon 7B baseline</text>
+<rect x="440" y="34" width="12" height="12" fill="#22c55e"/><text x="458" y="44" fill="#e2e8f0">Falcon 7B + Lean verifier</text>
+</svg>

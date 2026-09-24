@@ -1,0 +1,253 @@
+{
+ "problem": "Fatima buys 10 notebooks at 10 dirhams each and 8 pens at 31 dirhams each, paying with 600 dirhams. How much change does Hamdan receive?",
+ "expected_answer": "252",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the total cost of the notebooks.  \nStep 2: 10 notebooks × 10 dirhams/notebook = 100 dirhams.  \nStep 3: Calculate the total cost of the pens.  \nStep 4: 8 pens × 31 dirhams/pen = 248 dirhams.  \nStep 5: Calculate the total cost of the notebooks and pens.  \nStep 6: 100 dirhams + 248 dirhams = 348 dirhams.  \nStep 7: Calculate the change Fatima receives.  \nStep 8: 600 dirhams - 348 dirhams = 252 dirhams.  \nFINAL ANSWER: 252 dirhams",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the total cost of the notebooks."
+     },
+     {
+      "index": 2,
+      "text": "10 notebooks × 10 dirhams/notebook = 100 dirhams."
+     },
+     {
+      "index": 3,
+      "text": "Calculate the total cost of the pens."
+     },
+     {
+      "index": 4,
+      "text": "8 pens × 31 dirhams/pen = 248 dirhams."
+     },
+     {
+      "index": 5,
+      "text": "Calculate the total cost of the notebooks and pens."
+     },
+     {
+      "index": 6,
+      "text": "100 dirhams + 248 dirhams = 348 dirhams."
+     },
+     {
+      "index": 7,
+      "text": "Calculate the change Fatima receives."
+     },
+     {
+      "index": 8,
+      "text": "600 dirhams - 348 dirhams = 252 dirhams."
+     }
+    ],
+    "final_answer": "252 dirhams",
+    "latency_s": 7.628376007080078,
+    "tokens": 182
+   },
+   "formalization": {
+    "problem_prop": "(600:ℤ) - ((10:ℤ) * 10 + (8:ℤ) * 31) = 252",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduces calculation"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(10:ℤ) * 10 = 100",
+      "note": "notebooks cost"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduces calculation"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(8:ℤ) * 31 = 248",
+      "note": "pens cost"
+     },
+     {
+      "index": 5,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduces calculation"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "100 + 248 = 348",
+      "note": "total cost"
+     },
+     {
+      "index": 7,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduces calculation"
+     },
+     {
+      "index": 8,
+      "kind": "arith",
+      "lean_prop": "600 - 348 = 252",
+      "note": "change"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(600:ℤ) - ((10:ℤ) * 10 + (8:ℤ) * 31) = 252\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduces calculation\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(10:ℤ) * 10 = 100\", \"note\": \"notebooks cost\"},\n    {\"index\": 3, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduces calculation\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(8:ℤ) * 31 = 248\", \"note\": \"pens cost\"},\n    {\"index\": 5, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduces calculation\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"100 + 248 = 348\", \"note\": \"total cost\"},\n    {\"index\": 7, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduces calculation\"},\n    {\"index\": 8, \"kind\": \"arith\", \"lean_prop\": \"600 - 348 = 252\", \"note\": \"change\"}\n  ]\n}\n",
+    "latency_s": 12.723939895629883
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Calculate the total cost of the notebooks.",
+      "detail": "introduces calculation"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(10:ℤ) * 10 = 100",
+      "step_text": "10 notebooks × 10 dirhams/notebook = 100 dirhams.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Calculate the total cost of the pens.",
+      "detail": "introduces calculation"
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(8:ℤ) * 31 = 248",
+      "step_text": "8 pens × 31 dirhams/pen = 248 dirhams.",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Calculate the total cost of the notebooks and pens.",
+      "detail": "introduces calculation"
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "100 + 248 = 348",
+      "step_text": "100 dirhams + 248 dirhams = 348 dirhams.",
+      "detail": ""
+     },
+     {
+      "index": 7,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Calculate the change Fatima receives.",
+      "detail": "introduces calculation"
+     },
+     {
+      "index": 8,
+      "verdict": "verified",
+      "lean_prop": "600 - 348 = 252",
+      "step_text": "600 dirhams - 348 dirhams = 252 dirhams.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s2_wf : (10:ℤ) * 10 = 100 := by sorry\ntheorem s2_pos : (10:ℤ) * 10 = 100 := by fv_auto\ntheorem s2_neg : ¬ ((10:ℤ) * 10 = 100) := by fv_auto\n\ntheorem s4_wf : (8:ℤ) * 31 = 248 := by sorry\ntheorem s4_pos : (8:ℤ) * 31 = 248 := by fv_auto\ntheorem s4_neg : ¬ ((8:ℤ) * 31 = 248) := by fv_auto\n\ntheorem s6_wf : 100 + 248 = 348 := by sorry\ntheorem s6_pos : 100 + 248 = 348 := by fv_auto\ntheorem s6_neg : ¬ (100 + 248 = 348) := by fv_auto\n\ntheorem s8_wf : 600 - 348 = 252 := by sorry\ntheorem s8_pos : 600 - 348 = 252 := by fv_auto\ntheorem s8_neg : ¬ (600 - 348 = 252) := by fv_auto\n\ntheorem final_wf : (600:ℤ) - ((10:ℤ) * 10 + (8:ℤ) * 31) = 252 := by sorry\ntheorem final_pos : (600:ℤ) - ((10:ℤ) * 10 + (8:ℤ) * 31) = 252 := by fv_auto\ntheorem final_neg : ¬ ((600:ℤ) - ((10:ℤ) * 10 + (8:ℤ) * 31) = 252) := by fv_auto\n",
+    "lean_latency_s": 5.339522123336792,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "252 dirhams",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 25.69
+}

@@ -1,0 +1,219 @@
+{
+ "problem": "Sara thinks of a number, multiplies it by 3, and adds 10. The result is 64. What was the original number?",
+ "expected_answer": "18",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Let the original number be \\( x \\).\nStep 2: According to the problem, Sara multiplies the number by 3 and adds 10, resulting in 64. This can be written as: \\( 3x + 10 = 64 \\).\nStep 3: Subtract 10 from both sides of the equation to isolate the term with \\( x \\): \\( 3x = 64 - 10 \\).\nStep 4: Simplify the right side: \\( 3x = 54 \\).\nStep 5: Divide both sides by 3 to solve for \\( x \\): \\( x = \\frac{54}{3} \\).\nStep 6: Simplify the division: \\( x = 18 \\).\n\nFINAL ANSWER: 18",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Let the original number be \\( x \\)."
+     },
+     {
+      "index": 2,
+      "text": "According to the problem, Sara multiplies the number by 3 and adds 10, resulting in 64. This can be written as: \\( 3x + 10 = 64 \\)."
+     },
+     {
+      "index": 3,
+      "text": "Subtract 10 from both sides of the equation to isolate the term with \\( x \\): \\( 3x = 64 - 10 \\)."
+     },
+     {
+      "index": 4,
+      "text": "Simplify the right side: \\( 3x = 54 \\)."
+     },
+     {
+      "index": 5,
+      "text": "Divide both sides by 3 to solve for \\( x \\): \\( x = \\frac{54}{3} \\)."
+     },
+     {
+      "index": 6,
+      "text": "Simplify the division: \\( x = 18 \\)."
+     }
+    ],
+    "final_answer": "18",
+    "latency_s": 5.03253173828125,
+    "tokens": 193
+   },
+   "formalization": {
+    "problem_prop": "∀ x : ℝ, 3 * x + 10 = 64 → x = 18",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduces variable"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 3,
+      "kind": "algebra",
+      "lean_prop": "3 * 18 + 10 = 64",
+      "note": "isolates term with x"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "64 - 10 = 54",
+      "note": "simplifies right side"
+     },
+     {
+      "index": 5,
+      "kind": "algebra",
+      "lean_prop": "3 * 18 = 54",
+      "note": "solves for x"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "54 / 3 = 18",
+      "note": "simplifies division"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"∀ x : ℝ, 3 * x + 10 = 64 → x = 18\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduces variable\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 3, \"kind\": \"algebra\", \"lean_prop\": \"3 * 18 + 10 = 64\", \"note\": \"isolates term with x\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"64 - 10 = 54\", \"note\": \"simplifies right side\"},\n    {\"index\": 5, \"kind\": \"algebra\", \"lean_prop\": \"3 * 18 = 54\", \"note\": \"solves for x\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"54 / 3 = 18\", \"note\": \"simplifies division\"}\n  ]\n}\n",
+    "latency_s": 11.456403017044067
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Let the original number be \\( x \\).",
+      "detail": "introduces variable"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "According to the problem, Sara multiplies the number by 3 and adds 10, resulting in 64. This can be written as: \\( 3x + 10 = 64 \\).",
+      "detail": "restates problem"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "3 * 18 + 10 = 64",
+      "step_text": "Subtract 10 from both sides of the equation to isolate the term with \\( x \\): \\( 3x = 64 - 10 \\).",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "64 - 10 = 54",
+      "step_text": "Simplify the right side: \\( 3x = 54 \\).",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "3 * 18 = 54",
+      "step_text": "Divide both sides by 3 to solve for \\( x \\): \\( x = \\frac{54}{3} \\).",
+      "detail": ""
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "54 / 3 = 18",
+      "step_text": "Simplify the division: \\( x = 18 \\).",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s3_wf : 3 * 18 + 10 = 64 := by sorry\ntheorem s3_pos : 3 * 18 + 10 = 64 := by fv_auto\ntheorem s3_neg : ¬ (3 * 18 + 10 = 64) := by fv_auto\n\ntheorem s4_wf : 64 - 10 = 54 := by sorry\ntheorem s4_pos : 64 - 10 = 54 := by fv_auto\ntheorem s4_neg : ¬ (64 - 10 = 54) := by fv_auto\n\ntheorem s5_wf : 3 * 18 = 54 := by sorry\ntheorem s5_pos : 3 * 18 = 54 := by fv_auto\ntheorem s5_neg : ¬ (3 * 18 = 54) := by fv_auto\n\ntheorem s6_wf : 54 / 3 = 18 := by sorry\ntheorem s6_pos : 54 / 3 = 18 := by fv_auto\ntheorem s6_neg : ¬ (54 / 3 = 18) := by fv_auto\n\ntheorem final_wf : ∀ x : ℝ, 3 * x + 10 = 64 → x = 18 := by sorry\ntheorem final_pos : ∀ x : ℝ, 3 * x + 10 = 64 → x = 18 := by fv_auto\ntheorem final_neg : ¬ (∀ x : ℝ, 3 * x + 10 = 64 → x = 18) := by fv_auto\n",
+    "lean_latency_s": 5.7961266040802,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ ∃ x, 3 * x + 10 = 64 ∧ ¬x = 18"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "18",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 22.29
+}

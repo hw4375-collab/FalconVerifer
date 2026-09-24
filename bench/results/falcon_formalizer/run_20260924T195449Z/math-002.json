@@ -1,0 +1,155 @@
+{
+ "problem": "Fatima buys 95 packs of tickets with 15 in each pack, then gives away 268 of them. How many tickets does Fatima have left?",
+ "expected_answer": "1157",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the total number of tickets Fatima buys.\n\\[ \\text{Total tickets} = 95 \\times 15 \\]\n\nStep 2: Perform the multiplication to find the total number of tickets.\n\\[ 95 \\times 15 = 1425 \\]\n\nStep 3: Subtract the number of tickets Fatima gives away from the total number of tickets.\n\\[ \\text{Tickets left} = 1425 - 268 \\]\n\nStep 4: Perform the subtraction to find the number of tickets left.\n\\[ 1425 - 268 = 1157 \\]\n\nFINAL ANSWER: 1157",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the total number of tickets Fatima buys. \\[ \\text{Total tickets} = 95 \\times 15 \\]"
+     },
+     {
+      "index": 2,
+      "text": "Perform the multiplication to find the total number of tickets. \\[ 95 \\times 15 = 1425 \\]"
+     },
+     {
+      "index": 3,
+      "text": "Subtract the number of tickets Fatima gives away from the total number of tickets. \\[ \\text{Tickets left} = 1425 - 268 \\]"
+     },
+     {
+      "index": 4,
+      "text": "Perform the subtraction to find the number of tickets left. \\[ 1425 - 268 = 1157 \\]"
+     }
+    ],
+    "final_answer": "1157",
+    "latency_s": 8.144768238067627,
+    "tokens": 165
+   },
+   "formalization": {
+    "problem_prop": "(95:ℕ) * 15 - 268 = 1157",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(95:ℕ) * 15 = 1425",
+      "note": "total tickets bought"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "calculation step"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "1425 - 268 = 1157",
+      "note": "tickets left after giving away"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "calculation step"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(95:ℕ) * 15 - 268 = 1157\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(95:ℕ) * 15 = 1425\", \"note\": \"total tickets bought\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"calculation step\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"1425 - 268 = 1157\", \"note\": \"tickets left after giving away\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"calculation step\"}\n  ]\n}\n",
+    "latency_s": 9.994486331939697
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(95:ℕ) * 15 = 1425",
+      "step_text": "Calculate the total number of tickets Fatima buys. \\[ \\text{Total tickets} = 95 \\times 15 \\]",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Perform the multiplication to find the total number of tickets. \\[ 95 \\times 15 = 1425 \\]",
+      "detail": "calculation step"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "1425 - 268 = 1157",
+      "step_text": "Subtract the number of tickets Fatima gives away from the total number of tickets. \\[ \\text{Tickets left} = 1425 - 268 \\]",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Perform the subtraction to find the number of tickets left. \\[ 1425 - 268 = 1157 \\]",
+      "detail": "calculation step"
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (95:ℕ) * 15 = 1425 := by sorry\ntheorem s1_pos : (95:ℕ) * 15 = 1425 := by fv_auto\ntheorem s1_neg : ¬ ((95:ℕ) * 15 = 1425) := by fv_auto\n\ntheorem s3_wf : 1425 - 268 = 1157 := by sorry\ntheorem s3_pos : 1425 - 268 = 1157 := by fv_auto\ntheorem s3_neg : ¬ (1425 - 268 = 1157) := by fv_auto\n\ntheorem final_wf : (95:ℕ) * 15 - 268 = 1157 := by sorry\ntheorem final_pos : (95:ℕ) * 15 - 268 = 1157 := by fv_auto\ntheorem final_neg : ¬ ((95:ℕ) * 15 - 268 = 1157) := by fv_auto\n",
+    "lean_latency_s": 3.937438726425171,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "1157",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 22.08
+}

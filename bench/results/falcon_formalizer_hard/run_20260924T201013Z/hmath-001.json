@@ -1,0 +1,202 @@
+{
+ "problem": "Compute 440 × 481.",
+ "expected_answer": "211640",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Break down the multiplication into simpler parts using the distributive property. 440 × 481 = 440 × (400 + 80 + 1).\n\nStep 2: Multiply 440 by 400. 440 × 400 = 176,000.\n\nStep 3: Multiply 440 by 80. 440 × 80 = 35,200.\n\nStep 4: Multiply 440 by 1. 440 × 1 = 440.\n\nStep 5: Add the results from Steps 2, 3, and 4. 176,000 + 35,200 + 440 = 211,640.\n\nFINAL ANSWER: 211,640",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Break down the multiplication into simpler parts using the distributive property. 440 × 481 = 440 × (400 + 80 + 1)."
+     },
+     {
+      "index": 2,
+      "text": "Multiply 440 by 400. 440 × 400 = 176,000."
+     },
+     {
+      "index": 3,
+      "text": "Multiply 440 by 80. 440 × 80 = 35,200."
+     },
+     {
+      "index": 4,
+      "text": "Multiply 440 by 1. 440 × 1 = 440."
+     },
+     {
+      "index": 5,
+      "text": "Add the results from Steps 2, 3, and 4. 176,000 + 35,200 + 440 = 211,640."
+     }
+    ],
+    "final_answer": "211,640",
+    "latency_s": 10.19166350364685,
+    "tokens": 213
+   },
+   "formalization": {
+    "problem_prop": "(440:ℕ) * 481 = 211640",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "distributive property setup"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(440:ℕ) * 400 = 176000",
+      "note": "multiplication"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(440:ℕ) * 80 = 35200",
+      "note": "multiplication"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(440:ℕ) * 1 = 440",
+      "note": "multiplication"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "176000 + 35200 + 440 = 211640",
+      "note": "addition"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(440:ℕ) * 481 = 211640\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"distributive property setup\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(440:ℕ) * 400 = 176000\", \"note\": \"multiplication\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(440:ℕ) * 80 = 35200\", \"note\": \"multiplication\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(440:ℕ) * 1 = 440\", \"note\": \"multiplication\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"176000 + 35200 + 440 = 211640\", \"note\": \"addition\"}\n  ]\n}\n",
+    "latency_s": 11.27446961402893
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Break down the multiplication into simpler parts using the distributive property. 440 × 481 = 440 × (400 + 80 + 1).",
+      "detail": "distributive property setup"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(440:ℕ) * 400 = 176000",
+      "step_text": "Multiply 440 by 400. 440 × 400 = 176,000.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(440:ℕ) * 80 = 35200",
+      "step_text": "Multiply 440 by 80. 440 × 80 = 35,200.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(440:ℕ) * 1 = 440",
+      "step_text": "Multiply 440 by 1. 440 × 1 = 440.",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "176000 + 35200 + 440 = 211640",
+      "step_text": "Add the results from Steps 2, 3, and 4. 176,000 + 35,200 + 440 = 211,640.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s2_wf : (440:ℕ) * 400 = 176000 := by sorry\ntheorem s2_pos : (440:ℕ) * 400 = 176000 := by fv_auto\ntheorem s2_neg : ¬ ((440:ℕ) * 400 = 176000) := by fv_auto\n\ntheorem s3_wf : (440:ℕ) * 80 = 35200 := by sorry\ntheorem s3_pos : (440:ℕ) * 80 = 35200 := by fv_auto\ntheorem s3_neg : ¬ ((440:ℕ) * 80 = 35200) := by fv_auto\n\ntheorem s4_wf : (440:ℕ) * 1 = 440 := by sorry\ntheorem s4_pos : (440:ℕ) * 1 = 440 := by fv_auto\ntheorem s4_neg : ¬ ((440:ℕ) * 1 = 440) := by fv_auto\n\ntheorem s5_wf : 176000 + 35200 + 440 = 211640 := by sorry\ntheorem s5_pos : 176000 + 35200 + 440 = 211640 := by fv_auto\ntheorem s5_neg : ¬ (176000 + 35200 + 440 = 211640) := by fv_auto\n\ntheorem final_wf : (440:ℕ) * 481 = 211640 := by sorry\ntheorem final_pos : (440:ℕ) * 481 = 211640 := by fv_auto\ntheorem final_neg : ¬ ((440:ℕ) * 481 = 211640) := by fv_auto\n",
+    "lean_latency_s": 3.5759575366973877,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "211,640",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 25.04
+}

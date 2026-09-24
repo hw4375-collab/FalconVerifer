@@ -1,0 +1,238 @@
+{
+ "problem": "Warehouse A stores 42 crates of 19 kg each. Warehouse B stores 16 crates of 37 kg each. How many more kilograms does the heavier warehouse hold than the lighter one?",
+ "expected_answer": "206",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the total weight of crates in Warehouse A.\nStep 2: 42 crates * 19 kg/crate = 798 kg.\n\nStep 3: Calculate the total weight of crates in Warehouse B.\nStep 4: 16 crates * 37 kg/crate = 592 kg.\n\nStep 5: Determine which warehouse is heavier.\nStep 6: Warehouse A (798 kg) is heavier than Warehouse B (592 kg).\n\nStep 7: Calculate the difference in weight between the two warehouses.\nStep 8: 798 kg - 592 kg = 206 kg.\n\nFINAL ANSWER: 206 kg",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the total weight of crates in Warehouse A."
+     },
+     {
+      "index": 2,
+      "text": "42 crates * 19 kg/crate = 798 kg."
+     },
+     {
+      "index": 3,
+      "text": "Calculate the total weight of crates in Warehouse B."
+     },
+     {
+      "index": 4,
+      "text": "16 crates * 37 kg/crate = 592 kg."
+     },
+     {
+      "index": 5,
+      "text": "Determine which warehouse is heavier."
+     },
+     {
+      "index": 6,
+      "text": "Warehouse A (798 kg) is heavier than Warehouse B (592 kg)."
+     },
+     {
+      "index": 7,
+      "text": "Calculate the difference in weight between the two warehouses."
+     },
+     {
+      "index": 8,
+      "text": "798 kg - 592 kg = 206 kg."
+     }
+    ],
+    "final_answer": "206 kg",
+    "latency_s": 8.596814393997192,
+    "tokens": 178
+   },
+   "formalization": {
+    "problem_prop": "(42:ℕ) * 19 - 16 * 37 = 206",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(42:ℕ) * 19 = 798",
+      "note": "total weight of A"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(16:ℕ) * 37 = 592",
+      "note": "total weight of B"
+     },
+     {
+      "index": 5,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 6,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "compares weights"
+     },
+     {
+      "index": 7,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 8,
+      "kind": "arith",
+      "lean_prop": "798 - 592 = 206",
+      "note": "difference"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(42:ℕ) * 19 - 16 * 37 = 206\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(42:ℕ) * 19 = 798\", \"note\": \"total weight of A\"},\n    {\"index\": 3, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(16:ℕ) * 37 = 592\", \"note\": \"total weight of B\"},\n    {\"index\": 5, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 6, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"compares weights\"},\n    {\"index\": 7, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 8, \"kind\": \"arith\", \"lean_prop\": \"798 - 592 = 206\", \"note\": \"difference\"}\n  ]\n}\n",
+    "latency_s": 12.986490964889526
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Calculate the total weight of crates in Warehouse A.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(42:ℕ) * 19 = 798",
+      "step_text": "42 crates * 19 kg/crate = 798 kg.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Calculate the total weight of crates in Warehouse B.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(16:ℕ) * 37 = 592",
+      "step_text": "16 crates * 37 kg/crate = 592 kg.",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Determine which warehouse is heavier.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 6,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Warehouse A (798 kg) is heavier than Warehouse B (592 kg).",
+      "detail": "compares weights"
+     },
+     {
+      "index": 7,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Calculate the difference in weight between the two warehouses.",
+      "detail": "restates problem"
+     },
+     {
+      "index": 8,
+      "verdict": "verified",
+      "lean_prop": "798 - 592 = 206",
+      "step_text": "798 kg - 592 kg = 206 kg.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s2_wf : (42:ℕ) * 19 = 798 := by sorry\ntheorem s2_pos : (42:ℕ) * 19 = 798 := by fv_auto\ntheorem s2_neg : ¬ ((42:ℕ) * 19 = 798) := by fv_auto\n\ntheorem s4_wf : (16:ℕ) * 37 = 592 := by sorry\ntheorem s4_pos : (16:ℕ) * 37 = 592 := by fv_auto\ntheorem s4_neg : ¬ ((16:ℕ) * 37 = 592) := by fv_auto\n\ntheorem s8_wf : 798 - 592 = 206 := by sorry\ntheorem s8_pos : 798 - 592 = 206 := by fv_auto\ntheorem s8_neg : ¬ (798 - 592 = 206) := by fv_auto\n\ntheorem final_wf : (42:ℕ) * 19 - 16 * 37 = 206 := by sorry\ntheorem final_pos : (42:ℕ) * 19 - 16 * 37 = 206 := by fv_auto\ntheorem final_neg : ¬ ((42:ℕ) * 19 - 16 * 37 = 206) := by fv_auto\n",
+    "lean_latency_s": 3.856640338897705,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "206 kg",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 25.44
+}

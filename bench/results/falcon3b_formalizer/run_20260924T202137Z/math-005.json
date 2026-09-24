@@ -1,0 +1,49 @@
+{
+ "problem": "Zayed buys 57 packs of tickets with 14 in each pack, then gives away 94 of them. How many tickets does Zayed have left?",
+ "expected_answer": "704",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "FINAL ANSWER: 628\n",
+    "reasoning": null,
+    "steps": [],
+    "final_answer": "628",
+    "latency_s": 3.5144896507263184,
+    "tokens": 11
+   },
+   "formalization": {
+    "problem_prop": "(57:ℕ) * 14 - 94 = 628",
+    "steps": [],
+    "raw": "{\n  \"problem_prop\": \"(57:ℕ) * 14 - 94 = 628\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"no intermediate steps provided\"}\n  ]\n}\n",
+    "latency_s": 6.570568561553955
+   },
+   "report": {
+    "steps": [],
+    "final_answer_verdict": "unknown",
+    "final_answer_detail": "refutation discarded: The Lean proposition calculates the total tickets bought and subtracts the given away, but the step text does not match the claim of the final answer.",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem final_wf : (57:ℕ) * 14 - 94 = 628 := by sorry\ntheorem final_pos : (57:ℕ) * 14 - 94 = 628 := by fv_auto\ntheorem final_neg : ¬ ((57:ℕ) * 14 - 94 = 628) := by fv_auto\n",
+    "lean_latency_s": 3.5891661643981934,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 39,
+      "severity": "error",
+      "message": "`push Not` made no progress on the goal"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "628",
+ "status": "unknown",
+ "assurance_score": 0.45,
+ "total_latency_s": 20.47
+}

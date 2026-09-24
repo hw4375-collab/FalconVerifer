@@ -1,0 +1,155 @@
+{
+ "problem": "A tank holds 96 litres when full. It is currently 1/4 full. How many litres must be added to fill it?",
+ "expected_answer": "72",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Determine the current amount of liquid in the tank. Since the tank is 1/4 full, we calculate \\( \\frac{1}{4} \\times 96 \\) litres.\nStep 2: \\( \\frac{1}{4} \\times 96 = 24 \\) litres. The tank currently holds 24 litres.\nStep 3: Calculate the amount of liquid needed to fill the tank. Subtract the current amount from the full capacity: \\( 96 - 24 \\) litres.\nStep 4: \\( 96 - 24 = 72 \\) litres. The tank needs 72 litres to be filled.\n\nFINAL ANSWER: 72",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Determine the current amount of liquid in the tank. Since the tank is 1/4 full, we calculate \\( \\frac{1}{4} \\times 96 \\) litres."
+     },
+     {
+      "index": 2,
+      "text": "\\( \\frac{1}{4} \\times 96 = 24 \\) litres. The tank currently holds 24 litres."
+     },
+     {
+      "index": 3,
+      "text": "Calculate the amount of liquid needed to fill the tank. Subtract the current amount from the full capacity: \\( 96 - 24 \\) litres."
+     },
+     {
+      "index": 4,
+      "text": "\\( 96 - 24 = 72 \\) litres. The tank needs 72 litres to be filled."
+     }
+    ],
+    "final_answer": "72",
+    "latency_s": 7.5143883228302,
+    "tokens": 164
+   },
+   "formalization": {
+    "problem_prop": "(96:ℚ) - (1/4:ℚ) * 96 = 72",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(1/4:ℚ) * 96 = 24",
+      "note": "current amount"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates calculation"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "96 - 24 = 72",
+      "note": "litres needed"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates calculation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(96:ℚ) - (1/4:ℚ) * 96 = 72\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(1/4:ℚ) * 96 = 24\", \"note\": \"current amount\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates calculation\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"96 - 24 = 72\", \"note\": \"litres needed\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates calculation\"}\n  ]\n}\n",
+    "latency_s": 8.238332033157349
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(1/4:ℚ) * 96 = 24",
+      "step_text": "Determine the current amount of liquid in the tank. Since the tank is 1/4 full, we calculate \\( \\frac{1}{4} \\times 96 \\) litres.",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "\\( \\frac{1}{4} \\times 96 = 24 \\) litres. The tank currently holds 24 litres.",
+      "detail": "restates calculation"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "96 - 24 = 72",
+      "step_text": "Calculate the amount of liquid needed to fill the tank. Subtract the current amount from the full capacity: \\( 96 - 24 \\) litres.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "\\( 96 - 24 = 72 \\) litres. The tank needs 72 litres to be filled.",
+      "detail": "restates calculation"
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (1/4:ℚ) * 96 = 24 := by sorry\ntheorem s1_pos : (1/4:ℚ) * 96 = 24 := by fv_auto\ntheorem s1_neg : ¬ ((1/4:ℚ) * 96 = 24) := by fv_auto\n\ntheorem s3_wf : 96 - 24 = 72 := by sorry\ntheorem s3_pos : 96 - 24 = 72 := by fv_auto\ntheorem s3_neg : ¬ (96 - 24 = 72) := by fv_auto\n\ntheorem final_wf : (96:ℚ) - (1/4:ℚ) * 96 = 72 := by sorry\ntheorem final_pos : (96:ℚ) - (1/4:ℚ) * 96 = 72 := by fv_auto\ntheorem final_neg : ¬ ((96:ℚ) - (1/4:ℚ) * 96 = 72) := by fv_auto\n",
+    "lean_latency_s": 4.1053338050842285,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\na : 4⁻¹ * 96 = 24\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\na : 96 - 4⁻¹ * 96 = 72\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "72",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 19.86
+}

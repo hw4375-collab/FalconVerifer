@@ -1,0 +1,185 @@
+{
+ "problem": "The average of 5 numbers 99, 46, 83, 73, 89 is computed. Then the number 99 is replaced by 109. What is the new average?",
+ "expected_answer": "80",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the sum of the original 5 numbers: 99 + 46 + 83 + 73 + 89 = 390.\nStep 2: Calculate the original average: 390 / 5 = 78.\nStep 3: Replace 99 with 109 and calculate the new sum: 390 - 99 + 109 = 400.\nStep 4: Calculate the new average: 400 / 5 = 80.\nFINAL ANSWER: 80",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the sum of the original 5 numbers: 99 + 46 + 83 + 73 + 89 = 390."
+     },
+     {
+      "index": 2,
+      "text": "Calculate the original average: 390 / 5 = 78."
+     },
+     {
+      "index": 3,
+      "text": "Replace 99 with 109 and calculate the new sum: 390 - 99 + 109 = 400."
+     },
+     {
+      "index": 4,
+      "text": "Calculate the new average: 400 / 5 = 80."
+     }
+    ],
+    "final_answer": "80",
+    "latency_s": 9.376196146011353,
+    "tokens": 143
+   },
+   "formalization": {
+    "problem_prop": "(390:ℤ) - 99 + 109 = 400 ∧ (400:ℤ) / 5 = 80",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "99 + 46 + 83 + 73 + 89 = 390",
+      "note": "original sum"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "390 / 5 = 78",
+      "note": "original average"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "390 - 99 + 109 = 400",
+      "note": "new sum"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "400 / 5 = 80",
+      "note": "new average"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(390:ℤ) - 99 + 109 = 400 ∧ (400:ℤ) / 5 = 80\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"99 + 46 + 83 + 73 + 89 = 390\", \"note\": \"original sum\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"390 / 5 = 78\", \"note\": \"original average\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"390 - 99 + 109 = 400\", \"note\": \"new sum\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"400 / 5 = 80\", \"note\": \"new average\"}\n  ]\n}\n",
+    "latency_s": 9.392515182495117
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "99 + 46 + 83 + 73 + 89 = 390",
+      "step_text": "Calculate the sum of the original 5 numbers: 99 + 46 + 83 + 73 + 89 = 390.",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "390 / 5 = 78",
+      "step_text": "Calculate the original average: 390 / 5 = 78.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "390 - 99 + 109 = 400",
+      "step_text": "Replace 99 with 109 and calculate the new sum: 390 - 99 + 109 = 400.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "400 / 5 = 80",
+      "step_text": "Calculate the new average: 400 / 5 = 80.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : 99 + 46 + 83 + 73 + 89 = 390 := by sorry\ntheorem s1_pos : 99 + 46 + 83 + 73 + 89 = 390 := by fv_auto\ntheorem s1_neg : ¬ (99 + 46 + 83 + 73 + 89 = 390) := by fv_auto\n\ntheorem s2_wf : 390 / 5 = 78 := by sorry\ntheorem s2_pos : 390 / 5 = 78 := by fv_auto\ntheorem s2_neg : ¬ (390 / 5 = 78) := by fv_auto\n\ntheorem s3_wf : 390 - 99 + 109 = 400 := by sorry\ntheorem s3_pos : 390 - 99 + 109 = 400 := by fv_auto\ntheorem s3_neg : ¬ (390 - 99 + 109 = 400) := by fv_auto\n\ntheorem s4_wf : 400 / 5 = 80 := by sorry\ntheorem s4_pos : 400 / 5 = 80 := by fv_auto\ntheorem s4_neg : ¬ (400 / 5 = 80) := by fv_auto\n\ntheorem final_wf : (390:ℤ) - 99 + 109 = 400 ∧ (400:ℤ) / 5 = 80 := by sorry\ntheorem final_pos : (390:ℤ) - 99 + 109 = 400 ∧ (400:ℤ) / 5 = 80 := by fv_auto\ntheorem final_neg : ¬ ((390:ℤ) - 99 + 109 = 400 ∧ (400:ℤ) / 5 = 80) := by fv_auto\n",
+    "lean_latency_s": 3.6786396503448486,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "80",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 22.45
+}

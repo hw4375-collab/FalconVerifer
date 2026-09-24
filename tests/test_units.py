@@ -191,3 +191,13 @@ def _formal(*props: str | None, problem: str | None = None) -> Formalization:
             for i, p in enumerate(props)
         ],
     )
+
+
+def test_lift_to_rat_handles_bare_literals():
+    from falconverifier.verifier import lift_to_rat
+
+    assert lift_to_rat("1 / (1/2) = 2") == "(1:ℚ) / (1/2) = 2"
+    assert lift_to_rat("(1:ℚ) / 2 = 0.5") is None
+    assert lift_to_rat("17 * 23 = 391") is None
+    assert lift_to_rat("(150:ℤ) - 75 = 75") == "(150:ℚ) - 75 = 75"
+    assert lift_to_rat("∃ (n : ℕ), n / 2 = 3") is None

@@ -1,0 +1,54 @@
+{
+ "problem": "A student scored 48, 41, 40, 59 and 67 on 5 tests. What is the student's average score?",
+ "expected_answer": "51",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "FINAL ANSWER: (48 + 41 + 40 + 59 + 67) / 5 = 255 / 5 = 51\n",
+    "reasoning": null,
+    "steps": [],
+    "final_answer": "(48 + 41 + 40 + 59 + 67) / 5 = 255 / 5 = 51",
+    "latency_s": 3.109978675842285,
+    "tokens": 51
+   },
+   "formalization": {
+    "problem_prop": "(48:ℚ) + 41 + 40 + 59 + 67 = 255 ∧ (255:ℚ) / 5 = 51",
+    "steps": [],
+    "raw": "{\n  \"problem_prop\": \"(48:ℚ) + 41 + 40 + 59 + 67 = 255 ∧ (255:ℚ) / 5 = 51\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(48:ℚ) + 41 + 40 + 59 + 67 = 255\", \"note\": \"sum of scores\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(255:ℚ) / 5 = 51\", \"note\": \"average calculation\"}\n  ]\n}\n",
+    "latency_s": 7.831502676010132
+   },
+   "report": {
+    "steps": [],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem final_wf : (48:ℚ) + 41 + 40 + 59 + 67 = 255 ∧ (255:ℚ) / 5 = 51 := by sorry\ntheorem final_pos : (48:ℚ) + 41 + 40 + 59 + 67 = 255 ∧ (255:ℚ) / 5 = 51 := by fv_auto\ntheorem final_neg : ¬ ((48:ℚ) + 41 + 40 + 59 + 67 = 255 ∧ (255:ℚ) / 5 = 51) := by fv_auto\n",
+    "lean_latency_s": 3.7355387210845947,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n_ : 48 + 41 + 40 + 59 + 67 = 255\na : 255 / 5 = 51\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "(48 + 41 + 40 + 59 + 67) / 5 = 255 / 5 = 51",
+ "status": "verified",
+ "assurance_score": 0.75,
+ "total_latency_s": 14.68
+}

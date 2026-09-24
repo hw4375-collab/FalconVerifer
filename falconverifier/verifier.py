@@ -70,18 +70,27 @@ def verify(
 
 
 _TRUNC_RE = re.compile(r":\s*(ℕ|ℤ|Nat|Int)\b")
+_ANY_TYPE_RE = re.compile(r":\s*(ℕ|ℤ|ℚ|ℝ|Nat|Int|Rat|Real)\b")
+_BARE_NUM_RE = re.compile(r"(?<![\w.])(\d+(?:\.\d+)?)(?![\w.]|\s*:)")
 
 
 def lift_to_rat(prop: str) -> str | None:
-    """Rewrite ℕ/ℤ ascriptions to ℚ when the claim uses truncating `/` or `-`.
+    """Rewrite a claim so its arithmetic is read over ℚ when it uses truncating `/` or `-`.
 
-    Natural-language arithmetic ("50% of 150 is 75") is meant over the rationals; a
-    formalizer that writes `(50:ℕ)/100*150 = 75` produces a *spurious* refutation because
-    ℕ-division truncates. Returns None when no lift applies.
+    Natural-language arithmetic ("50% of 150 is 75", "1 / (1/2) = 2") is meant over the
+    rationals; `(50:ℕ)/100*150 = 75` or an un-ascribed `1 / (1/2) = 2` (elaborated in ℕ)
+    produce *spurious* refutations because ℕ-division truncates. ℕ/ℤ ascriptions become ℚ;
+    a claim with no numeric ascription at all gets `(n:ℚ)` on its first literal. Returns
+    None when no lift applies.
     """
-    if not ("/" in prop or "-" in prop) or not _TRUNC_RE.search(prop):
+    if not ("/" in prop or "-" in prop) or "∀" in prop or "∃" in prop:
         return None
-    return _TRUNC_RE.sub(":ℚ", prop)
+    if _TRUNC_RE.search(prop):
+        return _TRUNC_RE.sub(":ℚ", prop)
+    if _ANY_TYPE_RE.search(prop):
+        return None
+    lifted, n = _BARE_NUM_RE.subn(lambda m: f"({m.group(1)}:ℚ)", prop, count=1)
+    return lifted if n else None
 
 
 def recheck_refutations_over_rat(

@@ -45,7 +45,10 @@ FV_AUTO_MACRO = """macro "fv_auto" : tactic => `(tactic| first
   | (push Not; intros; simp_all; done)
   | (push Not; intros; simp_all; omega; done)
   | (push Not; intros; simp_all; linarith; done)
-  | (push Not; intros; aesop; done))
+  | (push Not; intros; aesop; done)
+  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)
+  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)
+  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))
 """
 
 HEADER = (

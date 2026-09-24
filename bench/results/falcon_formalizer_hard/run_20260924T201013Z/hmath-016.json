@@ -1,0 +1,121 @@
+{
+ "problem": "A phone costs 2400 dirhams. It is discounted by 20%, and then the reduced price is discounted by a further 10%. What is the final price in dirhams?",
+ "expected_answer": "1728",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the price after the first discount of 20%.  \nThe original price is 2400 dirhams.  \nA 20% discount means the price is reduced by 20% of 2400.  \n20% of 2400 = 0.20 * 2400 = 480 dirhams.  \nReduced price after the first discount = 2400 - 480 = 1920 dirhams.\n\nStep 2: Calculate the price after the second discount of 10%.  \nThe reduced price after the first discount is 1920 dirhams.  \nA 10% discount means the price is reduced by 10% of 1920.  \n10% of 1920 = 0.10 * 1920 = 192 dirhams.  \nFinal price after the second discount = 1920 - 192 = 1728 dirhams.\n\nFINAL ANSWER: 1728",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the price after the first discount of 20%. The original price is 2400 dirhams. A 20% discount means the price is reduced by 20% of 2400. 20% of 2400 = 0.20 * 2400 = 480 dirhams. Reduced price after the first discount = 2400 - 480 = 1920 dirhams."
+     },
+     {
+      "index": 2,
+      "text": "Calculate the price after the second discount of 10%. The reduced price after the first discount is 1920 dirhams. A 10% discount means the price is reduced by 10% of 1920. 10% of 1920 = 0.10 * 1920 = 192 dirhams. Final price after the second discount = 1920 - 192 = 1728 dirhams."
+     }
+    ],
+    "final_answer": "1728",
+    "latency_s": 8.045616626739502,
+    "tokens": 255
+   },
+   "formalization": {
+    "problem_prop": "(2400:ℝ) * (1 - 0.20) * (1 - 0.10) = 1728",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(2400:ℝ) * (1 - 0.20) = 1920",
+      "note": "first discount"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(1920:ℝ) * (1 - 0.10) = 1728",
+      "note": "second discount"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(2400:ℝ) * (1 - 0.20) * (1 - 0.10) = 1728\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(2400:ℝ) * (1 - 0.20) = 1920\", \"note\": \"first discount\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(1920:ℝ) * (1 - 0.10) = 1728\", \"note\": \"second discount\"}\n  ]\n}\n",
+    "latency_s": 6.939758539199829
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(2400:ℝ) * (1 - 0.20) = 1920",
+      "step_text": "Calculate the price after the first discount of 20%. The original price is 2400 dirhams. A 20% discount means the price is reduced by 20% of 2400. 20% of 2400 = 0.20 * 2400 = 480 dirhams. Reduced price after the first discount = 2400 - 480 = 1920 dirhams.",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(1920:ℝ) * (1 - 0.10) = 1728",
+      "step_text": "Calculate the price after the second discount of 10%. The reduced price after the first discount is 1920 dirhams. A 10% discount means the price is reduced by 10% of 1920. 10% of 1920 = 0.10 * 1920 = 192 dirhams. Final price after the second discount = 1920 - 192 = 1728 dirhams.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (2400:ℝ) * (1 - 0.20) = 1920 := by sorry\ntheorem s1_pos : (2400:ℝ) * (1 - 0.20) = 1920 := by fv_auto\ntheorem s1_neg : ¬ ((2400:ℝ) * (1 - 0.20) = 1920) := by fv_auto\n\ntheorem s2_wf : (1920:ℝ) * (1 - 0.10) = 1728 := by sorry\ntheorem s2_pos : (1920:ℝ) * (1 - 0.10) = 1728 := by fv_auto\ntheorem s2_neg : ¬ ((1920:ℝ) * (1 - 0.10) = 1728) := by fv_auto\n\ntheorem final_wf : (2400:ℝ) * (1 - 0.20) * (1 - 0.10) = 1728 := by sorry\ntheorem final_pos : (2400:ℝ) * (1 - 0.20) * (1 - 0.10) = 1728 := by fv_auto\ntheorem final_neg : ¬ ((2400:ℝ) * (1 - 0.20) * (1 - 0.10) = 1728) := by fv_auto\n",
+    "lean_latency_s": 3.686436414718628,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\na : 2400 * (1 - 0.20) = 1920\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\na : 1920 * (1 - 0.10) = 1728\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\na : 2400 * (1 - 0.20) * (1 - 0.10) = 1728\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "1728",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 18.67
+}
