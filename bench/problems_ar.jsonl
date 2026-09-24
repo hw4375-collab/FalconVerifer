@@ -1,0 +1,76 @@
+{"id": "armath-001", "problem": "ما هو ناتج ٥٥ × ٢٠؟", "answer": "1100", "tags": ["math", "arabic", "arith", "fragment", "eastern-digits"]}
+{"id": "armath-002", "problem": "ما هو ناتج 78 × 19؟", "answer": "1482", "tags": ["math", "arabic", "arith", "fragment"]}
+{"id": "armath-003", "problem": "ما هو ناتج ٦٨ × ٤٨؟", "answer": "3264", "tags": ["math", "arabic", "arith", "fragment", "eastern-digits"]}
+{"id": "armath-004", "problem": "ما هو ناتج 97 × 27؟", "answer": "2619", "tags": ["math", "arabic", "arith", "fragment"]}
+{"id": "armath-005", "problem": "ما هو ناتج ٨٥ × ٤٣؟", "answer": "3655", "tags": ["math", "arabic", "arith", "fragment", "eastern-digits"]}
+{"id": "armath-006", "problem": "ما هو ناتج 63 × 17؟", "answer": "1071", "tags": ["math", "arabic", "arith", "fragment"]}
+{"id": "armath-007", "problem": "ما هو ناتج ٧٩ × ٢٨؟", "answer": "2212", "tags": ["math", "arabic", "arith", "fragment", "eastern-digits"]}
+{"id": "armath-008", "problem": "ما هو ناتج 14 × 30؟", "answer": "420", "tags": ["math", "arabic", "arith", "fragment"]}
+{"id": "armath-009", "problem": "احسب مجموع ٩٧٨ و ١١٤ ناقص ٦٣.", "answer": "1029", "tags": ["math", "arabic", "arith", "fragment", "eastern-digits"]}
+{"id": "armath-010", "problem": "احسب مجموع 362 و 423 ناقص 96.", "answer": "689", "tags": ["math", "arabic", "arith", "fragment"]}
+{"id": "armath-011", "problem": "احسب مجموع ٨١٢ و ٤٦٥ ناقص ٤٨.", "answer": "1229", "tags": ["math", "arabic", "arith", "fragment", "eastern-digits"]}
+{"id": "armath-012", "problem": "احسب مجموع 589 و 408 ناقص 20.", "answer": "977", "tags": ["math", "arabic", "arith", "fragment"]}
+{"id": "armath-013", "problem": "كم يساوي ١٠٪ من ٤٨٠؟", "answer": "48", "tags": ["math", "arabic", "arith", "percent", "fragment", "eastern-digits"]}
+{"id": "armath-014", "problem": "كم يساوي 20٪ من 240؟", "answer": "48", "tags": ["math", "arabic", "arith", "percent", "fragment"]}
+{"id": "armath-015", "problem": "كم يساوي ٢٥٪ من ٤٨٠؟", "answer": "120", "tags": ["math", "arabic", "arith", "percent", "fragment", "eastern-digits"]}
+{"id": "armath-016", "problem": "كم يساوي 50٪ من 200؟", "answer": "100", "tags": ["math", "arabic", "arith", "percent", "fragment"]}
+{"id": "armath-017", "problem": "اشترى خالد ٦٤ علبة تحتوي كل منها على ٢٤ زجاجة، ثم أعطى ١٦٨ منها لأصدقائه. كم بقي لدى خالد؟", "answer": "1368", "tags": ["math", "arabic", "arith", "multiply", "eastern-digits"]}
+{"id": "armath-018", "problem": "اشترى عمر 86 علبة تحتوي كل منها على 40 قلماً، ثم أعطى 65 منها لأصدقائه. كم بقي لدى عمر؟", "answer": "3375", "tags": ["math", "arabic", "arith", "multiply"]}
+{"id": "armath-019", "problem": "اشترى حمدان ٥٩ علبة تحتوي كل منها على ٤١ تمرة، ثم أعطى ١٢٨ منها لأصدقائه. كم بقي لدى حمدان؟", "answer": "2291", "tags": ["math", "arabic", "arith", "multiply", "eastern-digits"]}
+{"id": "armath-020", "problem": "اشترى يوسف 81 علبة تحتوي كل منها على 39 زجاجة، ثم أعطى 235 منها لأصدقائه. كم بقي لدى يوسف؟", "answer": "2924", "tags": ["math", "arabic", "arith", "multiply"]}
+{"id": "armath-021", "problem": "اشترى راشد ٧٤ علبة تحتوي كل منها على ٤٧ عملة، ثم أعطى ٢٣٦ منها لأصدقائه. كم بقي لدى راشد؟", "answer": "3242", "tags": ["math", "arabic", "arith", "multiply", "eastern-digits"]}
+{"id": "armath-022", "problem": "اشترى عمر 92 علبة تحتوي كل منها على 15 كرسياً، ثم أعطى 69 منها لأصدقائه. كم بقي لدى عمر؟", "answer": "1311", "tags": ["math", "arabic", "arith", "multiply"]}
+{"id": "armath-023", "problem": "يبلغ سعر معطف ١٥٠ درهماً. خُفِّض سعره بنسبة ١٠٪. ما هو السعر الجديد بالدرهم؟", "answer": "135", "tags": ["math", "arabic", "arith", "percent", "eastern-digits"]}
+{"id": "armath-024", "problem": "يبلغ سعر معطف 120 درهماً. خُفِّض سعره بنسبة 40٪. ما هو السعر الجديد بالدرهم؟", "answer": "72", "tags": ["math", "arabic", "arith", "percent"]}
+{"id": "armath-025", "problem": "يبلغ سعر معطف ٣٦٠ درهماً. خُفِّض سعره بنسبة ٢٠٪. ما هو السعر الجديد بالدرهم؟", "answer": "288", "tags": ["math", "arabic", "arith", "percent", "eastern-digits"]}
+{"id": "armath-026", "problem": "يبلغ سعر معطف 200 درهماً. خُفِّض سعره بنسبة 40٪. ما هو السعر الجديد بالدرهم؟", "answer": "120", "tags": ["math", "arabic", "arith", "percent"]}
+{"id": "armath-027", "problem": "يبلغ سعر معطف ٥٠٠ درهماً. خُفِّض سعره بنسبة ٤٠٪. ما هو السعر الجديد بالدرهم؟", "answer": "300", "tags": ["math", "arabic", "arith", "percent", "eastern-digits"]}
+{"id": "armath-028", "problem": "حصلت هند على الدرجات ٧٢، ٤٥، ٥٨، ٤٤، ٧١ في ٥ اختبارات. ما هو متوسط درجاتها؟", "answer": "58", "tags": ["math", "arabic", "arith", "average", "eastern-digits"]}
+{"id": "armath-029", "problem": "حصلت مريم على الدرجات 98، 70، 54، 98 في 4 اختبارات. ما هو متوسط درجاتها؟", "answer": "80", "tags": ["math", "arabic", "arith", "average"]}
+{"id": "armath-030", "problem": "حصلت ليلى على الدرجات ٦٤، ٨٤، ٦٠، ٦٨، ٧٩ في ٥ اختبارات. ما هو متوسط درجاتها؟", "answer": "71", "tags": ["math", "arabic", "arith", "average", "eastern-digits"]}
+{"id": "armath-031", "problem": "حصلت فاطمة على الدرجات 73، 52، 98، 58، 87، 94 في 6 اختبارات. ما هو متوسط درجاتها؟", "answer": "77", "tags": ["math", "arabic", "arith", "average"]}
+{"id": "armath-032", "problem": "لدينا ٢٠٠ تفاحة نضعها في صناديق تتسع كل منها ١١ تفاحة. كم صندوقاً ممتلئاً نحصل عليه؟", "answer": "18", "tags": ["math", "arabic", "arith", "division", "eastern-digits"]}
+{"id": "armath-033", "problem": "لدينا 524 تفاحة نضعها في صناديق تتسع كل منها 20 تفاحة. كم صندوقاً ممتلئاً نحصل عليه؟", "answer": "26", "tags": ["math", "arabic", "arith", "division"]}
+{"id": "armath-034", "problem": "لدينا ٢٠٣ تفاحة نضعها في صناديق تتسع كل منها ١٠ تفاحة. كم صندوقاً ممتلئاً نحصل عليه؟", "answer": "20", "tags": ["math", "arabic", "arith", "division", "eastern-digits"]}
+{"id": "armath-035", "problem": "لدينا 387 تفاحة نضعها في صناديق تتسع كل منها 19 تفاحة. كم صندوقاً ممتلئاً نحصل عليه؟", "answer": "20", "tags": ["math", "arabic", "arith", "division"]}
+{"id": "armath-036", "problem": "فكّر يوسف في عدد، ضربه في ٤ ثم أضاف ٣٨، فكانت النتيجة ١٢٢. ما هو العدد الأصلي؟", "answer": "21", "tags": ["math", "arabic", "algebra", "linear", "eastern-digits"]}
+{"id": "armath-037", "problem": "فكّر عمر في عدد، ضربه في 7 ثم أضاف 37، فكانت النتيجة 261. ما هو العدد الأصلي؟", "answer": "32", "tags": ["math", "arabic", "algebra", "linear"]}
+{"id": "armath-038", "problem": "فكّر عمر في عدد، ضربه في ٨ ثم أضاف ١٧، فكانت النتيجة ٢٧٣. ما هو العدد الأصلي؟", "answer": "32", "tags": ["math", "arabic", "algebra", "linear", "eastern-digits"]}
+{"id": "armath-039", "problem": "فكّر أحمد في عدد، ضربه في 9 ثم أضاف 27، فكانت النتيجة 270. ما هو العدد الأصلي؟", "answer": "27", "tags": ["math", "arabic", "algebra", "linear"]}
+{"id": "armath-040", "problem": "عمر الأب اليوم ٤ أمثال عمر ابنه، وعمر الابن ٦ سنوات. كم سيكون عمر الأب بعد ٦ سنوات؟", "answer": "30", "tags": ["math", "arabic", "algebra", "age", "eastern-digits"]}
+{"id": "armath-041", "problem": "عمر الأب اليوم 4 أمثال عمر ابنه، وعمر الابن 14 سنوات. كم سيكون عمر الأب بعد 5 سنوات؟", "answer": "61", "tags": ["math", "arabic", "algebra", "age"]}
+{"id": "armath-042", "problem": "عمر الأب اليوم ٣ أمثال عمر ابنه، وعمر الابن ٧ سنوات. كم سيكون عمر الأب بعد ٧ سنوات؟", "answer": "28", "tags": ["math", "arabic", "algebra", "age", "eastern-digits"]}
+{"id": "armath-043", "problem": "اشترت ليلى ٦ دفاتر بسعر ٣٣ درهماً للدفتر و٢ أقلام بسعر ٢٥ درهماً للقلم، ودفعت ٤٠٠ درهماً. كم درهماً تستعيد؟", "answer": "152", "tags": ["math", "arabic", "arith", "money", "eastern-digits"]}
+{"id": "armath-044", "problem": "اشترت عائشة 5 دفاتر بسعر 12 درهماً للدفتر و9 أقلام بسعر 58 درهماً للقلم، ودفعت 700 درهماً. كم درهماً تستعيد؟", "answer": "118", "tags": ["math", "arabic", "arith", "money"]}
+{"id": "armath-045", "problem": "اشترت سارة ٤ دفاتر بسعر ٢٨ درهماً للدفتر و٢ أقلام بسعر ٥٨ درهماً للقلم، ودفعت ٤٠٠ درهماً. كم درهماً تستعيد؟", "answer": "172", "tags": ["math", "arabic", "arith", "money", "eastern-digits"]}
+{"id": "armath-046", "problem": "اشترت ليلى 9 دفاتر بسعر 30 درهماً للدفتر و7 أقلام بسعر 28 درهماً للقلم، ودفعت 600 درهماً. كم درهماً تستعيد؟", "answer": "134", "tags": ["math", "arabic", "arith", "money"]}
+{"id": "armath-047", "problem": "يبلغ سعر هاتف ٢٤٠٠ درهماً. خُفِّض بنسبة ٢٠٪ ثم خُفِّض السعر الجديد بنسبة ١٠٪ أخرى. ما هو السعر النهائي بالدرهم؟", "answer": "1728", "tags": ["math", "arabic", "arith", "compound-percent", "hard", "eastern-digits"]}
+{"id": "armath-048", "problem": "يبلغ سعر هاتف 800 درهماً. خُفِّض بنسبة 10٪ ثم خُفِّض السعر الجديد بنسبة 20٪ أخرى. ما هو السعر النهائي بالدرهم؟", "answer": "576", "tags": ["math", "arabic", "arith", "compound-percent", "hard"]}
+{"id": "armath-049", "problem": "يبلغ سعر هاتف ٢٤٠٠ درهماً. خُفِّض بنسبة ١٠٪ ثم خُفِّض السعر الجديد بنسبة ١٠٪ أخرى. ما هو السعر النهائي بالدرهم؟", "answer": "1944", "tags": ["math", "arabic", "arith", "compound-percent", "hard", "eastern-digits"]}
+{"id": "armath-050", "problem": "احسب قيمة ٣٦ + ٩ × ٨ − ٣² باتباع ترتيب العمليات.", "answer": "99", "tags": ["math", "arabic", "arith", "order-of-operations", "hard", "eastern-digits"]}
+{"id": "armath-051", "problem": "احسب قيمة 47 + 9 × 10 − 2² باتباع ترتيب العمليات.", "answer": "133", "tags": ["math", "arabic", "arith", "order-of-operations", "hard"]}
+{"id": "armath-052", "problem": "احسب قيمة ٢٦ + ٧ × ٥ − ٢² باتباع ترتيب العمليات.", "answer": "57", "tags": ["math", "arabic", "arith", "order-of-operations", "hard", "eastern-digits"]}
+{"id": "arlogic-001", "problem": "كل المربعات مستطيلات، وكل المستطيلات أشكال رباعية. هل يلزم أن كل المربعات أشكال رباعية؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "syllogism", "valid"]}
+{"id": "arlogic-002", "problem": "كل الأطباء متعلمون، وبعض المتعلمين فقراء. هل يلزم أن بعض الأطباء فقراء؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "syllogism", "invalid", "undistributed-middle"]}
+{"id": "arlogic-003", "problem": "لا شيء من الطيور ثدييات، وكل الخفافيش ثدييات. هل يلزم أن لا شيء من الخفافيش طيور؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "syllogism", "valid"]}
+{"id": "arlogic-004", "problem": "كل الطلاب في الصف يتكلمون العربية، وسلطان طالب في الصف. هل يلزم أن سلطان يتكلم العربية؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "syllogism", "valid"]}
+{"id": "arlogic-005", "problem": "بعض الكتب مفيدة، وبعض المفيد غالٍ. هل يلزم أن بعض الكتب غالية؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "syllogism", "invalid"]}
+{"id": "arlogic-006", "problem": "كل المربعات مستطيلات، وبعض المستطيلات ليست مربعات. هل يلزم أن بعض المربعات ليست مستطيلات؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "syllogism", "invalid", "illicit-conversion"]}
+{"id": "arlogic-007", "problem": "كل الأعداد الأولية الأكبر من ٢ فردية، و٩ فردي. هل يلزم أن ٩ عدد أولي؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "syllogism", "invalid", "affirming-consequent"]}
+{"id": "arlogic-008", "problem": "لا أحد من الطلاب الغائبين نجح، وخالد نجح. هل يلزم أن خالد لم يكن غائباً؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "syllogism", "valid"]}
+{"id": "arlogic-009", "problem": "إذا أمطرت فإن الأرض تبتل. الأرض مبتلة. هل يلزم أنها أمطرت؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "propositional", "affirming-consequent"]}
+{"id": "arlogic-010", "problem": "إذا أمطرت فإن الأرض تبتل. الأرض ليست مبتلة. هل يلزم أنها لم تمطر؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "propositional", "modus-tollens"]}
+{"id": "arlogic-011", "problem": "إذا درست فاطمة فإنها تنجح. لم تدرس فاطمة. هل يلزم أنها لم تنجح؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "propositional", "denying-antecedent"]}
+{"id": "arlogic-012", "problem": "إذا كان العدد زوجياً فإنه يقبل القسمة على ٢. العدد ١٨ زوجي. هل يلزم أن ١٨ يقبل القسمة على ٢؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "propositional", "modus-ponens"]}
+{"id": "arlogic-013", "problem": "إما أن يكون المفتاح في الحقيبة أو في السيارة. المفتاح ليس في الحقيبة. هل يلزم أنه في السيارة؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "propositional", "disjunctive-syllogism"]}
+{"id": "arlogic-014", "problem": "إما أن يكون المفتاح في الحقيبة أو في السيارة. المفتاح في الحقيبة. هل يلزم أنه ليس في السيارة؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "propositional", "inclusive-or"]}
+{"id": "arlogic-015", "problem": "إذا كان أحمد في دبي فإنه في الإمارات. إذا كان في الإمارات فإنه في آسيا. هل يلزم أنه إذا كان في دبي فإنه في آسيا؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "propositional", "hypothetical-syllogism"]}
+{"id": "arlogic-016", "problem": "عمر أطول من يوسف، ويوسف أطول من خالد. هل يلزم أن عمر أطول من خالد؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "ordering", "transitivity"]}
+{"id": "arlogic-017", "problem": "عمر أطول من يوسف، وعمر أطول من خالد. هل يلزم أن يوسف أطول من خالد؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "ordering", "invalid"]}
+{"id": "arlogic-018", "problem": "ليلى أكبر سناً من نور، ونور أكبر سناً من سارة. هل يلزم أن سارة أصغر من ليلى؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "ordering", "transitivity"]}
+{"id": "arlogic-019", "problem": "أحمد يجلس على يمين خالد مباشرة، وخالد على يمين عمر مباشرة. هل يلزم أن عمر على يسار أحمد؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "ordering", "spatial"]}
+{"id": "arlogic-020", "problem": "كل عدد يقبل القسمة على ٦ يقبل القسمة على ٣. العدد ٤٥ يقبل القسمة على ٣. هل يلزم أن ٤٥ يقبل القسمة على ٦؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "divisibility", "affirming-consequent"]}
+{"id": "arlogic-021", "problem": "كل عدد يقبل القسمة على ٦ يقبل القسمة على ٣. العدد ٤٨ يقبل القسمة على ٦. هل يلزم أن ٤٨ يقبل القسمة على ٣؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "divisibility", "modus-ponens"]}
+{"id": "arlogic-022", "problem": "مجموع عددين فرديين زوجي دائماً. هل يلزم أن ٧ + ٩ زوجي؟ أجب بنعم أو لا.", "answer": "نعم", "tags": ["logic", "arabic", "parity", "valid"]}
+{"id": "arlogic-023", "problem": "إذا كان حاصل ضرب عددين صحيحين زوجياً فإن أحدهما على الأقل زوجي. حاصل ضرب أ × ب يساوي ٣٠. هل يلزم أن أ زوجي؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "parity", "invalid"]}
+{"id": "arlogic-024", "problem": "جميع الأعداد الأولية الأكبر من ٢ فردية، و١٥ فردي وأكبر من ٢. هل يلزم أن ١٥ عدد أولي؟ أجب بنعم أو لا.", "answer": "لا", "tags": ["logic", "arabic", "prime", "affirming-consequent"]}

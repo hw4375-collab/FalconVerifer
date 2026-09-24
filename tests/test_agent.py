@@ -10,6 +10,10 @@ from falconverifier.schemas import Verdict
 PROBLEM = "What is 17 * 23?"
 
 WRONG = "Step 1: 17 * 20 = 340.\nStep 2: 17 * 3 = 51.\nStep 3: 340 + 51 = 381.\nFINAL ANSWER: 381"
+WRONG_PROSE = (
+    "Step 1: Multiplying 17 by 20 gives 340.\nStep 2: Multiplying 17 by 3 gives 51.\n"
+    "Step 3: Adding 340 and 51 gives 381.\nFINAL ANSWER: 381"
+)
 RIGHT = "Step 1: 17 * 20 = 340.\nStep 2: 17 * 3 = 51.\nStep 3: 340 + 51 = 391.\nFINAL ANSWER: 391"
 
 
@@ -72,8 +76,9 @@ def test_loop_teaches_and_student_fixes(settings):
 
 
 def test_unfaithful_refutation_is_downgraded_not_taught(settings):
-    student = ScriptedModel([WRONG])
-    # props mention numbers the student never wrote (99), so the audit must be consulted
+    # prose steps (outside the pregroup fragment) so the LLM formalizer is used, and props
+    # mention numbers the student never wrote (99), so the audit must be consulted
+    student = ScriptedModel([WRONG_PROSE])
     formalizer = ScriptedModel(
         [
             form_json("(340:ℕ) + 99 = 381", "(17:ℕ) * 99 = 381"),
@@ -126,7 +131,7 @@ def test_ill_formed_triggers_one_repair(settings):
             "steps": [{"index": 1, "kind": "arith", "lean_prop": "(17:ℕ) * 20 = 340"}],
         }
     )
-    student = ScriptedModel(["Step 1: 17 * 20 = 340\nFINAL ANSWER: 391"])
+    student = ScriptedModel(["Step 1: Multiplying 17 by 20 gives 340\nFINAL ANSWER: 391"])
     formalizer = ScriptedModel([bad, good])
     runner = FakeRunner({**TABLE, "undefined_symbol = 1": Verdict.ILL_FORMED})
     agent = VerifyAndTeachAgent(

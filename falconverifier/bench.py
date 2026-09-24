@@ -14,6 +14,7 @@ from rich.console import Console
 from rich.table import Table
 
 from .agent import VerifyAndTeachAgent
+from .arabic import normalize_digits
 from .config import Settings
 from .schemas import Trace, Verdict
 
@@ -44,7 +45,7 @@ def _to_number(s: str) -> Fraction | None:
 def answers_match(pred: str | None, expected: str) -> bool:
     if pred is None:
         return False
-    p, e = pred.strip().lower(), expected.strip().lower()
+    p, e = normalize_digits(pred).strip().lower(), normalize_digits(expected).strip().lower()
     if e in {"yes", "no", "true", "false", "valid", "invalid"}:
         p_word = re.sub(r"[^a-z\u0621-\u064a]", " ", p).split()
         syn = {"yes": {"yes", "true", "valid", "نعم"}, "no": {"no", "false", "invalid", "لا"}}

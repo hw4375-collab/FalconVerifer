@@ -75,10 +75,22 @@ theorem s1_neg : ¬ P := by fv_auto    -- can Lean prove its negation?
 | ✗ | ✗ | unknown (out of reach of automation; soft hint) |
 | type error | – | ill-formed (formalizer repaired once, then soft hint) |
 
-Only **refuted** claims generate strong feedback. A second *faithfulness audit*
-(formalizer re-reads NL step vs. Lean prop, checking polarity/numbers) downgrades a
-refutation to `unknown` if the Lean claim does not faithfully encode what Falcon said —
-this is what keeps the false-alarm rate low.
+Only **refuted** claims generate strong feedback, and a refutation has to survive three
+guards before it is taught:
+
+1. **ℚ-lift recheck** — a refuted claim using `/` or `-` over ℕ/ℤ is re-proved over ℚ, so
+   `(50:ℕ)/100*150 = 75` (false only because ℕ-division truncates) is not a false alarm.
+2. **Literal grounding** — if every number in the Lean prop appears in Falcon's own step
+   or the problem text, the refutation is pure arithmetic over Falcon's numbers and is
+   accepted without asking any LLM. This is the deterministic fast path.
+3. **Faithfulness audit** (only for props that introduce numbers or structure Falcon did
+   not write) — the formalizer re-reads NL step vs. Lean prop, checking polarity/numbers/
+   operations, and downgrades the refutation to `unknown` if the translation is unfaithful.
+
+A fourth check runs in the other direction: if Lean **verified** `problem_prop` but the
+value it computes is not the number after `FINAL ANSWER:`, the stated answer is flagged as
+inconsistent with Falcon's own derivation (weak students often derive the right value and
+then write a different one).
 
 ## Benchmark
 

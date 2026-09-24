@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .arabic import is_arabic
 from .config import Settings
 from .feedback import build_feedback
 from .formalizer import Formalizer
@@ -94,9 +95,12 @@ class VerifyAndTeachAgent:
         A refutation is a strong claim ("Lean proved you wrong"), so it must survive a
         faithfulness check; otherwise it is downgraded to `unknown`.
         """
+        grammar_steps = {fs.index for fs in form.steps if fs.note.startswith("pregroup:")}
         for s in report.steps:
             if s.verdict != Verdict.REFUTED or not s.lean_prop:
                 continue
+            if s.index in grammar_steps:
+                continue  # deterministic translation with a derivation certificate
             if literals_grounded(s.lean_prop, s.step_text, problem) and "¬" not in s.lean_prop:
                 continue  # pure arithmetic over the student's own numbers: no LLM opinion needed
             ok, reason = self.formalizer.audit(problem, s.step_text, s.lean_prop)
@@ -107,6 +111,7 @@ class VerifyAndTeachAgent:
         if (
             report.final_answer_verdict == Verdict.REFUTED
             and form.problem_prop
+            and form.raw != "pregroup"
             and not report.final_answer_detail.startswith("inconsistent final answer")
             and not literals_grounded(form.problem_prop, problem, final_answer or "")
         ):
@@ -156,7 +161,11 @@ class VerifyAndTeachAgent:
             last_report = report
 
             done = not report.has_errors
-            feedback = None if done or r == max_rounds - 1 else build_feedback(report, form)
+            feedback = (
+                None
+                if done or r == max_rounds - 1
+                else build_feedback(report, form, arabic=is_arabic(problem))
+            )
             rounds.append(
                 Round(
                     round_index=r + 1,
@@ -170,7 +179,12 @@ class VerifyAndTeachAgent:
                 break
             if feedback:
                 self._emit("feedback", round=r + 1, feedback=feedback)
-                history.append({"role": "user", "content": Student.revision_message(feedback)})
+                history.append(
+                    {
+                        "role": "user",
+                        "content": Student.revision_message(feedback, arabic=is_arabic(problem)),
+                    }
+                )
 
         status = status_of(last_report)
         if status == "refuted" and len(rounds) == max_rounds:

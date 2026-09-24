@@ -4,6 +4,7 @@ import json
 import logging
 import re
 
+from . import arabic
 from .llm import ChatModel, extract_json
 from .schemas import Formalization, FormalStep, ReasoningStep
 
@@ -54,6 +55,10 @@ Translation rules (follow strictly):
   answer is Yes, or its negation `¬ (...)` if the answer is No.
 - Prefer simple expressions the tactics norm_num / decide / omega / linarith can close.
 - Never invent facts that are not in the problem or the steps.
+- The problem and steps may be in Arabic (Modern Standard Arabic, possibly with Eastern
+  Arabic digits ٠١٢٣٤٥٦٧٨٩). Translate the mathematics exactly as written; word order
+  (VSO/SVO) does not change the claim. «نعم» = Yes, «لا» = No, «كل» = all, «بعض» = some,
+  «ليس»/«لا» = not, «إذا ... فإن» = if ... then, «يقبل القسمة على» = is divisible by.
 """
 
 FEWSHOT_USER = """PROBLEM:
@@ -151,11 +156,39 @@ class Formalizer:
     def formalize(
         self, problem: str, steps: list[ReasoningStep], final: str | None
     ) -> tuple[Formalization, list[dict[str, str]]]:
+        """Grammar first, LLM second.
+
+        Steps inside the pregroup fragment (Arabic or symbolic arithmetic) are translated
+        deterministically with a derivation certificate (`note="pregroup: ..."`); only the
+        remaining steps (and the problem claim, if the grammar could not parse the
+        question) are sent to the LLM.
+        """
+        grammar: dict[int, FormalStep] = {}
+        for s in steps:
+            hit = arabic.formalize_step(s.text)
+            if hit:
+                prop, deriv = hit
+                grammar[s.index] = FormalStep(
+                    index=s.index, kind="arith", lean_prop=prop, note=f"pregroup: {deriv}"
+                )
+        problem_hit = arabic.formalize_problem(problem, final)
+
+        if len(grammar) == len(steps) and problem_hit:
+            form = Formalization(
+                problem_prop=problem_hit[0],
+                steps=[grammar[s.index] for s in steps],
+                raw="pregroup",
+            )
+            return form, self._messages(problem, steps, final)
+
         messages = self._messages(problem, steps, final)
         resp = self.model.chat(messages, temperature=0.0, max_tokens=self.max_tokens)
         messages.append({"role": "assistant", "content": resp.content})
         form = self._parse(resp.content, steps)
         form.latency_s = resp.latency_s
+        form.steps = [grammar.get(fs.index, fs) for fs in form.steps]
+        if problem_hit:
+            form.problem_prop = problem_hit[0]
         return form, messages
 
     def repair(

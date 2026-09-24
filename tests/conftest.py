@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import shutil
 from pathlib import Path
 
@@ -41,6 +42,13 @@ class ScriptedModel:
         )
 
 
+def _norm(prop: str) -> str:
+    """Ignore the numeric type ascription so `(17:ℚ) * 20 = (340:ℚ)` hits `(17:ℕ) * 20 = 340`."""
+
+    prop = prop.replace(":ℚ", ":ℕ")
+    return re.sub(r"\((\d+):ℕ\)(?=\s*$)", r"\1", prop)
+
+
 class FakeRunner:
     """Lean stand-in: verdict decided by a lookup table on the prop text."""
 
@@ -51,7 +59,8 @@ class FakeRunner:
     def check_claims(self, claims: dict[str, str]) -> LeanRunResult:
         self.seen.append(dict(claims))
         outcomes = {
-            cid: ClaimOutcome(self.table.get(p, Verdict.UNKNOWN), "") for cid, p in claims.items()
+            cid: ClaimOutcome(self.table.get(_norm(p), Verdict.UNKNOWN), "")
+            for cid, p in claims.items()
         }
         return LeanRunResult(outcomes, [], "", 0.0)
 
