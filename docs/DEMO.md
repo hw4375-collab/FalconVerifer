@@ -58,6 +58,10 @@ Paste **«ما هو ناتج ١٧ × ٢٣؟»** (Eastern digits on purpose). Sho
    says which two word forms it identified. Lean **decides** the item: a 3B «نعم» is refuted
    by a countermodel, a «لا» is verified. Point out that this is exactly the slice where the
    LLM formalizer used to catch 0/8 errors.
+5. If Falcon said «نعم», read the **feedback card**: it does not say "Lean disagrees" — it
+   hands Falcon the witness in Arabic («مثال مضاد: «الأطباء» = {x0}، «متعلمون» = {x0، x1}،
+   «أثرياء» = {x1} … كل المقدمات صحيحة ولكن النتيجة خاطئة»). Round 2 then shows the revised
+   «لا» verified. Benchmark: with this feedback 3B Arabic logic went 70.8% → 91.7%, 0 false alarms.
 
 > "Arabic has free word order and morphology that carries meaning — the translation step is
 > where hallucination hides. For the arithmetic fragment we removed the LLM from it entirely;
