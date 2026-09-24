@@ -115,3 +115,21 @@ def test_pregroup_props_are_decidable_by_fv_auto(runner: LeanRunner):
     res = runner.check_claims(claims)
     for k, (_, want) in cases.items():
         assert res.outcomes[k].verdict == want, (k, claims[k], res.outcomes[k])
+
+
+def test_counterexample_search_refutes_false_universals(runner: LeanRunner):
+    res = runner.check_claims(
+        {
+            "div3_div6": "∀ (n : ℕ), n % 3 = 0 → n % 6 = 0",
+            "not_div3_div6": "¬ (∀ (n : ℕ), n % 3 = 0 → n % 6 = 0)",
+            "div6_div3": "∀ (n : ℕ), n % 6 = 0 → n % 3 = 0",
+            "not_transitive": "¬ (∀ (a b c : ℤ), a > b → b > c → a > c)",
+            "sq_nonneg": "∀ (x : ℝ), x ^ 2 - 2 * x + 1 ≥ 0",
+        }
+    )
+    v = {k: o.verdict for k, o in res.outcomes.items()}
+    assert v["div3_div6"] == Verdict.REFUTED
+    assert v["not_div3_div6"] == Verdict.VERIFIED
+    assert v["div6_div3"] == Verdict.VERIFIED
+    assert v["not_transitive"] == Verdict.REFUTED
+    assert v["sq_nonneg"] == Verdict.VERIFIED

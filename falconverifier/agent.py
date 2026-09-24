@@ -116,7 +116,9 @@ class VerifyAndTeachAgent:
             and not literals_grounded(form.problem_prop, problem, final_answer or "")
         ):
             ok, reason = self.formalizer.audit(
-                problem, "The final answer claim for this problem", form.problem_prop
+                problem,
+                f"The student's FINAL ANSWER to the question is: {final_answer!r}",
+                form.problem_prop,
             )
             if not ok:
                 report.final_answer_verdict = Verdict.UNKNOWN

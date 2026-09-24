@@ -16,40 +16,55 @@ log = logging.getLogger(__name__)
 # Tactic cascade: each alternative must fully close the goal (`done`), otherwise `first`
 # moves on. Covers arithmetic (norm_num/omega/ring), inequalities (linarith/nlinarith),
 # finite-model logic (decide over Fin n -> Bool), and propositional logic (tauto).
-FV_AUTO_MACRO = """macro "fv_auto" : tactic => `(tactic| first
-  | (decide; done)
-  | (norm_num; done)
-  | (omega; done)
-  | (simp; done)
-  | (rfl; done)
-  | (intros; tauto; done)
-  | (intros; omega; done)
-  | (intros; linarith; done)
-  | (intros; nlinarith; done)
-  | (intros; simp_all; done)
-  | (intros; norm_num at *; done)
-  | (intros; simp_all; omega; done)
-  | (intros; simp_all; linarith; done)
-  | (intros; simp_all; nlinarith; done)
-  | (intros; aesop; done)
-  | (ring_nf; done)
-  | (norm_num; ring_nf; done)
-  | (field_simp; ring_nf; done)
-  | (positivity; done)
-  | (intros; decide; done)
-  | (intros; simp_all; decide; done)
-  | (simp; decide; done)
-  | (push Not; intros; simp_all; decide; done)
-  | (push Not; norm_num; done)
-  | (push Not; decide; done)
-  | (push Not; intros; simp_all; done)
-  | (push Not; intros; simp_all; omega; done)
-  | (push Not; intros; simp_all; linarith; done)
-  | (push Not; intros; aesop; done)
-  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)
-  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)
-  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))
-"""
+_WITNESSES_1 = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 21)
+_WITNESSES_2 = ((0, 0), (0, 1), (1, 0), (1, 2), (2, 1), (2, 3), (3, 2), (2, 15), (3, 10), (5, 6))
+_CLOSERS = ("norm_num", "omega", "decide")
+
+_FV_ALTERNATIVES = [
+    "decide",
+    "norm_num",
+    "omega",
+    "simp",
+    "rfl",
+    "intros; tauto",
+    "intros; omega",
+    "intros; linarith",
+    "intros; simp_all",
+    "intros; norm_num at *",
+    "intros; simp_all; omega",
+    "intros; simp_all; linarith",
+    "intros; simp_all; nlinarith",
+    "intros; aesop",
+    "ring_nf",
+    "norm_num; ring_nf",
+    "field_simp; ring_nf",
+    "positivity",
+    "intros; decide",
+    "intros; simp_all; decide",
+    "simp; decide",
+    "push Not; intros; simp_all; decide",
+    "push Not; norm_num",
+    "push Not; decide",
+    "push Not; intros; simp_all",
+    "push Not; intros; simp_all; omega",
+    "push Not; intros; simp_all; linarith",
+    "push Not; intros; aesop",
+    # counterexample search for refuting `∀ n, …` / `∀ a b, …` over small literals
+    *(f"push Not; refine ⟨{k}, ?_⟩; {t}" for k in _WITNESSES_1 for t in _CLOSERS),
+    *(f"push Not; refine ⟨{a}, {b}, ?_⟩; {t}" for a, b in _WITNESSES_2 for t in _CLOSERS),
+    "intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]",
+    "intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]",
+    "rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]",
+    "intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]",
+    # last: bare nlinarith can *log* (not throw) an error on ∀-hypotheses, which `first`
+    # cannot backtrack from, so nothing may come after it
+    "intros; nlinarith",
+]
+FV_AUTO_MACRO = (
+    'macro "fv_auto" : tactic => `(tactic| first\n'
+    + "\n".join(f"  | ({alt}; done)" for alt in _FV_ALTERNATIVES)
+    + ")\n"
+)
 
 HEADER = (
     "import Mathlib\n"

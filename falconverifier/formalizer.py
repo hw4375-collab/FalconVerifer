@@ -55,6 +55,9 @@ Translation rules (follow strictly):
   write `(3:ℕ) * 12 - 7 = 31`. For yes/no logic questions use the full logical statement if the
   answer is Yes, or its negation `¬ (...)` if the answer is No.
 - Prefer simple expressions the tactics norm_num / decide / omega / linarith can close.
+- Mathlib names: `Nat.Prime p`, `Odd n`, `Even n`, `a ∣ b` (divides), `n % 3 = 0`; never bare
+  `prime`, `odd`, `mod`. A single counterexample question ("does 3 ∣ n imply 6 ∣ n?") is a
+  closed ∀ over ℕ, negated `¬ (∀ n : ℕ, …)` when the answer is No.
 - Never invent facts that are not in the problem or the steps.
 - The problem and steps may be in Arabic (Modern Standard Arabic, possibly with Eastern
   Arabic digits ٠١٢٣٤٥٦٧٨٩). Translate the mathematics exactly as written; word order
@@ -111,6 +114,12 @@ Do NOT judge whether the step is mathematically correct — a faithful translati
 step is still faithful (answer true). Answer false ONLY if the proposition says something
 different from the step (wrong numbers, wrong operation, flipped negation, extra or missing
 premises).
+
+If the step is the student's FINAL ANSWER to a yes/no question, the proposition must say
+"the answer is correct": for "Yes" it is the inference itself (premises → conclusion), for
+"No" it is the NEGATION `¬ (…)` of that inference. A proposition of that shape whose premises
+and conclusion match the question IS faithful, even though it is more general than the
+question's named individuals (finite domains and bound variables stand for them).
 
 Problem: {problem}
 Step text: {step}
