@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import time
 from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from . import arabic_logic
 from .arabic import is_arabic
 from .config import Settings
 from .feedback import build_feedback
@@ -76,6 +78,20 @@ class VerifyAndTeachAgent:
         )
         self.runner = runner or LeanRunner(settings.lean_project_dir, settings.lean_timeout)
         self.on_event = on_event or (lambda kind, payload: None)
+
+    @staticmethod
+    def _yes_no_context(problem: str, form: Formalization, final: str | None) -> dict[str, Any]:
+        """Polarity of a yes/no final (when the problem prop is an inference) and, for the
+        deterministic Arabic logic fragment, the concrete countermodel behind a refuted «نعم»."""
+        if not form.problem_prop or not re.search(r"[∀∃→]", form.problem_prop):
+            return {}
+        pol = yes_no_polarity(final)
+        if pol is None:
+            return {}
+        cm = None
+        if pol and form.problem_note.startswith("pregroup:"):
+            cm = arabic_logic.countermodel(problem)
+        return {"polarity": pol, "countermodel": cm}
 
     def _emit(self, kind: str, **payload: Any) -> None:
         try:
@@ -185,7 +201,11 @@ class VerifyAndTeachAgent:
                 None
                 if done or r == max_rounds - 1
                 else build_feedback(
-                    report, form, arabic=is_arabic(problem), missing_final=missing_final
+                    report,
+                    form,
+                    arabic=is_arabic(problem),
+                    missing_final=missing_final,
+                    **self._yes_no_context(problem, form, answer.final_answer),
                 )
             )
             rounds.append(

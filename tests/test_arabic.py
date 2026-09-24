@@ -246,3 +246,47 @@ def test_logic_fragment_polarity_is_aligned_with_the_answer():
     prop, _ = formalize_logic_problem(UNDISTRIBUTED)
     assert align_polarity(prop, "نعم") == prop
     assert align_polarity(prop, "لا") == f"¬ ({prop})"
+
+
+def test_countermodel_agrees_with_answer_key_on_the_fragment():
+    import json
+    from pathlib import Path
+
+    from falconverifier.arabic_logic import countermodel, formalize_logic_problem
+
+    n = 0
+    for line in (Path(__file__).parent.parent / "bench/problems_ar.jsonl").read_text().splitlines():
+        d = json.loads(line)
+        if not d["id"].startswith("arlogic") or not formalize_logic_problem(d["problem"]):
+            continue
+        cm = countermodel(d["problem"])
+        assert (cm is None) == (d["answer"] == "نعم"), d["id"]
+        n += 1
+    assert n >= 16
+    cm = countermodel(UNDISTRIBUTED)
+    assert cm.startswith("مثال مضاد") and "«الأطباء» = {x0}" in cm and "فقراء" in cm
+
+
+def test_yes_no_feedback_names_the_polarity_and_the_witness():
+    from falconverifier.arabic_logic import countermodel, formalize_logic_problem
+    from falconverifier.feedback import build_feedback
+    from falconverifier.schemas import Formalization, Verdict, VerificationReport
+
+    prop, cert = formalize_logic_problem(UNDISTRIBUTED)
+    rep = VerificationReport(
+        steps=[],
+        final_answer_verdict=Verdict.REFUTED,
+        final_answer_detail="Lean proved the negation of this claim.",
+        lean_file="",
+        lean_latency_s=0,
+    )
+    form = Formalization(steps=[], problem_prop=prop, problem_note=f"pregroup: {cert}")
+    fb = build_feedback(
+        rep, form, arabic=True, polarity=True, countermodel=countermodel(UNDISTRIBUTED)
+    )
+    assert "أجبت «نعم»" in fb and "مثال مضاد" in fb and "«لا»" in fb
+    form = Formalization(steps=[], problem_prop=f"¬ ({prop})", problem_note=f"pregroup: {cert}")
+    fb = build_feedback(rep, form, arabic=True, polarity=False)
+    assert "أجبت «لا»" in fb and f"`{prop}` مبرهنة" in fb
+    fb = build_feedback(rep, form, arabic=False, polarity=False)
+    assert fb.startswith("You answered NO")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from .formalizer import _outer_negation
 from .schemas import Formalization, Verdict, VerificationReport
 
 _EN = {
@@ -15,6 +16,16 @@ _EN = {
     "final_refuted": (
         "The proof assistant PROVED that your FINAL ANSWER is inconsistent with the "
         "problem data. Formal check: `{p}` is FALSE."
+    ),
+    "yes_wrong": (
+        "You answered YES, but Lean 4 proved that the conclusion does NOT follow from the "
+        "premises: there is a situation in which every premise holds and the conclusion fails, "
+        "so the correct answer is NO."
+    ),
+    "no_wrong": (
+        "You answered NO, but Lean 4 proved that the conclusion follows necessarily from the "
+        "premises: `{p}` is a theorem, so the correct answer is YES. Re-derive the chain of "
+        "inferences from the premises."
     ),
     "verified": "Steps verified correct by Lean 4: {ok}.",
     "final_ok": "Your final answer was verified against the problem data.",
@@ -41,6 +52,14 @@ _AR = {
     "final_refuted": (
         "أثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `{p}` خاطئ."
     ),
+    "yes_wrong": (
+        "أجبت «نعم»، لكن Lean 4 أثبت أن النتيجة لا تلزم من المقدمات: توجد حالة تكون فيها كل "
+        "المقدمات صحيحة والنتيجة خاطئة، فالجواب الصحيح هو «لا»."
+    ),
+    "no_wrong": (
+        "أجبت «لا»، لكن Lean 4 أثبت أن النتيجة تلزم بالضرورة من المقدمات: `{p}` مبرهنة، "
+        "فالجواب الصحيح هو «نعم». أعد استنتاج سلسلة اللوازم من المقدمات خطوة خطوة."
+    ),
     "verified": "الخطوات التي تحقق Lean 4 من صحتها: {ok}.",
     "final_ok": "تم التحقق من جوابك النهائي مقابل بيانات المسألة.",
     "soft": "خطوات لم يمكن فحصها آلياً (أعد النظر فيها): {idx}.",
@@ -60,6 +79,8 @@ def build_feedback(
     form: Formalization,
     arabic: bool = False,
     missing_final: bool = False,
+    polarity: bool | None = None,
+    countermodel: str | None = None,
 ) -> str:
     """Turn Lean verdicts into a concise teaching message for the student model.
 
@@ -80,6 +101,13 @@ def build_feedback(
         "inconsistent final answer"
     ):
         lines.append(t["final_inconsistent"].format(p=form.problem_prop))
+    elif report.final_answer_verdict == Verdict.REFUTED and polarity is True:
+        lines.append(t["yes_wrong"])
+        if countermodel:
+            lines.append(countermodel)
+    elif report.final_answer_verdict == Verdict.REFUTED and polarity is False:
+        inner = _outer_negation(form.problem_prop or "") or form.problem_prop
+        lines.append(t["no_wrong"].format(p=inner))
     elif report.final_answer_verdict == Verdict.REFUTED:
         lines.append(t["final_refuted"].format(p=form.problem_prop))
     if report.verified:

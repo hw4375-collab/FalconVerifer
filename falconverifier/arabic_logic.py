@@ -17,7 +17,9 @@ exhaustive search — syllogistic/propositional invalidity always has a tiny wit
 from __future__ import annotations
 
 import re
+from collections.abc import Iterator
 from dataclasses import dataclass, field
+from itertools import product
 
 from .arabic import normalize_digits
 
@@ -281,15 +283,20 @@ class _Symbols:
         self._ident(sym, surface)
         return sym
 
-    def atom(self, key: tuple[str, ...], surface: str) -> str:
+    def lookup_atom(self, key: tuple[str, ...]) -> str | None:
         for k, sym in self.atoms:
             if (
                 k == key
                 or (len(k) > len(key) and k[-len(key) :] == key)
                 or (len(key) > len(k) and key[-len(k) :] == k)
             ):
-                self._ident(sym, surface)
                 return sym
+        return None
+
+    def atom(self, key: tuple[str, ...], surface: str) -> str:
+        if (sym := self.lookup_atom(key)) is not None:
+            self._ident(sym, surface)
+            return sym
         sym = "PQRSTUVW"[len(self.atoms)]
         self.atoms.append((key, sym))
         self._ident(sym, surface)
@@ -389,25 +396,35 @@ def _arith_content(c: Clause) -> bool:
     )
 
 
-def formalize_logic_problem(problem: str) -> tuple[str, str] | None:
-    """«premises. هل يلزم أن conclusion؟» -> universally closed `premises → conclusion` over a
-    finite Bool model, plus a certificate. None if any sentence is outside the fragment."""
+@dataclass
+class _Analysis:
+    premises: list[Clause]
+    conclusion: Clause
+    symbols: _Symbols
+    cert: Certificate
+    prem: list[str]
+    goal: str
+    n: int
+
+
+def _analyze(problem: str) -> _Analysis | None:
     split = _split_sentences(problem)
     if not split:
         return None
     sents, question = split
-    clauses = [parse_clause(s) for s in sents]
+    parsed = [parse_clause(s) for s in sents]
     concl = parse_clause(question)
-    if concl is None or any(c is None for c in clauses):
+    if concl is None or any(c is None for c in parsed):
         return None
-    fams = {c.args[0] for c in [*clauses, concl] if c and c.kind == "cmp"}
+    clauses = [c for c in parsed if c]
+    fams = {c.args[0] for c in [*clauses, concl] if c.kind == "cmp"}
     if len(fams) > 1:
         return None
-    if any(_arith_content(c) for c in [*clauses, concl] if c):
+    if any(_arith_content(c) for c in [*clauses, concl]):
         return None
     cert = Certificate()
     S = _Symbols(cert)
-    prem = [_render(c, S) for c in clauses if c]
+    prem = [_render(c, S) for c in clauses]
     before = {s for _, s in S.preds} | {s for _, s in S.atoms}
     goal = _render(concl, S)
     if ({s for _, s in S.preds} | {s for _, s in S.atoms}) - before:
@@ -415,9 +432,17 @@ def formalize_logic_problem(problem: str) -> tuple[str, str] | None:
         # identification was missed (or the question is outside the fragment) — do not
         # manufacture a "No" out of a translation gap
     for c in [*clauses, concl]:
-        if c:
-            cert.schemas.append(f"{c.kind}⟦{c.src}⟧")
-    n = max(3, len(S.inds) + 1)
+        cert.schemas.append(f"{c.kind}⟦{c.src}⟧")
+    return _Analysis(clauses, concl, S, cert, prem, goal, max(3, len(S.inds) + 1))
+
+
+def formalize_logic_problem(problem: str) -> tuple[str, str] | None:
+    """«premises. هل يلزم أن conclusion؟» -> universally closed `premises → conclusion` over a
+    finite Bool model, plus a certificate. None if any sentence is outside the fragment."""
+    an = _analyze(problem)
+    if an is None:
+        return None
+    S, cert, prem, goal, n = an.symbols, an.cert, an.prem, an.goal, an.n
     binders = []
     if S.preds:
         binders.append(f"({' '.join(s for _, s in S.preds)} : Fin {n} → Bool)")
@@ -433,3 +458,99 @@ def formalize_logic_problem(problem: str) -> tuple[str, str] | None:
     prop = f"∀ {' '.join(binders)}, {body}"
     cert.schemas.insert(0, f"finite model Fin {n}")
     return prop, cert.render()
+
+
+@dataclass
+class _Model:
+    preds: dict[str, frozenset[int]]
+    inds: dict[str, int]
+    atoms: dict[str, bool]
+    ords: dict[str, int]
+
+
+def _holds(c: Clause, S: _Symbols, m: _Model) -> bool:
+    def pred(key: tuple[str, ...]) -> frozenset[int]:
+        return m.preds[next(sym for k, sym in S.preds if k == key)]
+
+    def atom(key: tuple[str, ...]) -> bool:
+        sym = S.lookup_atom(key)
+        assert sym is not None
+        return m.atoms[sym]
+
+    if c.kind in {"all", "some", "none"}:
+        a, b = pred(c.args[0]), pred(c.args[1])
+        want = not c.neg if c.kind != "none" else False
+        if c.kind == "some":
+            return any((x in b) == want for x in a)
+        return all((x in b) == want for x in a)
+    if c.kind == "ind":
+        return (m.inds[S.inds[c.args[0]]] in pred(c.args[1])) == (not c.neg)
+    if c.kind == "prop":
+        return atom(c.args[0]) == (not c.neg)
+    if c.kind == "if":
+        (n1, a1), (n2, a2) = c.args
+        return (atom(a1) != (not n1)) or (atom(a2) == (not n2))
+    if c.kind == "or":
+        (n1, a1), (n2, a2) = c.args
+        return (atom(a1) == (not n1)) or (atom(a2) == (not n2))
+    if c.kind == "cmp":
+        return m.ords[S.ords[c.args[1]]] > m.ords[S.ords[c.args[2]]]
+    raise ValueError(c.kind)
+
+
+def _models(an: _Analysis) -> Iterator[_Model]:
+    S, n = an.symbols, an.n
+    dom = range(n)
+    psyms = [s for _, s in S.preds]
+    asyms = [s for _, s in S.atoms]
+    isyms = list(S.inds.values())
+    osyms = list(S.ords.values())
+    subsets = [frozenset(x for x in dom if bits >> x & 1) for bits in range(1 << n)]
+    for ps in product(subsets, repeat=len(psyms)):
+        for is_ in product(dom, repeat=len(isyms)):
+            for as_ in product((False, True), repeat=len(asyms)):
+                for os_ in product(range(len(osyms) + 1), repeat=len(osyms)):
+                    yield _Model(
+                        dict(zip(psyms, ps, strict=True)),
+                        dict(zip(isyms, is_, strict=True)),
+                        dict(zip(asyms, as_, strict=True)),
+                        dict(zip(osyms, os_, strict=True)),
+                    )
+
+
+def countermodel(problem: str) -> str | None:
+    """An Arabic description of a finite situation in which every premise holds and the
+    conclusion fails — the concrete witness behind Lean's refutation of a wrong «نعم».
+    None when the inference is valid or the question is outside the fragment."""
+    an = _analyze(problem)
+    if an is None:
+        return None
+    S = an.symbols
+    witnesses = (
+        m
+        for m in _models(an)
+        if all(_holds(c, S, m) for c in an.premises) and not _holds(an.conclusion, S, m)
+    )
+    # prefer situations where every class is inhabited: «there are no doctors» is a valid
+    # countermodel but a poor lesson
+    m = min(witnesses, key=lambda m: sum(not v for v in m.preds.values()), default=None)
+    if m is None:
+        return None
+    fam = next((c.args[0] for c in [*an.premises, an.conclusion] if c.kind == "cmp"), "")
+    measure = {"height": "طول", "age": "عمر", "position": "موضع"}.get(fam, "قيمة")
+
+    def surf(sym: str) -> str:
+        return S.cert.idents.get(sym, [sym])[0]
+
+    def elems(xs: frozenset[int]) -> str:
+        return "{" + "، ".join(f"x{x}" for x in sorted(xs)) + "}" if xs else "∅"
+
+    parts = [f"«{surf(s)}» = {elems(v)}" for s, v in m.preds.items()]
+    parts += [f"{surf(s)} = x{v}" for s, v in m.inds.items()]
+    parts += [f"«{surf(s)}» {'صحيح' if v else 'خاطئ'}" for s, v in m.atoms.items()]
+    parts += [f"{measure}({surf(s)}) = {v}" for s, v in m.ords.items()]
+    dom = "، ".join(f"x{i}" for i in range(an.n))
+    return (
+        f"مثال مضاد (عالم من العناصر {dom}): " + "، ".join(parts) + ". "
+        f"في هذا الوضع كل المقدمات صحيحة ولكن «{an.conclusion.src}» خاطئة."
+    )
