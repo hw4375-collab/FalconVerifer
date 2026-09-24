@@ -52,6 +52,12 @@ Paste **«ما هو ناتج ١٧ × ٢٣؟»** (Eastern digits on purpose). Sho
    faithfulness certificate.
 3. Optional catch: paste **«١٧ × ٢٣ يساوي ٣٨١»** as the problem → Lean refutes
    `(17:ℚ) * 23 = (381:ℚ)` and the feedback card is in Arabic.
+4. Logic: click **«عربي · منطق»** («كل الأطباء متعلمون، وبعض المتعلمين أثرياء. هل يلزم أن
+   بعض الأطباء أثرياء؟»). The *final* row shows a closed statement over `Fin 3 → Bool` and,
+   under it, the certificate `all⟦…⟧; some⟦…⟧; B := متعلمون ≡ المتعلمين` — the grammar
+   says which two word forms it identified. Lean **decides** the item: a 3B «نعم» is refuted
+   by a countermodel, a «لا» is verified. Point out that this is exactly the slice where the
+   LLM formalizer used to catch 0/8 errors.
 
 > "Arabic has free word order and morphology that carries meaning — the translation step is
 > where hallucination hides. For the arithmetic fragment we removed the LLM from it entirely;
