@@ -64,8 +64,8 @@ Translation rules (follow strictly):
   (VSO/SVO) does not change the claim. «نعم» = Yes, «لا» = No, «كل» = all, «بعض» = some,
   «ليس»/«لا» = not, «إذا ... فإن» = if ... then, «يقبل القسمة على» = is divisible by.
   «لا أحد من A» = no A are ...; «بعض A» is ∃, NEVER ∀. Lean identifiers must be ASCII: a
-  named individual («خالد») becomes a bound variable `∀ (k : Fin 3), ...`, never an Arabic
-  identifier.
+  named individual («خالد») becomes a bound variable `∀ (k : Fin 3), ...` or the literal
+  `(0 : Fin 3)`, never an Arabic identifier and never `Fin.of_nat`/`Sultan`-style constants.
 - A premise that is simply asserted ("all doctors are educated") is NOT a universally
   quantified schema over all predicates — that would be false. Encode a bare premise as
   `"kind": "skip"`; only encode the INFERENCE (premises → conclusion) as a closed ∀-statement.
@@ -135,10 +135,12 @@ below encode exactly the question — same premises, same conclusion, quantifier
 variables or elements of a finite type, transitivity/ordering puzzles allowed to use integers?
 
 Do NOT judge whether the inference is valid, and do NOT complain that it is "more general" than
-the question, that it uses ∀/Fin/ℤ, or that the student's answer is short. Answer false ONLY
-if a premise or the conclusion is missing, extra, or has different quantifier/negation
-structure than the question, or the formula is degenerate (e.g. a premise repeated as the
-conclusion, a trivially true or trivially false statement that ignores the question).
+the question, that it uses ∀/Fin/ℤ/abstract P Q instead of the concrete nouns ("it rained"
+↦ P is FINE — propositional schemas are the intended encoding), or that the student's answer is
+short. Answer false ONLY if a premise stated in the question is completely absent, an extra
+premise was invented, the conclusion is about a different relation/direction than the
+question asks, or the formula is degenerate (a premise repeated as the conclusion). When in
+doubt answer true — the Lean kernel, not you, decides validity.
 
 Question (may be Arabic): {problem}
 Inference as formalized: {prop}
@@ -183,6 +185,43 @@ def _outer_negation(prop: str) -> str | None:
         if depth < 0:
             return None
     return m.group(1).strip() if depth == 0 else None
+
+
+def _top_level_split(s: str, sep: str) -> list[str]:
+    parts, depth, cur = [], 0, []
+    i = 0
+    while i < len(s):
+        ch = s[i]
+        depth += (ch == "(") - (ch == ")")
+        if depth == 0 and s.startswith(sep, i):
+            parts.append("".join(cur).strip())
+            cur = []
+            i += len(sep)
+            continue
+        cur.append(ch)
+        i += 1
+    parts.append("".join(cur).strip())
+    return parts
+
+
+def degenerate_inference(prop: str) -> bool:
+    """True if the (un-negated) inference concludes one of its own premises, e.g.
+    `∀ (y k : ℤ), y > k ∧ y > k → y > k` — a formalizer artefact, never a real question."""
+    inner = _outer_negation(prop) or prop
+    body = re.sub(r"^∀\s*[^,]*,\s*", "", inner.strip())
+    chain = _top_level_split(body, "→")
+    if len(chain) < 2:
+        return False
+    concl = _norm_atom(chain[-1])
+    premises = {_norm_atom(c) for p in chain[:-1] for c in _top_level_split(p, "∧")}
+    return concl in premises
+
+
+def _norm_atom(s: str) -> str:
+    s = re.sub(r"\s+", "", s)
+    while s.startswith("(") and s.endswith(")") and _outer_negation("¬" + s) is not None:
+        s = s[1:-1]
+    return s
 
 
 def align_polarity(prop: str | None, final: str | None) -> str | None:
@@ -281,6 +320,8 @@ class Formalizer:
 
     def audit_yes_no(self, problem: str, answer: str, prop: str) -> tuple[bool, str]:
         """Audit the *content* of a yes/no `problem_prop`; polarity is checked mechanically."""
+        if degenerate_inference(prop):
+            return False, "degenerate inference: the conclusion is one of the premises"
         inner = _outer_negation(prop)
         msg = YESNO_AUDIT_PROMPT.format(
             problem=problem, answer=answer, prop=inner if inner is not None else prop

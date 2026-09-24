@@ -282,3 +282,16 @@ def test_feedback_mentions_missing_final():
     assert "FINAL ANSWER" in fb
     fb_ar = build_feedback(rep, Formalization(steps=[]), arabic=True, missing_final=True)
     assert "الجواب النهائي" in fb_ar
+
+
+def test_degenerate_inference_detection():
+    from falconverifier.formalizer import degenerate_inference
+
+    assert degenerate_inference("∀ (y k : ℤ), y > k ∧ y > k → y > k")
+    assert degenerate_inference("¬ (∀ (y k : ℤ), (y > k) → y > k)")
+    assert degenerate_inference(
+        "∀ (B T : Fin 3 → Bool), (∀ x, ¬ (B x ∧ T x)) → (∀ x, B x → T x) → ∀ x, ¬ (B x ∧ T x)"
+    )
+    assert not degenerate_inference("∀ (a b c : ℤ), a > b → b > c → a > c")
+    assert not degenerate_inference("∀ (P Q : Prop), (P → Q) → ¬Q → ¬P")
+    assert not degenerate_inference("(17:ℕ) * 23 = 391")
