@@ -46,3 +46,50 @@ def test_arith_logic_and_illformed_in_one_batch(runner: LeanRunner):
 def test_empty_batch_is_free(runner: LeanRunner):
     res = runner.check_claims({})
     assert res.outcomes == {} and res.latency_s == 0.0
+
+
+def test_rat_lift_retracts_truncation_refutation(runner: LeanRunner):
+    from falconverifier.schemas import (
+        Formalization,
+        FormalStep,
+        StepResult,
+        VerificationReport,
+    )
+    from falconverifier.verifier import lift_to_rat, recheck_refutations_over_rat
+
+    assert lift_to_rat("(17:ℕ) * 20 = 340") is None
+    assert lift_to_rat("(50:ℕ) / 100 * (150:ℕ) = 75") == "(50:ℚ) / 100 * (150:ℚ) = 75"
+
+    form = Formalization(
+        problem_prop="(150:ℕ) + (150:ℕ) * 50 / 100 = 225",
+        steps=[
+            FormalStep(index=1, kind="arith", lean_prop="(50:ℕ) / 100 * (150:ℕ) = 75", note=""),
+            FormalStep(index=2, kind="arith", lean_prop="(7:ℕ) / 2 = 4", note=""),
+        ],
+    )
+    report = VerificationReport(
+        steps=[
+            StepResult(
+                index=1,
+                verdict=Verdict.REFUTED,
+                lean_prop=form.steps[0].lean_prop,
+                step_text="50% of 150 is 75",
+                detail="",
+            ),
+            StepResult(
+                index=2,
+                verdict=Verdict.REFUTED,
+                lean_prop=form.steps[1].lean_prop,
+                step_text="7 / 2 = 4",
+                detail="",
+            ),
+        ],
+        final_answer_verdict=Verdict.VERIFIED,
+        final_answer_detail="",
+        lean_file="",
+        lean_latency_s=0.0,
+    )
+    recheck_refutations_over_rat(runner, form, report)
+    assert report.steps[0].verdict == Verdict.VERIFIED
+    assert report.steps[0].lean_prop == "(50:ℚ) / 100 * (150:ℚ) = 75"
+    assert report.steps[1].verdict == Verdict.REFUTED  # 7/2 = 4 is false over ℚ too

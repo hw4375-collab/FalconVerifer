@@ -15,7 +15,7 @@ from .lean_runner import LeanRunner
 from .llm import ChatModel, OpenAICompatibleClient
 from .schemas import Formalization, Round, Trace, Verdict, VerificationReport
 from .student import Student
-from .verifier import ill_formed_errors, verify
+from .verifier import ill_formed_errors, recheck_refutations_over_rat, verify
 
 log = logging.getLogger(__name__)
 
@@ -127,6 +127,9 @@ class VerifyAndTeachAgent:
                 report2 = verify(self.runner, answer.steps, form2)
                 if len(ill_formed_errors(report2)) < len(errs):
                     form, report = form2, report2
+            if report.has_errors:
+                recheck_refutations_over_rat(self.runner, form, report)
+                self._emit("rat_recheck", round=r + 1)
             if self.audit_refutations:
                 self._audit(problem, form, report)
             self._emit("verified", round=r + 1, report=report.model_dump())

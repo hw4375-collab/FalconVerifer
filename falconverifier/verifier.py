@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from .lean_runner import LeanRunner
 from .schemas import (
     Formalization,
@@ -65,6 +67,55 @@ def verify(
         lean_latency_s=run.latency_s,
         diagnostics=run.diagnostics,
     )
+
+
+_TRUNC_RE = re.compile(r":\s*(ℕ|ℤ|Nat|Int)\b")
+
+
+def lift_to_rat(prop: str) -> str | None:
+    """Rewrite ℕ/ℤ ascriptions to ℚ when the claim uses truncating `/` or `-`.
+
+    Natural-language arithmetic ("50% of 150 is 75") is meant over the rationals; a
+    formalizer that writes `(50:ℕ)/100*150 = 75` produces a *spurious* refutation because
+    ℕ-division truncates. Returns None when no lift applies.
+    """
+    if not ("/" in prop or "-" in prop) or not _TRUNC_RE.search(prop):
+        return None
+    return _TRUNC_RE.sub(":ℚ", prop)
+
+
+def recheck_refutations_over_rat(
+    runner: LeanRunner, form: Formalization, report: VerificationReport
+) -> None:
+    """Retract refutations that only hold because of ℕ/ℤ truncation.
+
+    A refuted claim is re-checked with every ℕ/ℤ literal lifted to ℚ. If the lifted claim
+    is *verified*, the refutation was a translation artifact and the step is marked verified
+    (with the lifted proposition); otherwise the original verdict stands.
+    """
+    lifted: dict[str, str] = {}
+    for s in report.steps:
+        if s.verdict == Verdict.REFUTED and s.lean_prop:
+            q = lift_to_rat(s.lean_prop)
+            if q:
+                lifted[f"s{s.index}"] = q
+    if report.final_answer_verdict == Verdict.REFUTED and form.problem_prop:
+        q = lift_to_rat(form.problem_prop)
+        if q:
+            lifted[PROBLEM_CLAIM_ID] = q
+    if not lifted:
+        return
+    run = runner.check_claims(lifted)
+    for s in report.steps:
+        cid = f"s{s.index}"
+        if cid in lifted and run.outcomes[cid].verdict == Verdict.VERIFIED:
+            s.verdict = Verdict.VERIFIED
+            s.lean_prop = lifted[cid]
+            s.detail = "verified over ℚ (ℕ/ℤ version refuted only by truncation)"
+    if PROBLEM_CLAIM_ID in lifted and run.outcomes[PROBLEM_CLAIM_ID].verdict == Verdict.VERIFIED:
+        form.problem_prop = lifted[PROBLEM_CLAIM_ID]
+        report.final_answer_verdict = Verdict.VERIFIED
+        report.final_answer_detail = "verified over ℚ (ℕ/ℤ version refuted only by truncation)"
 
 
 def ill_formed_errors(report: VerificationReport) -> dict[int | str, str]:
