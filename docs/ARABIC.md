@@ -182,7 +182,10 @@ universals such as `¬ (∀ n : ℕ, 3 ∣ n → 6 ∣ n)` get a kernel verdict 
 
 Result on the same 24 Arabic logic items with Falcon-3B, before the deterministic fragment
 below: 62.5% → 79.2%, 3/9 wrong answers refuted by Lean, 0 regressions. With the fragment
-(§5b): 62.5% → 87.5%, 7/9 wrong answers caught, syllogisms 8/8, 0 false alarms
+(§5b): 62.5% → 87.5%, 7/9 wrong answers caught, syllogisms 8/8, 0 false alarms; with the
+countermodel feedback (§5b, "teaching with the witness"): 70.8% → 91.7%, 7/7 wrong answers caught, 5 fixed
+on revision (the two Falcon still refused to correct are recorded as caught-not-fixed), 0 false alarms, 0 regressions (baselines move a few points between runs
+because the 3B student samples)
 (`docs/BENCHMARK.md`). Still honest limits on the LLM path: the formalizer
 sometimes emits invalid identifiers or mixes `Bool` and `Prop`, inclusive «أو» and parity
 questions are often mistranslated, and 3B frequently omits the «الجواب النهائي» line
@@ -229,6 +232,20 @@ gap. Each identification is written into the certificate shown in the UI
 human reader, not just asserted. Anything with arithmetic inside an atom («١٨ زوجي»,
 «يقبل القسمة على ٢») is *not* treated as a propositional letter and stays with the arithmetic
 fragment / LLM path.
+
+**Teaching with the witness.** Because the encoding is a finite model, the same parser can
+*exhibit* the countermodel Lean's `decide` found (`arabic_logic.countermodel`): when Falcon
+answers «نعم» to an invalid inference, the feedback it receives is not "Lean says no" but a
+concrete Arabic situation —
+
+> مثال مضاد (عالم من العناصر x0، x1، x2): «الأطباء» = {x0}، «متعلمون» = {x0، x1}، «أثرياء» = {x1}.
+> في هذا الوضع كل المقدمات صحيحة ولكن «بعض الأطباء أثرياء» خاطئة.
+
+— chosen among all witnesses to keep every class inhabited (an empty class of doctors is a
+valid but unconvincing refutation). Conversely a wrong «لا» to a valid inference is told
+that the closed statement is a theorem and asked to re-derive the chain. The feedback thus
+names the polarity Lean established; the student still has to produce the corrected
+reasoning, which is what the revised-answer rounds record.
 
 ## 6. Research directions (not needed for the demo)
 
