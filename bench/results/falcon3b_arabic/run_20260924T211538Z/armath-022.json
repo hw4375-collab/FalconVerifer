@@ -1,0 +1,268 @@
+{
+ "problem": "اشترى عمر 92 علبة تحتوي كل منها على 15 كرسياً، ثم أعطى 69 كرسياً من مجموعها لأصدقائه. كم كرسياً بقي لدى عمر؟",
+ "expected_answer": "1311",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 933 كرسياً.\n\nهذه هي الخطوات لحل المسألة:\n\nالخطوة 1: حساب العدد الإجمالي للكراسي التي اشتراها عمر.\n- عدد العلب = 92\n- عدد الكراسي في كل علبة = 15\n- المجموع = 92 × 15 = 1380 كرسيًا\n\nالخطوة 2: حساب عدد الكراسي التي أعطاها عمر لأصدقائه.\n- عدد الكراسي المعطاة = 69\n\nالخطوة 3: طرح عدد الكراسي المعطاة من العدد الإجمالي للعثور على عدد الكراسي المتبقية لدى عمر.\n- الكراسي المتبقية = 1380 - 69 = 1311 كرسيًا\n\nالجواب النهائي: 1311 كرسيًا.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "هذه هي الخطوات لحل المسألة:"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 1: حساب العدد الإجمالي للكراسي التي اشتراها عمر.\n- عدد العلب = 92\n- عدد الكراسي في كل علبة = 15\n- المجموع = 92 × 15 = 1380 كرسيًا"
+     },
+     {
+      "index": 3,
+      "text": "الخطوة 2: حساب عدد الكراسي التي أعطاها عمر لأصدقائه.\n- عدد الكراسي المعطاة = 69"
+     },
+     {
+      "index": 4,
+      "text": "الخطوة 3: طرح عدد الكراسي المعطاة من العدد الإجمالي للعثور على عدد الكراسي المتبقية لدى عمر.\n- الكراسي المتبقية = 1380 - 69 = 1311 كرسيًا"
+     }
+    ],
+    "final_answer": "933 كرسياً",
+    "latency_s": 4.249939203262329,
+    "tokens": 202
+   },
+   "formalization": {
+    "problem_prop": "(92:ℕ) * 15 - 69 = 1311",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduction"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(92:ℕ) * 15 = 1380",
+      "note": "total chairs bought"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates given"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "1380 - 69 = 1311",
+      "note": "chairs remaining"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(92:ℕ) * 15 - 69 = 1311\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduction\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(92:ℕ) * 15 = 1380\", \"note\": \"total chairs bought\"},\n    {\"index\": 3, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates given\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"1380 - 69 = 1311\", \"note\": \"chairs remaining\"}\n  ]\n}\n",
+    "latency_s": 9.197195053100586
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "هذه هي الخطوات لحل المسألة:",
+      "detail": "introduction"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(92:ℕ) * 15 = 1380",
+      "step_text": "الخطوة 1: حساب العدد الإجمالي للكراسي التي اشتراها عمر.\n- عدد العلب = 92\n- عدد الكراسي في كل علبة = 15\n- المجموع = 92 × 15 = 1380 كرسيًا",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "الخطوة 2: حساب عدد الكراسي التي أعطاها عمر لأصدقائه.\n- عدد الكراسي المعطاة = 69",
+      "detail": "restates given"
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "1380 - 69 = 1311",
+      "step_text": "الخطوة 3: طرح عدد الكراسي المعطاة من العدد الإجمالي للعثور على عدد الكراسي المتبقية لدى عمر.\n- الكراسي المتبقية = 1380 - 69 = 1311 كرسيًا",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `(92:ℕ) * 15 - 69 = 1311`, which does not contain the stated FINAL ANSWER '933 كرسياً'",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s2_wf : (92:ℕ) * 15 = 1380 := by sorry\ntheorem s2_pos : (92:ℕ) * 15 = 1380 := by fv_auto\ntheorem s2_neg : ¬ ((92:ℕ) * 15 = 1380) := by fv_auto\n\ntheorem s4_wf : 1380 - 69 = 1311 := by sorry\ntheorem s4_pos : 1380 - 69 = 1311 := by fv_auto\ntheorem s4_neg : ¬ (1380 - 69 = 1311) := by fv_auto\n\ntheorem final_wf : (92:ℕ) * 15 - 69 = 1311 := by sorry\ntheorem final_pos : (92:ℕ) * 15 - 69 = 1311 := by fv_auto\ntheorem final_neg : ¬ ((92:ℕ) * 15 - 69 = 1311) := by fv_auto\n",
+    "lean_latency_s": 3.714979887008667,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 92 * 15 = 1380\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1380 - 69 = 1311\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 92 * 15 - 69 = 1311\n⊢ False"
+     }
+    ]
+   },
+   "feedback": "الجواب النهائي لا يطابق ما تستنتجه خطواتك. تحقق Lean 4 من `(92:ℕ) * 15 - 69 = 1311`؛ يجب أن يكون الرقم بعد «الجواب النهائي» هو نتيجة هذا الحساب، فأعد قراءة خطواتك واذكر القيمة التي تنتجها فعلاً.\nالخطوات التي تحقق Lean 4 من صحتها: 2, 4.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 1311 كرسيًا.\n\nتصحيح الخطوات:\n\nالخطوة 1: حساب العدد الإجمالي للكراسي التي اشتراها عمر.\n- عدد العلب = 92\n- عدد الكراسي في كل علبة = 15\n- المجموع = 92 × 15 = 1380 كرسيًا\n\nالخطوة 2: طرح عدد الكراسي المعطاة من العدد الإجمالي للعثور على عدد الكراسي المتبقية لدى عمر.\n- الكراسي المتبقية = 1380 - 69 = 1311 كرسيًا\n\nالجواب النهائي: 1311 كرسيًا.\n\nالخطأ الذي تم تصحيحه كان في الخطوة 2، حيث تم طرح عدد الكراسي المعطاة بشكل صحيح من العدد الإجمالي للكراسي، مما أدى إلى النتيجة الصحيحة.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "تصحيح الخطوات:"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 1: حساب العدد الإجمالي للكراسي التي اشتراها عمر.\n- عدد العلب = 92\n- عدد الكراسي في كل علبة = 15\n- المجموع = 92 × 15 = 1380 كرسيًا"
+     },
+     {
+      "index": 3,
+      "text": "الخطوة 2: طرح عدد الكراسي المعطاة من العدد الإجمالي للعثور على عدد الكراسي المتبقية لدى عمر.\n- الكراسي المتبقية = 1380 - 69 = 1311 كرسيًا"
+     },
+     {
+      "index": 4,
+      "text": "الخطأ الذي تم تصحيحه كان في الخطوة 2، حيث تم طرح عدد الكراسي المعطاة بشكل صحيح من العدد الإجمالي للكراسي، مما أدى إلى النتيجة الصحيحة."
+     }
+    ],
+    "final_answer": "1311 كرسيًا",
+    "latency_s": 9.809215545654297,
+    "tokens": 208
+   },
+   "formalization": {
+    "problem_prop": "(92:ℕ) * 15 - 69 = 1311",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "step correction"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(92:ℕ) * 15 = 1380",
+      "note": "total chairs bought"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "1380 - 69 = 1311",
+      "note": "remaining chairs"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction explanation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(92:ℕ) * 15 - 69 = 1311\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"step correction\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(92:ℕ) * 15 = 1380\", \"note\": \"total chairs bought\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"1380 - 69 = 1311\", \"note\": \"remaining chairs\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction explanation\"}\n  ]\n}\n",
+    "latency_s": 8.923091173171997
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "تصحيح الخطوات:",
+      "detail": "step correction"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(92:ℕ) * 15 = 1380",
+      "step_text": "الخطوة 1: حساب العدد الإجمالي للكراسي التي اشتراها عمر.\n- عدد العلب = 92\n- عدد الكراسي في كل علبة = 15\n- المجموع = 92 × 15 = 1380 كرسيًا",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "1380 - 69 = 1311",
+      "step_text": "الخطوة 2: طرح عدد الكراسي المعطاة من العدد الإجمالي للعثور على عدد الكراسي المتبقية لدى عمر.\n- الكراسي المتبقية = 1380 - 69 = 1311 كرسيًا",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "الخطأ الذي تم تصحيحه كان في الخطوة 2، حيث تم طرح عدد الكراسي المعطاة بشكل صحيح من العدد الإجمالي للكراسي، مما أدى إلى النتيجة الصحيحة.",
+      "detail": "correction explanation"
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s2_wf : (92:ℕ) * 15 = 1380 := by sorry\ntheorem s2_pos : (92:ℕ) * 15 = 1380 := by fv_auto\ntheorem s2_neg : ¬ ((92:ℕ) * 15 = 1380) := by fv_auto\n\ntheorem s3_wf : 1380 - 69 = 1311 := by sorry\ntheorem s3_pos : 1380 - 69 = 1311 := by fv_auto\ntheorem s3_neg : ¬ (1380 - 69 = 1311) := by fv_auto\n\ntheorem final_wf : (92:ℕ) * 15 - 69 = 1311 := by sorry\ntheorem final_pos : (92:ℕ) * 15 - 69 = 1311 := by fv_auto\ntheorem final_neg : ¬ ((92:ℕ) * 15 - 69 = 1311) := by fv_auto\n",
+    "lean_latency_s": 4.058216333389282,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 92 * 15 = 1380\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1380 - 69 = 1311\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 92 * 15 - 69 = 1311\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "1311 كرسيًا",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 39.95
+}

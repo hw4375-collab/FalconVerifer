@@ -1,0 +1,254 @@
+{
+ "problem": "اشترى عمر 86 علبة تحتوي كل منها على 40 قلماً، ثم أعطى 65 قلماً من مجموعها لأصدقائه. كم قلماً بقي لدى عمر؟",
+ "expected_answer": "3375",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 305\n",
+    "reasoning": null,
+    "steps": [],
+    "final_answer": "305",
+    "latency_s": 2.7877039909362793,
+    "tokens": 11
+   },
+   "formalization": {
+    "problem_prop": "(86:ℕ) * 40 - 65 = 305",
+    "steps": [],
+    "raw": "{\n  \"problem_prop\": \"(86:ℕ) * 40 - 65 = 305\",\n  \"steps\": []\n}\n",
+    "latency_s": 4.528754711151123
+   },
+   "report": {
+    "steps": [],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem final_wf : (86:ℕ) * 40 - 65 = 305 := by sorry\ntheorem final_pos : (86:ℕ) * 40 - 65 = 305 := by fv_auto\ntheorem final_neg : ¬ ((86:ℕ) * 40 - 65 = 305) := by fv_auto\n",
+    "lean_latency_s": 3.876444101333618,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 42,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\n⊢ 86 * 40 - 65 = 305"
+     }
+    ]
+   },
+   "feedback": "أثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `(86:ℕ) * 40 - 65 = 305` خاطئ.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 305\n\nالتصحيح:\n\nالخطوة 1: احسب عدد الأقلام التي اشتراها عمر:\n$$ 86 \\times 40 = 3440 $$\n\nالخطوة 2: اطرح عدد الأقلام التي أعطاها عمر لأصدقائه:\n$$ 3440 - 65 = 3375 $$\n\nإذًا، الجواب النهائي: 3375\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "التصحيح:"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 1: احسب عدد الأقلام التي اشتراها عمر:\n$$ 86 \\times 40 = 3440 $$"
+     },
+     {
+      "index": 3,
+      "text": "الخطوة 2: اطرح عدد الأقلام التي أعطاها عمر لأصدقائه:\n$$ 3440 - 65 = 3375 $$"
+     }
+    ],
+    "final_answer": "305",
+    "latency_s": 4.26661229133606,
+    "tokens": 111
+   },
+   "formalization": {
+    "problem_prop": "(86:ℕ) * 40 - 65 = 3375",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction step"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(86:ℕ) * 40 = 3440",
+      "note": "total pens bought"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "3440 - 65 = 3375",
+      "note": "pens remaining"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(86:ℕ) * 40 - 65 = 3375\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction step\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(86:ℕ) * 40 = 3440\", \"note\": \"total pens bought\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"3440 - 65 = 3375\", \"note\": \"pens remaining\"}\n  ]\n}\n",
+    "latency_s": 8.437201738357544
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "التصحيح:",
+      "detail": "correction step"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(86:ℕ) * 40 = 3440",
+      "step_text": "الخطوة 1: احسب عدد الأقلام التي اشتراها عمر:\n$$ 86 \\times 40 = 3440 $$",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "3440 - 65 = 3375",
+      "step_text": "الخطوة 2: اطرح عدد الأقلام التي أعطاها عمر لأصدقائه:\n$$ 3440 - 65 = 3375 $$",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `(86:ℕ) * 40 - 65 = 3375`, which does not contain the stated FINAL ANSWER '305'",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s2_wf : (86:ℕ) * 40 = 3440 := by sorry\ntheorem s2_pos : (86:ℕ) * 40 = 3440 := by fv_auto\ntheorem s2_neg : ¬ ((86:ℕ) * 40 = 3440) := by fv_auto\n\ntheorem s3_wf : 3440 - 65 = 3375 := by sorry\ntheorem s3_pos : 3440 - 65 = 3375 := by fv_auto\ntheorem s3_neg : ¬ (3440 - 65 = 3375) := by fv_auto\n\ntheorem final_wf : (86:ℕ) * 40 - 65 = 3375 := by sorry\ntheorem final_pos : (86:ℕ) * 40 - 65 = 3375 := by fv_auto\ntheorem final_neg : ¬ ((86:ℕ) * 40 - 65 = 3375) := by fv_auto\n",
+    "lean_latency_s": 3.6392719745635986,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 86 * 40 = 3440\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 3440 - 65 = 3375\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 86 * 40 - 65 = 3375\n⊢ False"
+     }
+    ]
+   },
+   "feedback": "الجواب النهائي لا يطابق ما تستنتجه خطواتك. تحقق Lean 4 من `(86:ℕ) * 40 - 65 = 3375`؛ يجب أن يكون الرقم بعد «الجواب النهائي» هو نتيجة هذا الحساب، فأعد قراءة خطواتك واذكر القيمة التي تنتجها فعلاً.\nالخطوات التي تحقق Lean 4 من صحتها: 2, 3.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 3,
+   "answer": {
+    "raw": "The answer to the question \"اشترى عمر 86 علبة تحتوي كل منها على 40 قلماً، كم قلماً اشترى عمر؟\" هو 328.\n\nالتصحيح: عمر اشترى 328 قلماً. تم حسابه بضرب عدد العلب (86) في عدد الأقلام في كل علبة (4)، وهو ما يعادل 86 * 4 = 344.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "The answer to the question \"اشترى عمر 86 علبة تحتوي كل منها على 40 قلماً، كم قلماً اشترى عمر؟\" هو 328."
+     },
+     {
+      "index": 2,
+      "text": "التصحيح: عمر اشترى 328 قلماً. تم حسابه بضرب عدد العلب (86) في عدد الأقلام في كل علبة (4)، وهو ما يعادل 86 * 4 = 344."
+     }
+    ],
+    "final_answer": null,
+    "latency_s": 52.45659685134888,
+    "tokens": 103
+   },
+   "formalization": {
+    "problem_prop": "(86:ℕ) * 40 - 65 = 3375",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(86:ℕ) * 40 = 3440",
+      "note": "total pens bought"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "3440 - 65 = 3375",
+      "note": "pens remaining"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(86:ℕ) * 40 - 65 = 3375\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(86:ℕ) * 40 = 3440\", \"note\": \"total pens bought\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"3440 - 65 = 3375\", \"note\": \"pens remaining\"}\n  ]\n}\n",
+    "latency_s": 9.944585800170898
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(86:ℕ) * 40 = 3440",
+      "step_text": "The answer to the question \"اشترى عمر 86 علبة تحتوي كل منها على 40 قلماً، كم قلماً اشترى عمر؟\" هو 328.",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "3440 - 65 = 3375",
+      "step_text": "التصحيح: عمر اشترى 328 قلماً. تم حسابه بضرب عدد العلب (86) في عدد الأقلام في كل علبة (4)، وهو ما يعادل 86 * 4 = 344.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s1_wf : (86:ℕ) * 40 = 3440 := by sorry\ntheorem s1_pos : (86:ℕ) * 40 = 3440 := by fv_auto\ntheorem s1_neg : ¬ ((86:ℕ) * 40 = 3440) := by fv_auto\n\ntheorem s2_wf : 3440 - 65 = 3375 := by sorry\ntheorem s2_pos : 3440 - 65 = 3375 := by fv_auto\ntheorem s2_neg : ¬ (3440 - 65 = 3375) := by fv_auto\n\ntheorem final_wf : (86:ℕ) * 40 - 65 = 3375 := by sorry\ntheorem final_pos : (86:ℕ) * 40 - 65 = 3375 := by fv_auto\ntheorem final_neg : ¬ ((86:ℕ) * 40 - 65 = 3375) := by fv_auto\n",
+    "lean_latency_s": 3.9597394466400146,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 86 * 40 = 3440\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 3440 - 65 = 3375\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 86 * 40 - 65 = 3375\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": null,
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 97.61
+}
