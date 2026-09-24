@@ -166,3 +166,24 @@ def test_degenerate_yes_no_prop_gives_no_assurance(settings):
     assert trace.status == "unknown"
     assert trace.rounds[0].report.final_answer_verdict == Verdict.UNKNOWN
     assert "degenerate" in trace.rounds[0].report.final_answer_detail
+
+
+def test_yes_no_context_supplies_polarity_and_arabic_countermodel():
+    from falconverifier.arabic_logic import formalize_logic_problem
+    from falconverifier.schemas import Formalization
+
+    p = "كل الأطباء متعلمون، وبعض المتعلمين أثرياء. هل يلزم أن بعض الأطباء أثرياء؟ أجب بنعم أو لا."
+    prop, cert = formalize_logic_problem(p)
+    form = Formalization(steps=[], problem_prop=prop, problem_note=f"pregroup: {cert}")
+    ctx = VerifyAndTeachAgent._yes_no_context(p, form, "نعم")
+    assert ctx["polarity"] is True and ctx["countermodel"].startswith("مثال مضاد")
+    ctx = VerifyAndTeachAgent._yes_no_context(p, form, "لا")
+    assert ctx == {"polarity": False, "countermodel": None}
+    llm_form = Formalization(steps=[], problem_prop="∀ n : ℕ, 6 ∣ n → 3 ∣ n")
+    assert VerifyAndTeachAgent._yes_no_context("…", llm_form, "yes") == {
+        "polarity": True,
+        "countermodel": None,
+    }
+    assert VerifyAndTeachAgent._yes_no_context("…", llm_form, "42") == {}
+    arith = Formalization(steps=[], problem_prop="(17:ℚ) * 23 = 391")
+    assert VerifyAndTeachAgent._yes_no_context("…", arith, "yes") == {}
