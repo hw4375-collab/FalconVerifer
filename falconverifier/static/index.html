@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FalconVerifier — Lean 4 assurance for Falcon</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <span class="logo">λ</span>
+    <div>
+      <h1>FalconVerifier</h1>
+      <p>Falcon answers · Lean 4 proves · Falcon learns</p>
+    </div>
+  </div>
+  <div class="cfg" id="cfg">loading config…</div>
+</header>
+
+<main>
+  <section class="card input">
+    <label for="problem">Problem for Falcon</label>
+    <textarea id="problem" rows="3" placeholder="Type a basic math or logic problem…"></textarea>
+    <div class="row">
+      <div class="examples" id="examples"></div>
+    </div>
+    <div class="row controls">
+      <label>Formalizer
+        <select id="formalizer">
+          <option value="falcon">Falcon 34B (Falcon verifies Falcon)</option>
+          <option value="openai">GPT-4.1-mini</option>
+          <option value="openrouter">OpenRouter (free)</option>
+        </select>
+      </label>
+      <label>Rounds <input id="rounds" type="number" min="1" max="5" value="3"></label>
+      <label>Expected <input id="expected" type="text" placeholder="optional"></label>
+      <button id="run">Verify with Lean 4</button>
+      <button id="baseline" class="ghost" title="Raw Falcon, no verification">Baseline only</button>
+    </div>
+  </section>
+
+  <section id="status" class="status hidden"></section>
+
+  <section id="roundlist" class="rounds"></section>
+
+  <section id="result" class="card result hidden"></section>
+
+  <section class="card bench">
+    <h2>Benchmark: baseline Falcon vs. Falcon + FalconVerifier <small id="benchmeta"></small></h2>
+    <div id="bench">no benchmark results yet — run <code>falconverifier bench</code></div>
+  </section>
+</main>
+
+<template id="round-tpl">
+  <article class="card round">
+    <h2>Round <span class="n"></span></h2>
+    <div class="cols">
+      <div class="col">
+        <h3>1 · Falcon says</h3>
+        <pre class="answer">…</pre>
+        <details class="cot hidden"><summary>hidden chain-of-thought</summary><pre></pre></details>
+      </div>
+      <div class="col">
+        <h3>2 · Formalized to Lean 4 &nbsp;→&nbsp; 3 · Lean kernel verdict</h3>
+        <table class="lean">
+          <thead><tr><th>step</th><th>natural language</th><th>Lean 4 claim</th><th>verdict</th></tr></thead>
+          <tbody><tr><td colspan="4" class="muted">formalizing…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="feedback hidden">
+      <h3>4 · Teaching Falcon</h3>
+      <pre></pre>
+    </div>
+  </article>
+</template>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
