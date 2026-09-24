@@ -180,8 +180,10 @@ On the Lean side `fv_auto` gained a bounded counterexample search
 (`push Not; refine ⟨k, ?_⟩; omega | norm_num | decide` over small witnesses), so negated
 universals such as `¬ (∀ n : ℕ, 3 ∣ n → 6 ∣ n)` get a kernel verdict instead of `unknown`.
 
-Result on the same 24 Arabic logic items with Falcon-3B: 62.5% → 79.2%, 3/9 wrong answers
-refuted by Lean, 0 regressions (`docs/BENCHMARK.md`). Still honest limits: the formalizer
+Result on the same 24 Arabic logic items with Falcon-3B, before the deterministic fragment
+below: 62.5% → 79.2%, 3/9 wrong answers refuted by Lean, 0 regressions. With the fragment
+(§5b): 62.5% → 87.5%, 7/9 wrong answers caught, syllogisms 8/8, 0 false alarms
+(`docs/BENCHMARK.md`). Still honest limits on the LLM path: the formalizer
 sometimes emits invalid identifiers or mixes `Bool` and `Prop`, inclusive «أو» and parity
 questions are often mistranslated, and 3B frequently omits the «الجواب النهائي» line
 (now itself a teachable defect). The remedy that does *not* depend on prompt engineering is

@@ -1,0 +1,195 @@
+{
+ "problem": "فكّر عمر في عدد، ضربه في ٨ ثم أضاف ١٧، فكانت النتيجة ٢٧٣. ما هو العدد الأصلي؟",
+ "expected_answer": "32",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الخطوة 1: لنفترض أن العدد الأصلي هو \\( x \\).\n\nالخطوة 2: وفقًا للمشكلة، عندما ضرب عمر العدد \\( x \\) في 8 ثم أضاف 17، كانت النتيجة 273. يمكن كتابة هذه العملية بالمعادلة: \\( 8x + 17 = 273 \\).\n\nالخطوة 3: لحل المعادلة، اطرح 17 من كلا الطرفين: \\( 8x = 273 - 17 \\).\n\nالخطوة 4: احسب الفرق: \\( 273 - 17 = 256 \\).\n\nالخطوة 5: الآن، اقسم كلا الطرفين على 8 لحل \\( x \\): \\( x = \\frac{256}{8} \\).\n\nالخطوة 6: احسب القسمة: \\( \\frac{256}{8} = 32 \\).\n\nالجواب النهائي: 32.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "لنفترض أن العدد الأصلي هو \\( x \\)."
+     },
+     {
+      "index": 2,
+      "text": "وفقًا للمشكلة، عندما ضرب عمر العدد \\( x \\) في 8 ثم أضاف 17، كانت النتيجة 273. يمكن كتابة هذه العملية بالمعادلة: \\( 8x + 17 = 273 \\)."
+     },
+     {
+      "index": 3,
+      "text": "لحل المعادلة، اطرح 17 من كلا الطرفين: \\( 8x = 273 - 17 \\)."
+     },
+     {
+      "index": 4,
+      "text": "احسب الفرق: \\( 273 - 17 = 256 \\)."
+     },
+     {
+      "index": 5,
+      "text": "الآن، اقسم كلا الطرفين على 8 لحل \\( x \\): \\( x = \\frac{256}{8} \\)."
+     },
+     {
+      "index": 6,
+      "text": "احسب القسمة: \\( \\frac{256}{8} = 32 \\)."
+     }
+    ],
+    "final_answer": "32",
+    "latency_s": 5.036411762237549,
+    "tokens": 241
+   },
+   "formalization": {
+    "problem_prop": "8 * 32 + 17 = 273",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduce variable"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 3,
+      "kind": "algebra",
+      "lean_prop": "8 * 32 + 17 = 273",
+      "note": "equation setup"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "273 - 17 = 256",
+      "note": "subtraction"
+     },
+     {
+      "index": 5,
+      "kind": "algebra",
+      "lean_prop": "256 / 8 = 32",
+      "note": "division"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "256 / 8 = 32",
+      "note": "compute quotient"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"8 * 32 + 17 = 273\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduce variable\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 3, \"kind\": \"algebra\", \"lean_prop\": \"8 * 32 + 17 = 273\", \"note\": \"equation setup\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"273 - 17 = 256\", \"note\": \"subtraction\"},\n    {\"index\": 5, \"kind\": \"algebra\", \"lean_prop\": \"256 / 8 = 32\", \"note\": \"division\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"256 / 8 = 32\", \"note\": \"compute quotient\"}\n  ]\n}\n",
+    "latency_s": 11.873897314071655
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "لنفترض أن العدد الأصلي هو \\( x \\).",
+      "detail": "introduce variable"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "وفقًا للمشكلة، عندما ضرب عمر العدد \\( x \\) في 8 ثم أضاف 17، كانت النتيجة 273. يمكن كتابة هذه العملية بالمعادلة: \\( 8x + 17 = 273 \\).",
+      "detail": "restates problem"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "8 * 32 + 17 = 273",
+      "step_text": "لحل المعادلة، اطرح 17 من كلا الطرفين: \\( 8x = 273 - 17 \\).",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "273 - 17 = 256",
+      "step_text": "احسب الفرق: \\( 273 - 17 = 256 \\).",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "256 / 8 = 32",
+      "step_text": "الآن، اقسم كلا الطرفين على 8 لحل \\( x \\): \\( x = \\frac{256}{8} \\).",
+      "detail": ""
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "256 / 8 = 32",
+      "step_text": "احسب القسمة: \\( \\frac{256}{8} = 32 \\).",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\n\n\ntheorem s3_wf : 8 * 32 + 17 = 273 := by sorry\ntheorem s3_pos : 8 * 32 + 17 = 273 := by fv_auto\ntheorem s3_neg : ¬ (8 * 32 + 17 = 273) := by fv_auto\n\ntheorem s4_wf : 273 - 17 = 256 := by sorry\ntheorem s4_pos : 273 - 17 = 256 := by fv_auto\ntheorem s4_neg : ¬ (273 - 17 = 256) := by fv_auto\n\ntheorem s5_wf : 256 / 8 = 32 := by sorry\ntheorem s5_pos : 256 / 8 = 32 := by fv_auto\ntheorem s5_neg : ¬ (256 / 8 = 32) := by fv_auto\n\ntheorem s6_wf : 256 / 8 = 32 := by sorry\ntheorem s6_pos : 256 / 8 = 32 := by fv_auto\ntheorem s6_neg : ¬ (256 / 8 = 32) := by fv_auto\n\ntheorem final_wf : 8 * 32 + 17 = 273 := by sorry\ntheorem final_pos : 8 * 32 + 17 = 273 := by fv_auto\ntheorem final_neg : ¬ (8 * 32 + 17 = 273) := by fv_auto\n",
+    "lean_latency_s": 3.840622663497925,
+    "diagnostics": [
+     {
+      "line": 114,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 116,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 8 * 32 + 17 = 273\n⊢ False\nfailed"
+     },
+     {
+      "line": 118,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 120,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 273 - 17 = 256\n⊢ False\nfailed"
+     },
+     {
+      "line": 122,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 124,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 256 / 8 = 32\n⊢ False\nfailed"
+     },
+     {
+      "line": 126,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 128,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 256 / 8 = 32\n⊢ False\nfailed"
+     },
+     {
+      "line": 130,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 132,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 8 * 32 + 17 = 273\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "32",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 20.75
+}

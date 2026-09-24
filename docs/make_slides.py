@@ -303,7 +303,8 @@ def build() -> str:
             "<li><b>٠١٢٣٤٥٦٧٨٩ · ٫ · ٬ · ٪</b> — two digit systems and their own separators; «٣٫٥» vs «3,5» silently changes the number.</li>"
             "<li><b>Small model, low-resource language</b> — more baseline errors, so more for an independent oracle to catch.</li></ul></div>"
             '<div class="card"><h3>Our answer</h3><ul>'
-            "<li>A <b>pregroup grammar</b> (Lambek; Bargelli–Lambek for Arabic) translates the math/logic fragment to Lean <b>deterministically</b>, with a derivation certificate — no LLM in the loop.</li>"
+            "<li>A <b>pregroup grammar</b> (Lambek; Bargelli–Lambek for Arabic) translates the arithmetic fragment to Lean <b>deterministically</b>, with a derivation certificate — no LLM in the loop.</li>"
+            "<li>A <b>quantifier fragment</b> («كل / بعض / لا أحد / إذا … فإن / إما … أو») → closed statements over finite Boolean models: Lean <em>decides</em> every syllogism, both ways, and the certificate records each lemma identification («مستطيلات ≡ المستطيلات»).</li>"
             "<li>Everything else falls back to an Arabic-aware LLM formalizer + the same guards.</li>"
             "<li>Lean 4 remains the only judge; feedback to Falcon is written in Arabic.</li></ul></div></div>"
         ),
@@ -337,14 +338,14 @@ def build() -> str:
             "<h2>Arabic evidence<small>76 Arabic problems (52 math, 24 logic), half with Eastern digits · Falcon 7B and 3B (Arabic-instruct)</small></h2>"
             + arabic_slice(arms)
             + '<p class="note">“pregroup fragment” = bare arithmetic questions translated with zero LLM calls in the formalizer. '
-            "Same grading as the English arms: exact answer match, «نعم»/«لا» for logic. Logic questions: the yes/no polarity is fixed mechanically, "
-            "a mechanical degeneracy filter plus an LLM faithfulness audit gate every refutation — only Lean-proved, faithful refutations reach Falcon.</p>"
+            "Same grading as the English arms: exact answer match, «نعم»/«لا» for logic. Logic questions: 16/24 are inside the deterministic quantifier fragment (decided by Lean in both polarities, 0 false alarms); "
+            "for the rest the yes/no polarity is fixed mechanically and a degeneracy filter plus an LLM faithfulness audit gate every refutation.</p>"
         ),
         slide(
             "<h2>Roadmap</h2>"
             '<div class="cols"><div class="card"><h3>Next 4 weeks</h3><ul>'
             "<li>Fine-tune a Falcon formalizer on the assurance traces (ill-formed rate ↓, coverage ↑).</li>"
-            "<li>Grow the Arabic pregroup fragment: full verb paradigms, quantifiers («كل/بعض») → Lean ∀/∃.</li>"
+            "<li>Grow the Arabic fragments: full verb paradigms, relative clauses («الذي/التي»), numerals inside quantified atoms.</li>"
             "<li>Lean server mode: persistent Mathlib env, &lt;1 s per check.</li></ul></div>"
             '<div class="card"><h3>Next quarter</h3><ul>'
             "<li>Domains beyond arithmetic/logic: units &amp; finance formulas, set/graph puzzles, program invariants.</li>"

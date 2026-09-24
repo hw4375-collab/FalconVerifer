@@ -1,0 +1,240 @@
+{
+ "problem": "اشترى خالد ٦٤ علبة تحتوي كل منها على ٢٤ زجاجة، ثم أعطى ١٦٨ زجاجة من مجموعها لأصدقائه. كم زجاجة بقي لدى خالد؟",
+ "expected_answer": "1368",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 48\n",
+    "reasoning": null,
+    "steps": [],
+    "final_answer": "48",
+    "latency_s": 2.714388370513916,
+    "tokens": 10
+   },
+   "formalization": {
+    "problem_prop": "(64:ℕ) * 24 - 168 = 48",
+    "problem_note": "",
+    "steps": [],
+    "raw": "{\n  \"problem_prop\": \"(64:ℕ) * 24 - 168 = 48\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"no intermediate steps provided\"}\n  ]\n}\n",
+    "latency_s": 7.259161472320557
+   },
+   "report": {
+    "steps": [],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\n\n\ntheorem final_wf : (64:ℕ) * 24 - 168 = 48 := by sorry\ntheorem final_pos : (64:ℕ) * 24 - 168 = 48 := by fv_auto\ntheorem final_neg : ¬ ((64:ℕ) * 24 - 168 = 48) := by fv_auto\n",
+    "lean_latency_s": 3.9125452041625977,
+    "diagnostics": [
+     {
+      "line": 114,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 115,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\ncase h2\na✝ : 48 < 64 * 24 - 168\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "أثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `(64:ℕ) * 24 - 168 = 48` خاطئ.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 48\n\nالخطوة 1: احسب عدد الزجاجات الكلي الذي اشتراه خالد:\n64 علبة × 24 زجاجة لكل علبة = 64 × 24 = 1536 زجاجة\n\nالخطوة 2: اطرح عدد الزجاجات التي أعطاها خالد لأصدقائه:\n1536 زجاجة - 168 زجاجة = 1368 زجاجة\n\nالجواب النهائي: 1368 زجاجة\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "الخطوة 1: احسب عدد الزجاجات الكلي الذي اشتراه خالد:\n64 علبة × 24 زجاجة لكل علبة = 64 × 24 = 1536 زجاجة"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 2: اطرح عدد الزجاجات التي أعطاها خالد لأصدقائه:\n1536 زجاجة - 168 زجاجة = 1368 زجاجة"
+     }
+    ],
+    "final_answer": "48",
+    "latency_s": 4.432860851287842,
+    "tokens": 129
+   },
+   "formalization": {
+    "problem_prop": "(64:ℕ) * 24 - 168 = 1368",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(64:ℕ) * 24 = 1536",
+      "note": "total bottles bought"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "1536 - 168 = 1368",
+      "note": "bottles remaining"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(64:ℕ) * 24 - 168 = 1368\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(64:ℕ) * 24 = 1536\", \"note\": \"total bottles bought\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"1536 - 168 = 1368\", \"note\": \"bottles remaining\"}\n  ]\n}\n",
+    "latency_s": 8.311883926391602
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(64:ℕ) * 24 = 1536",
+      "step_text": "الخطوة 1: احسب عدد الزجاجات الكلي الذي اشتراه خالد:\n64 علبة × 24 زجاجة لكل علبة = 64 × 24 = 1536 زجاجة",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "1536 - 168 = 1368",
+      "step_text": "الخطوة 2: اطرح عدد الزجاجات التي أعطاها خالد لأصدقائه:\n1536 زجاجة - 168 زجاجة = 1368 زجاجة",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `(64:ℕ) * 24 - 168 = 1368`, which does not contain the stated FINAL ANSWER '48'",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\n\n\ntheorem s1_wf : (64:ℕ) * 24 = 1536 := by sorry\ntheorem s1_pos : (64:ℕ) * 24 = 1536 := by fv_auto\ntheorem s1_neg : ¬ ((64:ℕ) * 24 = 1536) := by fv_auto\n\ntheorem s2_wf : 1536 - 168 = 1368 := by sorry\ntheorem s2_pos : 1536 - 168 = 1368 := by fv_auto\ntheorem s2_neg : ¬ (1536 - 168 = 1368) := by fv_auto\n\ntheorem final_wf : (64:ℕ) * 24 - 168 = 1368 := by sorry\ntheorem final_pos : (64:ℕ) * 24 - 168 = 1368 := by fv_auto\ntheorem final_neg : ¬ ((64:ℕ) * 24 - 168 = 1368) := by fv_auto\n",
+    "lean_latency_s": 3.809051275253296,
+    "diagnostics": [
+     {
+      "line": 114,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 116,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 64 * 24 = 1536\n⊢ False\nfailed"
+     },
+     {
+      "line": 118,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 120,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 1536 - 168 = 1368\n⊢ False\nfailed"
+     },
+     {
+      "line": 122,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 124,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 64 * 24 - 168 = 1368\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "الجواب النهائي لا يطابق ما تستنتجه خطواتك. تحقق Lean 4 من `(64:ℕ) * 24 - 168 = 1368`؛ يجب أن يكون الرقم بعد «الجواب النهائي» هو نتيجة هذا الحساب، فأعد قراءة خطواتك واذكر القيمة التي تنتجها فعلاً.\nالخطوات التي تحقق Lean 4 من صحتها: 1, 2.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 3,
+   "answer": {
+    "raw": "الجواب النهائي: 1368 زجاجة\n\nالخطوة 1: احسب عدد الزجاجات الكلي الذي اشتراه خالد:\n64 علبة × 24 زجاجة لكل علبة = 64 × 24 = 1536 زجاجة\n\nالخطوة 2: اطرح عدد الزجاجات التي أعطاها خالد لأصدقائه:\n1536 زجاجة - 168 زجاجة = 1368 زجاجة\n\nالجواب النهائي: 1368 زجاجة\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "الخطوة 1: احسب عدد الزجاجات الكلي الذي اشتراه خالد:\n64 علبة × 24 زجاجة لكل علبة = 64 × 24 = 1536 زجاجة"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 2: اطرح عدد الزجاجات التي أعطاها خالد لأصدقائه:\n1536 زجاجة - 168 زجاجة = 1368 زجاجة"
+     }
+    ],
+    "final_answer": "1368 زجاجة",
+    "latency_s": 5.144615411758423,
+    "tokens": 134
+   },
+   "formalization": {
+    "problem_prop": "(64:ℕ) * 24 - 168 = 1368",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(64:ℕ) * 24 = 1536",
+      "note": "total bottles bought"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "1536 - 168 = 1368",
+      "note": "bottles remaining"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(64:ℕ) * 24 - 168 = 1368\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(64:ℕ) * 24 = 1536\", \"note\": \"total bottles bought\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"1536 - 168 = 1368\", \"note\": \"bottles remaining\"}\n  ]\n}\n",
+    "latency_s": 8.114304304122925
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(64:ℕ) * 24 = 1536",
+      "step_text": "الخطوة 1: احسب عدد الزجاجات الكلي الذي اشتراه خالد:\n64 علبة × 24 زجاجة لكل علبة = 64 × 24 = 1536 زجاجة",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "1536 - 168 = 1368",
+      "step_text": "الخطوة 2: اطرح عدد الزجاجات التي أعطاها خالد لأصدقائه:\n1536 زجاجة - 168 زجاجة = 1368 زجاجة",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\n\n\ntheorem s1_wf : (64:ℕ) * 24 = 1536 := by sorry\ntheorem s1_pos : (64:ℕ) * 24 = 1536 := by fv_auto\ntheorem s1_neg : ¬ ((64:ℕ) * 24 = 1536) := by fv_auto\n\ntheorem s2_wf : 1536 - 168 = 1368 := by sorry\ntheorem s2_pos : 1536 - 168 = 1368 := by fv_auto\ntheorem s2_neg : ¬ (1536 - 168 = 1368) := by fv_auto\n\ntheorem final_wf : (64:ℕ) * 24 - 168 = 1368 := by sorry\ntheorem final_pos : (64:ℕ) * 24 - 168 = 1368 := by fv_auto\ntheorem final_neg : ¬ ((64:ℕ) * 24 - 168 = 1368) := by fv_auto\n",
+    "lean_latency_s": 3.8697075843811035,
+    "diagnostics": [
+     {
+      "line": 114,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 116,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 64 * 24 = 1536\n⊢ False\nfailed"
+     },
+     {
+      "line": 118,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 120,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 1536 - 168 = 1368\n⊢ False\nfailed"
+     },
+     {
+      "line": 122,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 124,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 64 * 24 - 168 = 1368\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "1368 زجاجة",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 51.4
+}

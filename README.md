@@ -66,6 +66,15 @@ fragment are translated with **zero LLM calls** and carry `note: "pregroup: … 
 the trace; everything else falls back to the Arabic-aware LLM formalizer. Falcon is prompted
 and taught in Arabic; Eastern Arabic digits, `٫`, `٬`, `٪` are normalised.
 
+Yes/no logic questions in the quantifier fragment («كل / بعض / لا أحد / إذا … فإن /
+إما … أو», named individuals, «أطول من» orderings) are handled by a second deterministic
+parser (`falconverifier/arabic_logic.py`): predicates become free `Fin 3 → Bool`, so the
+closed statement is *decided* by Lean — the inference is proved, or a countermodel refutes
+it — and the certificate lists every lemma identification the grammar made across
+morphological variants (`B := مستطيلات ≡ المستطيلات`). The parser refuses questions whose
+conclusion mentions a predicate absent from the premises, so a grammar gap is never blamed
+on Falcon.
+
 `lean/FalconVerifier/Arabic/` holds the pregroup kernel (`Pregroup.lean`), Arabic VSO/SVO
 lexicon and derivations (`ArabicTypes.lean`) and the semantic theorems (`Semantics.lean`):
 `vso_svo_same_meaning` (word order does not change the proposition),
