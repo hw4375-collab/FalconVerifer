@@ -152,6 +152,41 @@ LLM formalizer, whose prompt is Arabic-aware; the pipeline then applies the usua
 (ℚ-lift, literal grounding, faithfulness audit). Grammar-translated steps skip the LLM audit
 entirely — their derivation *is* the faithfulness certificate.
 
+### 5a. Logic questions: what the LLM formalizer got wrong, and what is now mechanical
+
+The Arabic logic slice (syllogisms, propositional patterns, orderings; answer «نعم»/«لا») was
+the weak spot: on the first Falcon-3B run Lean caught 0 of 8 wrong answers. Reading the
+traces showed three *systematic* failure modes of the LLM formalizer, each now handled
+without an LLM in the loop:
+
+1. **Polarity.** The formalizer encoded the *valid* inference (`premises → conclusion`) no
+   matter whether Falcon answered «نعم» or «لا، لا يلزم». A wrong «لا» was then "verified".
+   `student.yes_no_polarity` reads the answer (Arabic and English, «غير صحيح»/«ليس صحيحاً»
+   folded to «خطأ»; contradictory answers → no polarity) and `formalizer.align_polarity`
+   makes the checked proposition assert *the student's answer*: the inference for Yes, its
+   negation `¬ (…)` for No. Lean then proves the negation of a wrong «لا» by producing the
+   valid derivation, and the negation of a wrong «نعم» by a counterexample.
+2. **Degenerate encodings.** A frequent artefact was an inference whose conclusion is one of
+   its own premises («٦ يقسم n → ٣ يقسم n → ٦ يقسم n»), trivially true and unrelated to the
+   question. `formalizer.degenerate_inference` detects this shape syntactically (top-level
+   `→`/`∧` split) and the agent refuses to draw either a refutation *or* an assurance from it.
+3. **Over-strict auditing.** The generic faithfulness audit rejected correct abstractions
+   for being "more general than the question" (named people as `Fin 3`, propositions as
+   `P Q : Prop`). Yes/no finals now go through `Formalizer.audit_yes_no`, which is told that
+   polarity is already handled and only asks whether premises/conclusion/quantifiers
+   correspond — validity is Lean's job.
+
+On the Lean side `fv_auto` gained a bounded counterexample search
+(`push Not; refine ⟨k, ?_⟩; omega | norm_num | decide` over small witnesses), so negated
+universals such as `¬ (∀ n : ℕ, 3 ∣ n → 6 ∣ n)` get a kernel verdict instead of `unknown`.
+
+Result on the same 24 Arabic logic items with Falcon-3B: 62.5% → 79.2%, 3/9 wrong answers
+refuted by Lean, 0 regressions (`docs/BENCHMARK.md`). Still honest limits: the formalizer
+sometimes emits invalid identifiers or mixes `Bool` and `Prop`, inclusive «أو» and parity
+questions are often mistranslated, and 3B frequently omits the «الجواب النهائي» line
+(now itself a teachable defect). The remedy that does *not* depend on prompt engineering is
+to grow the deterministic pregroup fragment to quantifiers («كل … بعض … لا …») — see §6.
+
 ## 6. Research directions (not needed for the demo)
 
 - **Feature-indexed types as dependent types.** Bargelli–Lambek's indexed atoms are a

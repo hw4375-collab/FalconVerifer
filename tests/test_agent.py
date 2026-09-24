@@ -147,3 +147,22 @@ def test_ill_formed_triggers_one_repair(settings):
 
 def test_assurance_score_shape():
     assert assurance_score(None) == 0.0
+
+
+def test_degenerate_yes_no_prop_gives_no_assurance(settings):
+    problem = "If 6 divides n then 3 divides n. 3 divides 18. Does it follow that 6 divides 18?"
+    student = ScriptedModel(["Step 1: 3 divides 18 is given.\nFINAL ANSWER: Yes"])
+    degenerate = "∀ (n : ℕ), 6 ∣ n → 3 ∣ n → 6 ∣ n"
+    formalizer = ScriptedModel(
+        [json.dumps({"problem_prop": degenerate, "steps": [{"index": 1, "kind": "skip"}]})]
+    )
+    agent = VerifyAndTeachAgent(
+        settings,
+        student_model=student,
+        formalizer_model=formalizer,
+        runner=FakeRunner({degenerate: Verdict.VERIFIED}),
+    )
+    trace = agent.run(problem, expected_answer="No", max_rounds=1)
+    assert trace.status == "unknown"
+    assert trace.rounds[0].report.final_answer_verdict == Verdict.UNKNOWN
+    assert "degenerate" in trace.rounds[0].report.final_answer_detail

@@ -11,7 +11,7 @@ from typing import Any
 from .arabic import is_arabic
 from .config import Settings
 from .feedback import build_feedback
-from .formalizer import Formalizer
+from .formalizer import Formalizer, degenerate_inference
 from .lean_runner import LeanRunner
 from .llm import ChatModel, OpenAICompatibleClient
 from .schemas import Formalization, Round, Trace, Verdict, VerificationReport
@@ -127,6 +127,18 @@ class VerifyAndTeachAgent:
                 report.final_answer_verdict = Verdict.UNKNOWN
                 report.final_answer_detail = f"refutation discarded: {reason}"
                 self._emit("audit_discard", step="final", reason=reason)
+        elif (
+            report.final_answer_verdict == Verdict.VERIFIED
+            and form.problem_prop
+            and form.raw != "pregroup"
+            and yes_no_polarity(final_answer) is not None
+            and degenerate_inference(form.problem_prop)
+        ):
+            report.final_answer_verdict = Verdict.UNKNOWN
+            report.final_answer_detail = (
+                "verification discarded: degenerate inference (conclusion is a premise)"
+            )
+            self._emit("audit_discard", step="final", reason=report.final_answer_detail)
 
     def run(
         self, problem: str, expected_answer: str | None = None, max_rounds: int | None = None
