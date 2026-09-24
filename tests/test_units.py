@@ -209,3 +209,32 @@ def test_answers_match_uses_result_of_equation():
     assert answers_match("(48 + 41 + 40 + 59 + 67) / 5 = 255 / 5 = 51", "51")
     assert not answers_match("(48 + 41) / 2 = 44", "51")
     assert answers_match("x = 4", "4")
+
+
+def test_literals_grounded_and_final_grounding():
+    from falconverifier.schemas import Formalization, Verdict, VerificationReport
+    from falconverifier.verifier import check_final_grounding, literals_grounded
+
+    assert literals_grounded("(24:ℕ) * 46 = 1104", "24 × 46 = 1104", "")
+    assert not literals_grounded("(50:ℕ) / 100 * 150 = 75", "50% of 150 is 75", "")
+
+    form = Formalization(problem_prop="(79:ℕ) * 46 - 220 = 3414", steps=[])
+    rep = VerificationReport(
+        steps=[], final_answer_verdict=Verdict.VERIFIED, lean_file="", lean_latency_s=0
+    )
+    check_final_grounding("2888", form, rep)
+    assert rep.final_answer_verdict == Verdict.REFUTED
+    assert rep.final_answer_detail.startswith("inconsistent final answer")
+
+    rep2 = VerificationReport(
+        steps=[], final_answer_verdict=Verdict.VERIFIED, lean_file="", lean_latency_s=0
+    )
+    check_final_grounding("3414 boxes", form, rep2)
+    assert rep2.final_answer_verdict == Verdict.VERIFIED
+
+
+def test_answers_match_arabic_yes_no():
+    from falconverifier.bench import answers_match
+
+    assert answers_match("نعم، النتيجة تتبع", "Yes")
+    assert not answers_match("نعم", "No")

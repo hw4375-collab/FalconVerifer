@@ -33,6 +33,8 @@ TABLE = {
     "(340:ℕ) + 51 = 391": Verdict.VERIFIED,
     "(17:ℕ) * 23 = 381": Verdict.REFUTED,
     "(17:ℕ) * 23 = 391": Verdict.VERIFIED,
+    "(340:ℕ) + 99 = 381": Verdict.REFUTED,
+    "(17:ℕ) * 99 = 381": Verdict.REFUTED,
 }
 
 
@@ -40,9 +42,8 @@ def test_loop_teaches_and_student_fixes(settings):
     student = ScriptedModel([WRONG, RIGHT])
     formalizer = ScriptedModel(
         [
+            # grounded arithmetic over the student's own numbers -> no LLM audit is consulted
             form_json("(340:ℕ) + 51 = 381", "(17:ℕ) * 23 = 381"),
-            json.dumps({"faithful": True, "reason": "ok"}),  # audit step 3
-            json.dumps({"faithful": True, "reason": "ok"}),  # audit final
             form_json("(340:ℕ) + 51 = 391", "(17:ℕ) * 23 = 391"),
         ]
     )
@@ -72,9 +73,10 @@ def test_loop_teaches_and_student_fixes(settings):
 
 def test_unfaithful_refutation_is_downgraded_not_taught(settings):
     student = ScriptedModel([WRONG])
+    # props mention numbers the student never wrote (99), so the audit must be consulted
     formalizer = ScriptedModel(
         [
-            form_json("(340:ℕ) + 51 = 381", "(17:ℕ) * 23 = 381"),
+            form_json("(340:ℕ) + 99 = 381", "(17:ℕ) * 99 = 381"),
             json.dumps({"faithful": False, "reason": "polarity flipped"}),
             json.dumps({"faithful": False, "reason": "polarity flipped"}),
         ]

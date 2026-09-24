@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from fractions import Fraction
 
 from .lean_runner import LeanRunner
 from .schemas import (
@@ -135,3 +136,51 @@ def ill_formed_errors(report: VerificationReport) -> dict[int | str, str]:
     if report.final_answer_verdict == Verdict.ILL_FORMED:
         errs["final"] = f"problem_prop -> {report.final_answer_detail}"
     return errs
+
+
+_LIT_RE = re.compile(r"(?<![\w.])(\d+(?:\.\d+)?)(?!\w|\.\d)")
+
+
+def literals(text: str) -> set[Fraction]:
+    return {Fraction(m) for m in _LIT_RE.findall(text.replace(",", ""))}
+
+
+def literals_grounded(prop: str, *sources: str) -> bool:
+    """True when every numeric literal in `prop` also occurs in the natural-language sources.
+
+    A refutation of such a prop cannot be a translation artifact: Lean refuted an arithmetic
+    claim built only from the numbers the student actually wrote.
+    """
+    pool: set[Fraction] = set()
+    for s in sources:
+        pool |= literals(s)
+    return literals(prop) <= pool
+
+
+def check_final_grounding(
+    final_answer: str | None, form: Formalization, report: VerificationReport
+) -> None:
+    """Catch a verified `problem_prop` that does not contain the student's stated answer.
+
+    Weak students often derive the right value in their steps and then write a different
+    number after `FINAL ANSWER:`, or the formalizer silently substitutes the value it
+    believes is correct. Either way, if Lean *verified* a closed claim whose result differs
+    from the stated answer, the stated answer is wrong.
+    """
+    if (
+        report.final_answer_verdict != Verdict.VERIFIED
+        or not form.problem_prop
+        or final_answer is None
+    ):
+        return
+    stated = literals(final_answer.split("=")[-1])
+    if len(stated) != 1:
+        return
+    prop_lits = literals(form.problem_prop)
+    if not prop_lits or stated <= prop_lits or "∀" in form.problem_prop or "∃" in form.problem_prop:
+        return
+    report.final_answer_verdict = Verdict.REFUTED
+    report.final_answer_detail = (
+        f"inconsistent final answer: Lean verified `{form.problem_prop}`, which does not "
+        f"contain the stated FINAL ANSWER {final_answer!r}"
+    )

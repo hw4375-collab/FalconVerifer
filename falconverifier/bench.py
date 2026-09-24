@@ -46,8 +46,8 @@ def answers_match(pred: str | None, expected: str) -> bool:
         return False
     p, e = pred.strip().lower(), expected.strip().lower()
     if e in {"yes", "no", "true", "false", "valid", "invalid"}:
-        p_word = re.sub(r"[^a-z]", " ", p).split()
-        syn = {"yes": {"yes", "true", "valid"}, "no": {"no", "false", "invalid"}}
+        p_word = re.sub(r"[^a-z\u0621-\u064a]", " ", p).split()
+        syn = {"yes": {"yes", "true", "valid", "نعم"}, "no": {"no", "false", "invalid", "لا"}}
         key = "yes" if e in syn["yes"] else "no"
         other = "no" if key == "yes" else "yes"
         return any(w in syn[key] for w in p_word[:3]) and not any(

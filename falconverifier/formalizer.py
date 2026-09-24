@@ -90,9 +90,15 @@ FEWSHOT_ASSISTANT2 = """{
   ]
 }"""
 
-AUDIT_PROMPT = """You are auditing a formalization. Decide whether the Lean 4 proposition is a
-FAITHFUL translation of the natural-language step: same claim, same polarity (a step that
-denies a conclusion must be translated as a negation), same numbers, same operations.
+AUDIT_PROMPT = """You are auditing a formalization. The Lean 4 kernel has ALREADY PROVED this
+proposition FALSE. Your only job is to decide whether the proposition is a FAITHFUL
+translation of what the student's step says: same claim, same polarity (a step that denies
+a conclusion must be translated as a negation), same numbers, same operations.
+
+Do NOT judge whether the step is mathematically correct — a faithful translation of a wrong
+step is still faithful (answer true). Answer false ONLY if the proposition says something
+different from the step (wrong numbers, wrong operation, flipped negation, extra or missing
+premises).
 
 Problem: {problem}
 Step text: {step}

@@ -15,7 +15,13 @@ from .lean_runner import LeanRunner
 from .llm import ChatModel, OpenAICompatibleClient
 from .schemas import Formalization, Round, Trace, Verdict, VerificationReport
 from .student import Student
-from .verifier import ill_formed_errors, recheck_refutations_over_rat, verify
+from .verifier import (
+    check_final_grounding,
+    ill_formed_errors,
+    literals_grounded,
+    recheck_refutations_over_rat,
+    verify,
+)
 
 log = logging.getLogger(__name__)
 
@@ -76,7 +82,13 @@ class VerifyAndTeachAgent:
         except Exception:  # never let UI callbacks break the loop
             log.exception("event callback failed")
 
-    def _audit(self, problem: str, form: Formalization, report: VerificationReport) -> None:
+    def _audit(
+        self,
+        problem: str,
+        form: Formalization,
+        report: VerificationReport,
+        final_answer: str | None = None,
+    ) -> None:
         """Drop refutations whose Lean translation does not match the step's meaning.
 
         A refutation is a strong claim ("Lean proved you wrong"), so it must survive a
@@ -85,12 +97,19 @@ class VerifyAndTeachAgent:
         for s in report.steps:
             if s.verdict != Verdict.REFUTED or not s.lean_prop:
                 continue
+            if literals_grounded(s.lean_prop, s.step_text, problem) and "¬" not in s.lean_prop:
+                continue  # pure arithmetic over the student's own numbers: no LLM opinion needed
             ok, reason = self.formalizer.audit(problem, s.step_text, s.lean_prop)
             if not ok:
                 s.verdict = Verdict.UNKNOWN
                 s.detail = f"refutation discarded (unfaithful translation): {reason}"
                 self._emit("audit_discard", step=s.index, reason=reason)
-        if report.final_answer_verdict == Verdict.REFUTED and form.problem_prop:
+        if (
+            report.final_answer_verdict == Verdict.REFUTED
+            and form.problem_prop
+            and not report.final_answer_detail.startswith("inconsistent final answer")
+            and not literals_grounded(form.problem_prop, problem, final_answer or "")
+        ):
             ok, reason = self.formalizer.audit(
                 problem, "The final answer claim for this problem", form.problem_prop
             )
@@ -130,8 +149,9 @@ class VerifyAndTeachAgent:
             if report.has_errors:
                 recheck_refutations_over_rat(self.runner, form, report)
                 self._emit("rat_recheck", round=r + 1)
+            check_final_grounding(answer.final_answer, form, report)
             if self.audit_refutations:
-                self._audit(problem, form, report)
+                self._audit(problem, form, report, answer.final_answer)
             self._emit("verified", round=r + 1, report=report.model_dump())
             last_report = report
 

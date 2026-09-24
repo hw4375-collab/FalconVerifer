@@ -18,7 +18,15 @@ def build_feedback(report: VerificationReport, form: Formalization) -> str:
             lines.append(f'  - Step {s.index}: "{s.step_text}"')
             lines.append(f"      formal claim checked: {s.lean_prop}")
             lines.append("      Lean 4 verdict: the negation of this claim is a theorem.")
-    if report.final_answer_verdict == Verdict.REFUTED:
+    if report.final_answer_verdict == Verdict.REFUTED and report.final_answer_detail.startswith(
+        "inconsistent final answer"
+    ):
+        lines.append(
+            "Your FINAL ANSWER does not match what your own steps derive. Lean 4 verified "
+            f"`{form.problem_prop}` — the number after FINAL ANSWER must be the result of that "
+            "computation, so re-read your steps and state the value they actually produce."
+        )
+    elif report.final_answer_verdict == Verdict.REFUTED:
         lines.append(
             "The proof assistant PROVED that your FINAL ANSWER is inconsistent with the "
             f"problem data. Formal check: `{form.problem_prop}` is FALSE."
