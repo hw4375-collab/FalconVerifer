@@ -127,6 +127,24 @@ Lean proposition: {prop}
 
 Answer with a JSON object: {{"faithful": true|false, "reason": "<one sentence>"}}"""
 
+YESNO_AUDIT_PROMPT = """You are auditing the formalization of a yes/no logic question. Polarity has
+already been handled mechanically (the student answered {answer!r}; the checked proposition
+is the inference itself for Yes, its negation for No). Your ONLY job: does the inference
+below encode exactly the question — same premises, same conclusion, quantifiers preserved
+("all" → ∀, "some" → ∃, "no A are B" → ∀ x, A x → ¬ B x), named individuals allowed to be bound
+variables or elements of a finite type, transitivity/ordering puzzles allowed to use integers?
+
+Do NOT judge whether the inference is valid, and do NOT complain that it is "more general" than
+the question, that it uses ∀/Fin/ℤ, or that the student's answer is short. Answer false ONLY
+if a premise or the conclusion is missing, extra, or has different quantifier/negation
+structure than the question, or the formula is degenerate (e.g. a premise repeated as the
+conclusion, a trivially true or trivially false statement that ignores the question).
+
+Question (may be Arabic): {problem}
+Inference as formalized: {prop}
+
+Answer with a JSON object: {{"faithful": true|false, "reason": "<one sentence>"}}"""
+
 REPAIR_PROMPT = """Some of your Lean propositions failed to type-check. Fix them and return the
 complete JSON object again (same schema, all steps). Lean errors:
 
@@ -259,6 +277,17 @@ class Formalizer:
     def audit(self, problem: str, step_text: str, prop: str) -> tuple[bool, str]:
         """Second-opinion check that `prop` faithfully encodes `step_text`."""
         msg = AUDIT_PROMPT.format(problem=problem, step=step_text, prop=prop)
+        return self._audit_call(msg)
+
+    def audit_yes_no(self, problem: str, answer: str, prop: str) -> tuple[bool, str]:
+        """Audit the *content* of a yes/no `problem_prop`; polarity is checked mechanically."""
+        inner = _outer_negation(prop)
+        msg = YESNO_AUDIT_PROMPT.format(
+            problem=problem, answer=answer, prop=inner if inner is not None else prop
+        )
+        return self._audit_call(msg)
+
+    def _audit_call(self, msg: str) -> tuple[bool, str]:
         resp = self.model.chat([{"role": "user", "content": msg}], temperature=0.0, max_tokens=300)
         try:
             data = json.loads(extract_json(resp.content))

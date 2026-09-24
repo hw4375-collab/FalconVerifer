@@ -15,7 +15,7 @@ from .formalizer import Formalizer
 from .lean_runner import LeanRunner
 from .llm import ChatModel, OpenAICompatibleClient
 from .schemas import Formalization, Round, Trace, Verdict, VerificationReport
-from .student import Student
+from .student import Student, yes_no_polarity
 from .verifier import (
     check_final_grounding,
     ill_formed_errors,
@@ -115,11 +115,14 @@ class VerifyAndTeachAgent:
             and not report.final_answer_detail.startswith("inconsistent final answer")
             and not literals_grounded(form.problem_prop, problem, final_answer or "")
         ):
-            ok, reason = self.formalizer.audit(
-                problem,
-                f"The student's FINAL ANSWER to the question is: {final_answer!r}",
-                form.problem_prop,
-            )
+            if final_answer is not None and yes_no_polarity(final_answer) is not None:
+                ok, reason = self.formalizer.audit_yes_no(problem, final_answer, form.problem_prop)
+            else:
+                ok, reason = self.formalizer.audit(
+                    problem,
+                    f"The student's FINAL ANSWER to the question is: {final_answer!r}",
+                    form.problem_prop,
+                )
             if not ok:
                 report.final_answer_verdict = Verdict.UNKNOWN
                 report.final_answer_detail = f"refutation discarded: {reason}"
