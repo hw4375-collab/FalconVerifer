@@ -10,15 +10,15 @@
 <text x="40" y="93.0" fill="#94a3b8" text-anchor="end">75%</text>
 <line x1="48" x2="1608" y1="48.0" y2="48.0" stroke="#334155"/>
 <text x="40" y="52.0" fill="#94a3b8" text-anchor="end">100%</text>
-<rect x="62.0" y="120.5" width="46" height="91.5" fill="#64748b" rx="3"/>
-<text x="85.0" y="115.5" fill="#e2e8f0" text-anchor="middle">56%</text>
+<rect x="62.0" y="117.4" width="46" height="94.6" fill="#64748b" rx="3"/>
+<text x="85.0" y="112.4" fill="#e2e8f0" text-anchor="middle">58%</text>
 <rect x="112.0" y="70.1" width="46" height="141.9" fill="#22c55e" rx="3"/>
 <text x="135.0" y="65.1" fill="#e2e8f0" text-anchor="middle">87%</text>
 <text x="108.0" y="230" fill="#e2e8f0" text-anchor="middle">falcon3b arabic math</text>
-<rect x="182.0" y="102.7" width="46" height="109.3" fill="#64748b" rx="3"/>
-<text x="205.0" y="97.7" fill="#e2e8f0" text-anchor="middle">67%</text>
-<rect x="232.0" y="102.7" width="46" height="109.3" fill="#22c55e" rx="3"/>
-<text x="255.0" y="97.7" fill="#e2e8f0" text-anchor="middle">67%</text>
+<rect x="182.0" y="109.5" width="46" height="102.5" fill="#64748b" rx="3"/>
+<text x="205.0" y="104.5" fill="#e2e8f0" text-anchor="middle">62%</text>
+<rect x="232.0" y="82.2" width="46" height="129.8" fill="#22c55e" rx="3"/>
+<text x="255.0" y="77.2" fill="#e2e8f0" text-anchor="middle">79%</text>
 <text x="228.0" y="230" fill="#e2e8f0" text-anchor="middle">falcon3b arabic logic</text>
 <rect x="302.0" y="128.4" width="46" height="83.6" fill="#64748b" rx="3"/>
 <text x="325.0" y="123.4" fill="#e2e8f0" text-anchor="middle">51%</text>

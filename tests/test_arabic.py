@@ -158,3 +158,16 @@ def test_arabic_yes_no_grading_is_not_vacuous():
     assert not answers_match("غير صحيح", "نعم")
     assert answers_match("٣٩١", "391")
     assert not answers_match("شيء آخر", "لا")
+
+
+def test_long_decimal_equality_is_read_as_approximate():
+    from fractions import Fraction
+
+    from falconverifier.arabic import _fmt, formalize_step
+
+    prop, _ = formalize_step("387 ÷ 19 = 20.368421052631578")
+    assert "20.368421052631578" in prop and "< (1 / 10 ^ 14 : ℚ)" in prop and "∧" in prop
+    prop, _ = formalize_step("٣٨٧ ÷ ١٩ = ٢٠٫٥")
+    assert prop == "(387:ℚ) / 19 = (20.5:ℚ)"
+    assert _fmt(Fraction("20.368421052631578")) == "20.368421052631578"
+    assert _fmt(Fraction(1, 3)) == "(1 / 3)"

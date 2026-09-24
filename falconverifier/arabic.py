@@ -316,6 +316,9 @@ def _assemble(words: list[Word]) -> tuple[str, str] | None:
             return None
         sem = rel[0].entry.sem
         if sem == "eq":
+            approx = _approx_tolerance(rhs) or _approx_tolerance(lhs)
+            if approx:
+                return f"{lhs} - {rhs} < {approx} ∧ {rhs} - {lhs} < {approx}", "s"
             return f"{lhs} = {rhs}", "s"
         if sem == "ne":
             return f"{lhs} ≠ {rhs}", "s"
@@ -452,7 +455,26 @@ def _fmt(v: Fraction | None) -> str:
         return "0"
     if v.denominator == 1:
         return str(v.numerator)
-    return str(float(v))
+    k = 0
+    while (v.denominator * 10**k) % 10**k or (10**k) % v.denominator:
+        k += 1
+        if k > 30:
+            return f"({v.numerator} / {v.denominator})"
+    digits = f"{abs(v.numerator) * 10**k // v.denominator:0{k + 1}d}"
+    return f"{'-' if v < 0 else ''}{digits[:-k]}.{digits[-k:]}"
+
+
+_DECIMAL_LIT = re.compile(r"^\(?-?\d+\.(\d{6,})(?::ℚ)?\)?$")
+
+
+def _approx_tolerance(term: str) -> str | None:
+    """A bare decimal with ≥6 fractional digits is a calculator/float printout of a
+    non-terminating quotient (387 ÷ 19 = 20.368421052631578); read `=` as ≈ to the printed
+    precision instead of refuting a correct step over its last digit."""
+    m = _DECIMAL_LIT.match(term.strip())
+    if not m:
+        return None
+    return f"(1 / 10 ^ {len(m.group(1)) - 1} : ℚ)"
 
 
 def parse(text: str) -> Parse | None:

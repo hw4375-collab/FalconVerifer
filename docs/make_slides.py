@@ -334,10 +334,11 @@ def build() -> str:
             '<p class="note">Research direction: feature-indexed atoms as dependent types; Lambek calculus with modalities for pro-drop/clitics; VSO≡SVO as a 2-cell between derivations (bicategorical semantics).</p>'
         ),
         slide(
-            "<h2>Arabic evidence<small>76 Arabic problems (52 math, 24 logic), half with Eastern digits · Falcon 7B</small></h2>"
+            "<h2>Arabic evidence<small>76 Arabic problems (52 math, 24 logic), half with Eastern digits · Falcon 7B and 3B (Arabic-instruct)</small></h2>"
             + arabic_slice(arms)
             + '<p class="note">“pregroup fragment” = bare arithmetic questions translated with zero LLM calls in the formalizer. '
-            "Same grading as the English arms: exact answer match, «نعم»/«لا» for logic.</p>"
+            "Same grading as the English arms: exact answer match, «نعم»/«لا» for logic. Logic questions: the yes/no polarity is fixed mechanically, "
+            "a mechanical degeneracy filter plus an LLM faithfulness audit gate every refutation — only Lean-proved, faithful refutations reach Falcon.</p>"
         ),
         slide(
             "<h2>Roadmap</h2>"
