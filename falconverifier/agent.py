@@ -147,7 +147,7 @@ class VerifyAndTeachAgent:
             errs = ill_formed_errors(report)
             if errs:  # one repair attempt for translation errors
                 self._emit("repair", round=r + 1, errors={str(k): v for k, v in errs.items()})
-                form2, _ = self.formalizer.repair(fmsgs, errs, answer.steps)
+                form2, _ = self.formalizer.repair(fmsgs, errs, answer.steps, answer.final_answer)
                 report2 = verify(self.runner, answer.steps, form2)
                 if len(ill_formed_errors(report2)) < len(errs):
                     form, report = form2, report2
@@ -160,11 +160,14 @@ class VerifyAndTeachAgent:
             self._emit("verified", round=r + 1, report=report.model_dump())
             last_report = report
 
-            done = not report.has_errors
+            missing_final = answer.final_answer is None
+            done = not report.has_errors and not missing_final
             feedback = (
                 None
                 if done or r == max_rounds - 1
-                else build_feedback(report, form, arabic=is_arabic(problem))
+                else build_feedback(
+                    report, form, arabic=is_arabic(problem), missing_final=missing_final
+                )
             )
             rounds.append(
                 Round(

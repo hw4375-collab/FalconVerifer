@@ -50,6 +50,24 @@ FINAL_RE = re.compile(
 )
 
 
+YES_WORDS = {"yes", "true", "valid", "نعم", "صحيح", "صح"}
+NO_WORDS = {"no", "false", "invalid", "لا", "خطأ", "خاطئ"}
+
+
+def yes_no_polarity(answer: str | None) -> bool | None:
+    """True for an affirmative yes/no answer, False for a negative one, None if the leading
+    words are not a yes/no answer (or are contradictory). Arabic and English."""
+    if answer is None:
+        return None
+    p = normalize_digits(answer).strip().lower()
+    p = re.sub(r"(?:غير|ليس)\s+صحيح\w*", "خطأ", p)
+    words = re.sub(r"[^a-z\u0621-\u064a]", " ", p).split()[:3]
+    yes, no = any(w in YES_WORDS for w in words), any(w in NO_WORDS for w in words)
+    if yes == no:
+        return None
+    return yes
+
+
 def _clean_final(raw: str) -> str | None:
     val = normalize_digits(raw).strip().strip("*` .ـ").rstrip(".؛،")
     return val or None

@@ -23,6 +23,10 @@ _EN = {
         "Recompute the refuted steps carefully (do the arithmetic digit by digit, or re-derive "
         "the logical inference from the premises) and give a corrected solution."
     ),
+    "missing_final": (
+        "Your answer has no `FINAL ANSWER: <answer>` line, so it cannot be checked. End your "
+        "solution with exactly one such line."
+    ),
 }
 
 _AR = {
@@ -44,10 +48,19 @@ _AR = {
         "أعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من "
         "المقدمات) وقدّم حلاً مصححاً."
     ),
+    "missing_final": (
+        "جوابك لا يحتوي على سطر «الجواب النهائي: <الجواب>» ولذلك لا يمكن فحصه. اختم حلك "
+        "بسطر واحد بهذه الصيغة بالضبط."
+    ),
 }
 
 
-def build_feedback(report: VerificationReport, form: Formalization, arabic: bool = False) -> str:
+def build_feedback(
+    report: VerificationReport,
+    form: Formalization,
+    arabic: bool = False,
+    missing_final: bool = False,
+) -> str:
     """Turn Lean verdicts into a concise teaching message for the student model.
 
     Only *refuted* claims are asserted as wrong (they are machine-proved false). Unknown /
@@ -74,6 +87,8 @@ def build_feedback(report: VerificationReport, form: Formalization, arabic: bool
         lines.append(t["verified"].format(ok=ok))
     if report.final_answer_verdict == Verdict.VERIFIED and not refuted:
         lines.append(t["final_ok"])
+    if missing_final:
+        lines.append(t["missing_final"])
     soft = [s for s in report.steps if s.verdict in (Verdict.UNKNOWN, Verdict.ILL_FORMED)]
     if soft:
         idx = ", ".join(str(s.index) for s in soft)

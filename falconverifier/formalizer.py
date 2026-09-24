@@ -7,6 +7,7 @@ import re
 from . import arabic
 from .llm import ChatModel, extract_json
 from .schemas import Formalization, FormalStep, ReasoningStep
+from .student import yes_no_polarity
 
 log = logging.getLogger(__name__)
 
@@ -144,6 +145,38 @@ def _clean_prop(p: str | None) -> str | None:
     return p or None
 
 
+def _outer_negation(prop: str) -> str | None:
+    """If `prop` is `¬ (X)` with the parentheses spanning the whole rest, return X."""
+    m = re.match(r"^¬\s*\((.*)\)$", prop, flags=re.S)
+    if not m:
+        return None
+    depth = 0
+    for ch in m.group(1):
+        depth += (ch == "(") - (ch == ")")
+        if depth < 0:
+            return None
+    return m.group(1).strip() if depth == 0 else None
+
+
+def align_polarity(prop: str | None, final: str | None) -> str | None:
+    """Make a yes/no `problem_prop` assert the student's stated answer.
+
+    The prompt asks for `¬ (…)` when the answer is No; LLM formalizers frequently drop the
+    negation and encode the *valid* inference instead, so a wrong “No” is then “verified”.
+    Only quantified/implicational props (logic questions) are touched; arithmetic props
+    already carry the answer as a literal.
+    """
+    pol = yes_no_polarity(final)
+    if prop is None or pol is None or not re.search(r"[∀∃→]", prop):
+        return prop
+    inner = _outer_negation(prop)
+    if pol and inner is not None:
+        return inner
+    if not pol and inner is None:
+        return f"¬ ({prop})"
+    return prop
+
+
 class Formalizer:
     def __init__(self, model: ChatModel, max_tokens: int = 2500):
         self.model = model
@@ -195,6 +228,7 @@ class Formalizer:
         form.steps = [grammar.get(fs.index, fs) for fs in form.steps]
         if problem_hit:
             form.problem_prop = problem_hit[0]
+        form.problem_prop = align_polarity(form.problem_prop, final)
         return form, messages
 
     def repair(
@@ -202,6 +236,7 @@ class Formalizer:
         messages: list[dict[str, str]],
         errors: dict[int | str, str],
         steps: list[ReasoningStep],
+        final: str | None = None,
     ) -> tuple[Formalization, list[dict[str, str]]]:
         err_text = "\n".join(f"- step {k}: {v}" for k, v in errors.items())
         messages = messages + [{"role": "user", "content": REPAIR_PROMPT.format(errors=err_text)}]
@@ -209,6 +244,7 @@ class Formalizer:
         messages.append({"role": "assistant", "content": resp.content})
         form = self._parse(resp.content, steps)
         form.latency_s = resp.latency_s
+        form.problem_prop = align_polarity(form.problem_prop, final)
         return form, messages
 
     def audit(self, problem: str, step_text: str, prop: str) -> tuple[bool, str]:

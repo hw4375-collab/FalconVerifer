@@ -17,6 +17,7 @@ from .agent import VerifyAndTeachAgent
 from .arabic import normalize_digits
 from .config import Settings
 from .schemas import Trace, Verdict
+from .student import NO_WORDS, YES_WORDS, yes_no_polarity
 
 log = logging.getLogger(__name__)
 console = Console()
@@ -46,18 +47,9 @@ def answers_match(pred: str | None, expected: str) -> bool:
     if pred is None:
         return False
     p, e = normalize_digits(pred).strip().lower(), normalize_digits(expected).strip().lower()
-    syn = {
-        "yes": {"yes", "true", "valid", "نعم", "صحيح", "صح"},
-        "no": {"no", "false", "invalid", "لا", "خطأ", "خاطئ"},
-    }
-    if e in syn["yes"] | syn["no"]:
-        p = re.sub(r"(?:غير|ليس)\s+صحيح\w*", "خطأ", p)
-        p_word = re.sub(r"[^a-z\u0621-\u064a]", " ", p).split()
-        key = "yes" if e in syn["yes"] else "no"
-        other = "no" if key == "yes" else "yes"
-        return any(w in syn[key] for w in p_word[:3]) and not any(
-            w in syn[other] for w in p_word[:3]
-        )
+    e_pol = yes_no_polarity(e)
+    if e_pol is not None and e in YES_WORDS | NO_WORDS:
+        return yes_no_polarity(p) == e_pol
     if "=" in p:  # "(a+b)/2 = 51" -> grade the stated result, not the expression
         p = p.rsplit("=", 1)[1]
     pn, en = _to_number(p), _to_number(e)

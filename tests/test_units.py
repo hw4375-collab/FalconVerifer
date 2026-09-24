@@ -238,3 +238,47 @@ def test_answers_match_arabic_yes_no():
 
     assert answers_match("نعم، النتيجة تتبع", "Yes")
     assert not answers_match("نعم", "No")
+
+
+def test_align_polarity_fixes_dropped_negation():
+    from falconverifier.formalizer import align_polarity
+
+    valid = "∀ (A B : Fin 3 → Bool), (∀ x, A x → B x) → (∃ x, A x) → ∃ x, B x"
+    # student says "No" but formalizer encoded the positive inference -> negate it
+    assert align_polarity(valid, "لا") == f"¬ ({valid})"
+    assert align_polarity(valid, "No, it does not follow") == f"¬ ({valid})"
+    # student says "Yes" but formalizer negated -> strip the outer negation
+    assert align_polarity(f"¬ ({valid})", "نعم") == valid
+    # already aligned: untouched
+    assert align_polarity(valid, "yes") == valid
+    assert align_polarity(f"¬ ({valid})", "no") == f"¬ ({valid})"
+    # `¬ (P) ∧ (Q)` is not an outer negation
+    mixed = "¬ (∀ x : Fin 3, True) ∧ (∃ x : Fin 3, True)"
+    assert align_polarity(mixed, "yes") == mixed
+    # arithmetic props and non-yes/no answers are never touched
+    assert align_polarity("(3:ℕ) ∣ 12", "no") == "(3:ℕ) ∣ 12"
+    assert align_polarity(valid, "391") == valid
+    assert align_polarity(None, "no") is None
+
+
+def test_yes_no_polarity():
+    from falconverifier.student import yes_no_polarity
+
+    assert yes_no_polarity("نعم، يلزم") is True
+    assert yes_no_polarity("لا، غير صحيح") is False
+    assert yes_no_polarity("غير صحيح") is False
+    assert yes_no_polarity("No. Yes.") is None
+    assert yes_no_polarity("42") is None
+    assert yes_no_polarity(None) is None
+
+
+def test_feedback_mentions_missing_final():
+    from falconverifier.schemas import Formalization, Verdict, VerificationReport
+
+    rep = VerificationReport(
+        steps=[], final_answer_verdict=Verdict.SKIPPED, lean_file="", lean_latency_s=0.0
+    )
+    fb = build_feedback(rep, Formalization(steps=[]), missing_final=True)
+    assert "FINAL ANSWER" in fb
+    fb_ar = build_feedback(rep, Formalization(steps=[]), arabic=True, missing_final=True)
+    assert "الجواب النهائي" in fb_ar
