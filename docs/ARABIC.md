@@ -185,7 +185,48 @@ refuted by Lean, 0 regressions (`docs/BENCHMARK.md`). Still honest limits: the f
 sometimes emits invalid identifiers or mixes `Bool` and `Prop`, inclusive «أو» and parity
 questions are often mistranslated, and 3B frequently omits the «الجواب النهائي» line
 (now itself a teachable defect). The remedy that does *not* depend on prompt engineering is
-to grow the deterministic pregroup fragment to quantifiers («كل … بعض … لا …») — see §6.
+to grow the deterministic pregroup fragment to quantifiers («كل … بعض … لا …») — done next.
+
+### 5b. The deterministic logic fragment (`falconverifier.arabic_logic`)
+
+Yes/no questions built from these clause shapes are now translated without any LLM:
+
+| Arabic clause | reading | Lean (over a finite Boolean model) |
+|---|---|---|
+| «كل الـA B», «جميع A B» | `∀x. A x → B x` | `∀ x, A x = true → B x = true` |
+| «بعض الـA B» | `∃x. A x ∧ B x` | `∃ x, A x = true ∧ B x = true` |
+| «لا أحد من الـA B», «لا A B» | `∀x. A x → ¬B x` | `∀ x, A x = true → B x = false` |
+| «سلطان A» / «سلطان ليس A» | individual constant | `A c0 = true` / `A c0 = false` |
+| «إذا P فإن Q», «إذا P فـQ» | implication | `P = true → Q = true` |
+| «إما P أو Q» / «P أو Q» | disjunction | `P = true ∨ Q = true` |
+| «عمر أطول من يوسف», «س أكبر من ص» | strict order | `v0 > v1` on `Fin (k+1)` |
+| «هل يلزم أن …؟», «هل يمكن أن نستنتج أن …؟» | question head | premises `→` conclusion |
+
+Every unary predicate becomes a free `Fin 3 → Bool`, so the whole statement is closed
+(`∀ (A B C : Fin 3 → Bool), …`) and *decidable*: Lean's kernel either proves the inference
+or proves its negation by exhibiting a countermodel — no `unknown`. The integration test
+`test_arabic_logic_fragment_is_decided_both_ways` checks all 16 covered items of the Arabic set
+in both polarities (16 s for 32 claims): every answer key is confirmed, every negation refuted.
+
+Why `Fin 3` is enough here: with `n` predicate letters a countermodel to a syllogistic
+inference needs at most one witness per existential premise plus one for the conclusion; the
+patterns in the fragment need ≤ 3. (For the strict-order sub-fragment `Fin (k+1)` where `k`
+is the number of names.) This is a *sound* bound for these shapes, not a general
+finite-model theorem, so the fragment refuses anything it cannot classify.
+
+What the grammar must decide — and where Arabic morphology bites — is *lemma identification*:
+«مستطيلات» (indefinite plural) in one premise and «المستطيلات» (definite plural) in the next
+are the same predicate; «الطلاب في الصف» vs «طالب في الصف» (broken plural vs singular) too.
+The parser keys predicates on a coarse consonantal skeleton (article and sound-plural/
+feminine suffixes ‑ات/‑ون/‑ين/‑ة stripped, long vowels ا/و/ي deleted, one derivational
+prefix م/ت/ي dropped — so مبتلة and تبتل, طالب and الطلاب coincide), and — crucially — refuses to translate when the conclusion contains a
+predicate that appears in no premise (e.g. «عدد أولي» after premises about «فردي»): a
+sound encoding would then be trivially refutable and would blame Falcon for the grammar's
+gap. Each identification is written into the certificate shown in the UI
+(`B := مستطيلات ≡ المستطيلات`), so the faithfulness of the translation is auditable by a
+human reader, not just asserted. Anything with arithmetic inside an atom («١٨ زوجي»,
+«يقبل القسمة على ٢») is *not* treated as a propositional letter and stays with the arithmetic
+fragment / LLM path.
 
 ## 6. Research directions (not needed for the demo)
 

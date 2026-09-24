@@ -11,6 +11,7 @@ const EXAMPLES = [
   ["عربي · حساب", "ما هو ناتج ١٧ × ٢٣؟", "391"],
   ["عربي · نسبة", "سعر حقيبة ١٢٠ درهماً. خُفّض السعر بنسبة ٢٥٪ ثم أُضيفت ضريبة ١٠٪. ما السعر النهائي؟", "99"],
   ["عربي · منطق", "كل الأطباء متعلمون، وبعض المتعلمين أثرياء. هل يلزم أن بعض الأطباء أثرياء؟ أجب بنعم أو لا.", "لا"],
+  ["عربي · شرط", "إذا أمطرت فإن الأرض تبتل. الأرض مبتلة. هل يلزم أنها أمطرت؟ أجب بنعم أو لا.", "لا"],
 ];
 
 const state = { rounds: {}, es: null, ctrl: null };
@@ -58,8 +59,11 @@ function renderFormalization(card, f) {
       <td><code>${fs && fs.lean_prop ? esc(fs.lean_prop) : `<span class="muted">${esc(fs?.note || "skip")}</span>`}</code>${grammar}</td>
       <td class="verdict"><span class="muted">Lean…</span></td></tr>`;
   });
+  const problemGrammar = f.problem_note && f.problem_note.startsWith("pregroup:")
+    ? `<div class="muted pregroup" title="deterministic grammar translation of the question (no LLM); ≡ marks lemma identifications across morphological variants">${esc(f.problem_note)}</div>`
+    : "";
   rows.push(`<tr data-idx="final"><td>final</td><td class="muted">final answer follows from the problem</td>
-    <td><code>${f.problem_prop ? esc(f.problem_prop) : '<span class="muted">—</span>'}</code></td><td class="verdict"><span class="muted">Lean…</span></td></tr>`);
+    <td><code>${f.problem_prop ? esc(f.problem_prop) : '<span class="muted">—</span>'}</code>${problemGrammar}</td><td class="verdict"><span class="muted">Lean…</span></td></tr>`);
   card.querySelector("tbody").innerHTML = rows.join("");
 }
 
