@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Method — FalconVerifier by ChaosButterfly</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/static/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css">
+<style>
+  .steps { counter-reset: s; list-style: none; padding: 0; margin: 10px 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .steps li { border: 1px solid var(--line); border-radius: 4px; padding: 14px; font-size: 13.5px; line-height: 1.5; position: relative; }
+  .steps li::before { counter-increment: s; content: counter(s); font-family: var(--serif); font-size: 26px; color: var(--navy); display: block; line-height: 1; margin-bottom: 6px; }
+  .steps li b { display: block; color: var(--navy); margin-bottom: 4px; }
+  .verdicts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 10px; }
+  .verdicts div { border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; font-size: 13px; line-height: 1.5; }
+  .ex { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
+  .ex .ar { direction: rtl; text-align: right; font-size: 17px; line-height: 1.7; }
+  .ex .en { color: var(--muted); font-style: italic; font-size: 14px; }
+  .ex pre { background: var(--surface); border: 1px solid var(--line); padding: 10px 12px; font-size: 12.5px; overflow: auto; }
+  @media (max-width: 900px) { .steps, .verdicts, .ex { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <a href="/"><img class="logo" src="/static/mark.png" alt="ChaosButterfly"></a>
+    <div>
+      <h1>FalconVerifier <span class="by">by ChaosButterfly</span></h1>
+      <p>Method · how Falcon's chain of thought becomes a Lean 4 proof obligation</p>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="/">Verifier</a>
+    <a href="/benchmark">Benchmark</a>
+    <a href="/about" class="active">Method</a>
+    <a href="https://github.com/hw4375-collab/FalconVerifer" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+  <div class="cfg">verified · refuted · unknown<br>never “probably right”</div>
+</header>
+
+<div class="page">
+  <p class="lede">Falcon is the region's model and most of its users write Arabic. Arabic is a minority
+  language in its training data, so its Arabic math and logic are weaker — but the truth of a math or
+  logic claim does not depend on the language it was written in. FalconVerifier translates what Falcon
+  says into Lean 4 and lets the kernel decide.</p>
+
+  <h2>The loop</h2>
+  <ol class="steps">
+    <li><b>Falcon answers</b>The student model (Falcon-H1 3B/7B) answers in Arabic or English, with its reasoning steps.</li>
+    <li><b>Formalize</b>Each step and the final answer become Lean 4 propositions — deterministically for the Arabic pregroup fragments, otherwise via Falcon-H1-Arabic-34B with a round-trip faithfulness audit.</li>
+    <li><b>Lean 4 decides</b>The kernel tries to prove <code>P</code> and <code>¬P</code>. Only a proof counts.</li>
+    <li><b>Teach</b>Refuted claims turn into plain-language feedback (with the Lean theorem or a concrete counter-model) sent back to Falcon.</li>
+    <li><b>Assure</b>Falcon revises; every round, every proposition and every verdict is kept in a downloadable assurance trace.</li>
+  </ol>
+
+  <h2>What a verdict means</h2>
+  <div class="verdicts">
+    <div><span class="badge verified">verified</span><br>Lean proved the claim.</div>
+    <div><span class="badge refuted">refuted</span><br>Lean proved its negation.</div>
+    <div><span class="badge unknown">unknown</span><br>Neither side could be proved — we say so.</div>
+    <div><span class="badge ill-formed">ill-formed</span><br>The proposition did not type-check.</div>
+    <div><span class="badge skipped">skipped</span><br>Descriptive text, no checkable claim.</div>
+  </div>
+  <p>The assurance score is the share of Falcon's claims the kernel actually proved — it is a
+  verifiability measure, not model confidence. Assurance is the product; correction is what happens
+  when assurance finds something.</p>
+
+  <h2>Why Arabic</h2>
+  <p>Arabic in Falcon shows the low baseline (3B: 58% on our set, vs. 97% for 7B/English), Eastern and
+  Western digits side by side, RTL text mixed with numbers, rich morphology (one word can carry a
+  preposition, a noun and a pronoun), free VSO/SVO word order and connective ambiguity
+  (<span dir="rtl">إما … أو</span>). These are exactly the places where meaning is lost — and exactly
+  what a formal target removes. Modern Standard Arabic is highly regular, so a pregroup grammar can
+  parse our arithmetic, quantifier-logic and relation fragments deterministically; we proved in Lean
+  that VSO and SVO readings have the same meaning, so word order is normalized safely.</p>
+
+  <h2>Pregroup grammar, in one paragraph</h2>
+  <p>Every word gets a type built from <code>n</code> (noun/number), <code>s</code> (sentence),
+  <code>q</code> (question) and adjoints <code>xˡ</code>, <code>xʳ</code>. Adjacent types cancel:
+  <code>xˡ·x → 1</code>, <code>x·xʳ → 1</code>. A sentence is well-formed iff its type product reduces
+  to <code>s</code>. Categorically the grammar is a compact closed monoidal category and the
+  translation to meaning is a structure-preserving functor — here into Lean propositions. That is why
+  the checker never has to “understand” a definition: the grammar fixes the shape, the kernel fixes
+  the truth.</p>
+
+  <h2>Example: five friends</h2>
+  <div class="ex">
+    <div>
+      <div class="ar">في غرفة ٥ أشخاص، يقول كل واحد منهم إن ٣ من الباقين أصدقاؤه. هل يمكن أن يكون الجميع صادقين؟</div>
+      <div class="en">Five people are in a room; each says three of the others are their friends. Can they all be telling the truth?</div>
+      <p style="margin-top:10px">Falcon (3B) answers <span dir="rtl">لا</span> (<i>no</i>). The relation fragment types
+      <span dir="rtl">صديق</span> as a symmetric binary relation and asks Lean whether a 3-regular graph on 5 vertices exists.</p>
+    </div>
+    <div>
+<pre>∀ f : Fin 5 → Fin 5 → Bool, ¬ FalconVerifier.Regular f 3
+-- proved via the handshake lemma:
+--   Σ degree = 2 · |edges|, but 5 · 3 = 15 is odd</pre>
+      <p>No enumeration of 2<sup>10</sup> graphs, no LLM judging the answer: the kernel proves the claim
+      Falcon made, so the final answer is <span class="badge verified">verified</span>. Had Falcon said
+      <span dir="rtl">نعم</span>, the same theorem refutes it and becomes the feedback.</p>
+    </div>
+  </div>
+
+  <h2>What this does not do</h2>
+  <ul>
+    <li>It does not make Falcon smarter in general — only claims inside a decidable fragment get a proof.</li>
+    <li>Proof questions, open “why” questions and word problems that need equation modelling are reported <code>unknown</code>/<code>skipped</code>, not guessed.</li>
+    <li>The LLM formalizer can be unfaithful; our fragments avoid it where possible and a structural round-trip check downgrades mismatches to <code>unknown</code> rather than raising a false alarm.</li>
+  </ul>
+
+  <h2>Read more</h2>
+  <p class="links">
+    <a data-gh="docs/ARABIC.md" target="_blank" rel="noopener">Arabic formalization notes</a>
+    <a data-gh="docs/BENCHMARK.md" target="_blank" rel="noopener">benchmark methodology</a>
+    <a data-gh="docs/DPO.md" target="_blank" rel="noopener">Lean-refuted → Lean-verified preference data</a>
+    <a data-gh="lean/FalconVerifier" target="_blank" rel="noopener">Lean 4 sources</a>
+  </p>
+</div>
+
+<footer>
+  <img src="/static/chaosbutterfly_logo.png" alt="ChaosButterfly — Structure for a more open tomorrow.">
+</footer>
+<script>
+fetch("/api/bench/runs").then((r) => r.json()).then((d) => {
+  document.querySelectorAll("a[data-gh]").forEach((a) => { a.href = d.github + "/" + a.dataset.gh; });
+}).catch(() => {
+  document.querySelectorAll("a[data-gh]").forEach((a) => { a.href = "https://github.com/hw4375-collab/FalconVerifer/blob/main/" + a.dataset.gh; });
+});
+</script>
+</body>
+</html>

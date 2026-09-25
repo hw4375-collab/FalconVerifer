@@ -1,10 +1,12 @@
-"""FastAPI server: SSE stream of the verify-and-teach loop + a single-page demo UI."""
+"""FastAPI server: SSE stream of the verify-and-teach loop + the demo web UI."""
 
 from __future__ import annotations
 
 import json
 import os
 import queue
+import re
+import subprocess
 import threading
 import time
 from collections import defaultdict, deque
@@ -22,7 +24,36 @@ from .config import PROVIDER_PRESETS, Settings
 from .lean_runner import LeanRunner
 
 STATIC_DIR = Path(__file__).parent / "static"
-BENCH_RESULTS = Path(__file__).resolve().parent.parent / "bench" / "results"
+REPO_ROOT = Path(__file__).resolve().parent.parent
+BENCH_RESULTS = REPO_ROOT / "bench" / "results"
+PAGES = {"/": "index.html", "/benchmark": "benchmark.html", "/about": "about.html"}
+
+
+def _github_blob_base() -> str:
+    """`https://github.com/<owner>/<repo>/blob/<ref>` for linking evidence files; env overrides."""
+    explicit = os.getenv("FV_GITHUB_BLOB_BASE")
+    if explicit:
+        return explicit.rstrip("/")
+    repo = os.getenv("FV_GITHUB_REPO", "hw4375-collab/FalconVerifer")
+    ref = os.getenv("FV_GITHUB_REF", "")
+    if not ref:
+        try:
+            ref = subprocess.run(
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=5,
+            ).stdout.strip()
+        except (OSError, subprocess.SubprocessError):
+            ref = ""
+    if not ref or ref == "HEAD":
+        ref = "main"
+    return f"https://github.com/{repo}/blob/{ref}"
+
+
+GITHUB_BLOB_BASE = _github_blob_base()
+_SAFE_NAME = re.compile(r"^[A-Za-z0-9_.-]+$")
 
 app = FastAPI(title="FalconVerifier", version="0.1.0")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -140,7 +171,17 @@ def _run_stream(req: SolveRequest) -> Iterator[str]:
 
 @app.get("/", response_class=HTMLResponse)
 def index() -> FileResponse:
-    return FileResponse(STATIC_DIR / "index.html")
+    return FileResponse(STATIC_DIR / PAGES["/"])
+
+
+@app.get("/benchmark", response_class=HTMLResponse)
+def benchmark_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / PAGES["/benchmark"])
+
+
+@app.get("/about", response_class=HTMLResponse)
+def about_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / PAGES["/about"])
 
 
 @app.get("/healthz")
@@ -230,3 +271,50 @@ def bench_latest(request: Request) -> JSONResponse:
                 data = json.loads(runs[-1].read_text())
                 out[sub.name] = {"run": runs[-1].parent.name, "summary": data.get("summary")}
     return JSONResponse(out)
+
+
+@app.get("/api/bench/runs")
+def bench_runs() -> JSONResponse:
+    """Latest full results (summary + per-problem rows) per results sub-directory, with
+    GitHub links to the dataset, the results file and every assurance trace."""
+    out: dict[str, Any] = {"github": GITHUB_BLOB_BASE, "runs": {}}
+    if not BENCH_RESULTS.exists():
+        return JSONResponse(out)
+    for sub in sorted(BENCH_RESULTS.iterdir()):
+        runs = sorted(sub.glob("run_*/results.json"))
+        if not runs:
+            continue
+        rp = runs[-1]
+        data = json.loads(rp.read_text())
+        rel_run = rp.parent.relative_to(REPO_ROOT).as_posix()
+        problems: dict[str, str] = {}
+        ds = REPO_ROOT / str(data.get("dataset", ""))
+        if ds.is_file() and ds.suffix == ".jsonl":
+            for line in ds.read_text().splitlines():
+                if line.strip():
+                    item = json.loads(line)
+                    problems[item["id"]] = item["problem"]
+        out["runs"][sub.name] = {
+            "problems": problems,
+            "run": rp.parent.name,
+            "dataset": data.get("dataset"),
+            "student_model": data.get("student_model"),
+            "formalizer_model": data.get("formalizer_model"),
+            "max_rounds": data.get("max_rounds"),
+            "wall_time_s": data.get("wall_time_s"),
+            "summary": data.get("summary"),
+            "rows": data.get("rows", []),
+            "paths": {"results": f"{rel_run}/results.json", "traces": rel_run},
+        }
+    return JSONResponse(out)
+
+
+@app.get("/api/bench/trace/{sub}/{run}/{problem_id}")
+def bench_trace(sub: str, run: str, problem_id: str) -> FileResponse:
+    """One assurance trace from a benchmark run (the same JSON that is committed to GitHub)."""
+    if not all(_SAFE_NAME.match(x) for x in (sub, run, problem_id)):
+        raise HTTPException(400, "bad path")
+    path = BENCH_RESULTS / sub / run / f"{problem_id}.json"
+    if not path.is_file():
+        raise HTTPException(404, "trace not found")
+    return FileResponse(path, media_type="application/json")

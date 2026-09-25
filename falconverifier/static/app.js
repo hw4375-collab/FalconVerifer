@@ -186,7 +186,8 @@ function pct(x) { return x == null ? "–" : (x * 100).toFixed(0) + "%"; }
 
 async function loadBench() {
   const data = await (await fetch("/api/bench/latest")).json();
-  const keys = Object.keys(data);
+  const headline = ["falcon3b_arabic", "falcon3b_arabic_scale", "falcon7b_arabic"].filter((k) => data[k]);
+  const keys = headline.length ? headline : Object.keys(data);
   if (!keys.length) return;
   const parts = keys.map((k) => {
     const s = data[k].summary;
@@ -228,5 +229,28 @@ async function init() {
     $("#rounds").value = c.max_rounds;
   } catch {}
   loadBench();
+  const ref = new URLSearchParams(location.search).get("trace");
+  if (ref) replayTrace(ref);
+}
+
+// Replay a committed benchmark trace through the same renderers the live loop uses.
+async function replayTrace(ref) {
+  const res = await fetch("/api/bench/trace/" + ref.split("/").map(encodeURIComponent).join("/"));
+  if (!res.ok) { setStatus(`trace ${ref} not found`, false); return; }
+  const t = await res.json();
+  $("#problem").value = t.problem;
+  $("#expected").value = t.expected_answer ?? "";
+  $("#roundlist").innerHTML = "";
+  state.rounds = {};
+  setStatus(`replaying benchmark trace ${ref} · student ${t.student_model} · formalizer ${t.formalizer_model}`, false);
+  t.rounds.forEach((r, i) => {
+    const card = roundCard(i + 1);
+    renderAnswer(card, r.answer);
+    renderFormalization(card, r.formalization);
+    renderReport(card, r.report);
+    if (r.feedback) renderFeedback(card, r.feedback);
+  });
+  renderResult(t);
+  window.scrollTo({ top: 0 });
 }
 init();
