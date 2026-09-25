@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from . import arabic_logic
+from . import arabic_graph, arabic_logic
 from .arabic import is_arabic
 from .config import Settings
 from .feedback import build_feedback
@@ -82,15 +82,19 @@ class VerifyAndTeachAgent:
     @staticmethod
     def _yes_no_context(problem: str, form: Formalization, final: str | None) -> dict[str, Any]:
         """Polarity of a yes/no final (when the problem prop is an inference) and, for the
-        deterministic Arabic logic fragment, the concrete countermodel behind a refuted «نعم»."""
+        deterministic Arabic fragments, the concrete evidence behind the refutation: a finite
+        countermodel (logic fragment, wrong «نعم») or the parity argument / explicit graph
+        (counting fragment, either polarity)."""
         if not form.problem_prop or not re.search(r"[∀∃→]", form.problem_prop):
             return {}
         pol = yes_no_polarity(final)
         if pol is None:
             return {}
         cm = None
-        if pol and form.problem_note.startswith("pregroup:"):
-            cm = arabic_logic.countermodel(problem)
+        if form.problem_note.startswith("pregroup:"):
+            cm = (arabic_logic.countermodel(problem) if pol else None) or arabic_graph.explanation(
+                problem, pol
+            )
         return {"polarity": pol, "countermodel": cm}
 
     def _emit(self, kind: str, **payload: Any) -> None:
@@ -134,6 +138,10 @@ class VerifyAndTeachAgent:
         ):
             if final_answer is not None and yes_no_polarity(final_answer) is not None:
                 ok, reason = self.formalizer.audit_yes_no(problem, final_answer, form.problem_prop)
+                if ok and re.search(r"[∀∃]", form.problem_prop):
+                    ok, reason = self.formalizer.audit_roundtrip(
+                        problem, final_answer, form.problem_prop, arabic=is_arabic(problem)
+                    )
             else:
                 ok, reason = self.formalizer.audit(
                     problem,

@@ -62,6 +62,14 @@ Paste **«ما هو ناتج ١٧ × ٢٣؟»** (Eastern digits on purpose). Sho
    hands Falcon the witness in Arabic («مثال مضاد: «الأطباء» = {x0}، «متعلمون» = {x0، x1}،
    «أثرياء» = {x1} … كل المقدمات صحيحة ولكن النتيجة خاطئة»). Round 2 then shows the revised
    «لا» verified. Benchmark: with this feedback 3B Arabic logic went 70.8% → 91.7%, 0 false alarms.
+6. Relations (the "LLM formalizer was the weak link" story): paste **«خمسة طلاب يجلسون في
+   الفصل، ويقول كل واحد منهم إن ثلاثة من الأربعة الباقين أصدقاؤه. هل يلزم أن أحدهم يكذب؟»**.
+   The *final* row is `∀ f : Fin 5 → Fin 5 → Bool, ¬ FalconVerifier.Regular f 3` with the
+   certificate `n := خمسة (5); k := ثلاثة (3); relation := friendship (symmetry assumed from
+   lexeme «أصدقاؤه»)`; Lean verifies it in ~4 s with the **handshake lemma**, not by trying
+   2^25 relations. Say what happened before this fragment existed: the 34B formalizer turned
+   friendship into one Bool per student, Lean refuted *that*, and a correct Falcon answer got a
+   false alarm — the exact bug the structured round-trip check now catches on the LLM path.
 
 > "Arabic has free word order and morphology that carries meaning — the translation step is
 > where hallucination hides. For the arithmetic fragment we removed the LLM from it entirely;

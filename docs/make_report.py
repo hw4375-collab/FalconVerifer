@@ -150,7 +150,7 @@ def main() -> None:
     run_dir = (
         Path(sys.argv[1])
         if len(sys.argv) > 1
-        else sorted((RES / "falcon3b_arabic").glob("run_*"))[-1]
+        else RES / "falcon3b_arabic" / "run_20260924T225108Z"  # the 76-item run the text describes
     )
     d = load_run(run_dir)
     rows = d["rows"]

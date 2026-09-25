@@ -1,0 +1,240 @@
+{
+ "problem": "حصلت فاطمة على الدرجات 73، 52، 98، 58، 87، 94 في 6 اختبارات. ما هو متوسط درجاتها؟",
+ "expected_answer": "77",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 81.5\n",
+    "reasoning": null,
+    "steps": [],
+    "final_answer": "81.5",
+    "latency_s": 2.616783857345581,
+    "tokens": 12
+   },
+   "formalization": {
+    "problem_prop": "((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 81.5",
+    "problem_note": "",
+    "steps": [],
+    "raw": "{\n  \"problem_prop\": \"((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 81.5\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"no explicit reasoning steps provided\"}\n  ]\n}\n",
+    "latency_s": 6.584308385848999
+   },
+   "report": {
+    "steps": [],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem final_wf : ((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 81.5 := by sorry\ntheorem final_pos : ((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 81.5 := by fv_auto\ntheorem final_neg : ¬ (((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 81.5) := by fv_auto\n",
+    "lean_latency_s": 4.029910564422607,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 143,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\ncase h1\na✝ : (73 + 52 + 98 + 58 + 87 + 94) / 6 < 81.5\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "أثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 81.5` خاطئ.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 81.5\n\nالخطوة 1: جمع الدرجات: 73 + 52 + 98 + 58 + 87 + 94 = 462\n\nالخطوة 2: قسّم المجموع على عدد الاختبارات (6): 462 ÷ 6 = 77\n\nالجواب النهائي: 77\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "الخطوة 1: جمع الدرجات: 73 + 52 + 98 + 58 + 87 + 94 = 462"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 2: قسّم المجموع على عدد الاختبارات (6): 462 ÷ 6 = 77"
+     }
+    ],
+    "final_answer": "81.5",
+    "latency_s": 4.376857757568359,
+    "tokens": 100
+   },
+   "formalization": {
+    "problem_prop": "((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462",
+      "note": "sum of scores"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(462:ℚ) / 6 = 77",
+      "note": "average calculation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462\", \"note\": \"sum of scores\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(462:ℚ) / 6 = 77\", \"note\": \"average calculation\"}\n  ]\n}\n",
+    "latency_s": 21.895634412765503
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462",
+      "step_text": "الخطوة 1: جمع الدرجات: 73 + 52 + 98 + 58 + 87 + 94 = 462",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(462:ℚ) / 6 = 77",
+      "step_text": "الخطوة 2: قسّم المجموع على عدد الاختبارات (6): 462 ÷ 6 = 77",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77`, which does not contain the stated FINAL ANSWER '81.5'",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s1_wf : (73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462 := by sorry\ntheorem s1_pos : (73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462 := by fv_auto\ntheorem s1_neg : ¬ ((73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462) := by fv_auto\n\ntheorem s2_wf : (462:ℚ) / 6 = 77 := by sorry\ntheorem s2_pos : (462:ℚ) / 6 = 77 := by fv_auto\ntheorem s2_neg : ¬ ((462:ℚ) / 6 = 77) := by fv_auto\n\ntheorem final_wf : ((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77 := by sorry\ntheorem final_pos : ((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77 := by fv_auto\ntheorem final_neg : ¬ (((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77) := by fv_auto\n",
+    "lean_latency_s": 3.828239679336548,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 73 + 52 + 98 + 58 + 87 + 94 = 462\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 462 / 6 = 77\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : (73 + 52 + 98 + 58 + 87 + 94) / 6 = 77\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "الجواب النهائي لا يطابق ما تستنتجه خطواتك. تحقق Lean 4 من `((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77`؛ يجب أن يكون الرقم بعد «الجواب النهائي» هو نتيجة هذا الحساب، فأعد قراءة خطواتك واذكر القيمة التي تنتجها فعلاً.\nالخطوات التي تحقق Lean 4 من صحتها: 1, 2.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 3,
+   "answer": {
+    "raw": "الجواب النهائي: 77\n\nالخطوة 1: جمع الدرجات: 73 + 52 + 98 + 58 + 87 + 94 = 462\n\nالخطوة 2: قسّم المجموع على عدد الاختبارات (6): 462 ÷ 6 = 77\n\nالجواب النهائي: 77\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "الخطوة 1: جمع الدرجات: 73 + 52 + 98 + 58 + 87 + 94 = 462"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 2: قسّم المجموع على عدد الاختبارات (6): 462 ÷ 6 = 77"
+     }
+    ],
+    "final_answer": "77",
+    "latency_s": 5.066198348999023,
+    "tokens": 98
+   },
+   "formalization": {
+    "problem_prop": "((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462",
+      "note": "sum of scores"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "462 / 6 = 77",
+      "note": "average calculation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462\", \"note\": \"sum of scores\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"462 / 6 = 77\", \"note\": \"average calculation\"}\n  ]\n}\n",
+    "latency_s": 11.43388295173645
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462",
+      "step_text": "الخطوة 1: جمع الدرجات: 73 + 52 + 98 + 58 + 87 + 94 = 462",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "462 / 6 = 77",
+      "step_text": "الخطوة 2: قسّم المجموع على عدد الاختبارات (6): 462 ÷ 6 = 77",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s1_wf : (73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462 := by sorry\ntheorem s1_pos : (73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462 := by fv_auto\ntheorem s1_neg : ¬ ((73:ℚ) + 52 + 98 + 58 + 87 + 94 = 462) := by fv_auto\n\ntheorem s2_wf : 462 / 6 = 77 := by sorry\ntheorem s2_pos : 462 / 6 = 77 := by fv_auto\ntheorem s2_neg : ¬ (462 / 6 = 77) := by fv_auto\n\ntheorem final_wf : ((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77 := by sorry\ntheorem final_pos : ((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77 := by fv_auto\ntheorem final_neg : ¬ (((73:ℚ) + 52 + 98 + 58 + 87 + 94) / 6 = 77) := by fv_auto\n",
+    "lean_latency_s": 3.921705484390259,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 73 + 52 + 98 + 58 + 87 + 94 = 462\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 462 / 6 = 77\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : (73 + 52 + 98 + 58 + 87 + 94) / 6 = 77\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "77",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 63.76
+}

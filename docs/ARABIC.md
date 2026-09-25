@@ -4,7 +4,7 @@ FalconVerifier's Arabic track answers three questions with code and theorems rat
 slogans:
 
 1. **Does the verify-and-teach loop work on Arabic math/logic conversations with Falcon?**
-   Yes — `bench/problems_ar.jsonl` (76 items, Eastern + Western digits) is run with the same
+   Yes — `bench/problems_ar.jsonl` (86 items, Eastern + Western digits) is run with the same
    pipeline; numbers are in `docs/BENCHMARK.md` (`falcon7b_arabic`).
 2. **Can we make the NL → Lean translation itself *provably* faithful for a fragment of
    Arabic?** Yes — `falconverifier/arabic.py` is a *pregroup grammar* parser that emits a Lean
@@ -246,6 +246,58 @@ valid but unconvincing refutation). Conversely a wrong «لا» to a valid infer
 that the closed statement is a theorem and asked to re-derive the chain. The feedback thus
 names the polarity Lean established; the student still has to produce the corrected
 reasoning, which is what the revised-answer rounds record.
+
+### 5c. The counting fragment: symmetric relations and the handshake lemma (`falconverifier.arabic_graph`)
+
+The unary fragment above cannot say anything about a *relation between two people*. Running the
+classic puzzle
+
+> خمسة طلاب يجلسون في الفصل، ويقول كل واحد منهم إن ثلاثة من الأربعة الباقين أصدقاؤه. هل يلزم أن أحدهم يكذب؟
+
+through the LLM formalizer exposed exactly the failure this project is about: the 34B model
+flattened *friendship* into a per-student `Bool` (`students : Fin 5 → Bool`) — losing that the
+relation is binary and mutual — and Lean dutifully refuted the wrong proposition, producing a
+false alarm against a Falcon answer that was actually right. A second attempt kept the relation
+binary but dropped symmetry, and `decide` over `Fin 5 → Fin 5 → Bool` (2^25 relations) timed out.
+
+The counting fragment recognises the regular-graph family — «n people, each is a friend of /
+shook hands with / knows exactly k of the others», followed by «هل يلزم أن أحدهم يكذب؟» or
+«هل يمكن ذلك؟» — and emits, with a certificate that records where symmetry came from
+(`symmetry stated («متبادلة»)` vs `symmetry assumed from lexeme «أصدقاؤه»`):
+
+```lean
+∀ f : Fin 5 → Fin 5 → Bool, ¬ FalconVerifier.Regular f 3   -- «someone must be lying»
+∃ f : Fin 6 → Fin 6 → Bool,   FalconVerifier.Regular f 3   -- «is it possible?»
+```
+
+`Regular f k` (lean/FalconVerifier/Graph.lean) says `f` is symmetric, irreflexive and every vertex
+has exactly `k` neighbours. Lean settles these claims with *lemmas*, never by enumeration:
+
+| situation | Lean | proof |
+|---|---|---|
+| `n·k` odd | `no_regular_of_odd` | handshake lemma via Mathlib `SimpleGraph.sum_degrees_eq_twice_card_edges` |
+| `k ≥ n` | `no_regular_of_ge` | degree ≤ n−1 (`Finset.card_le_card` on the neighbour set) |
+| `n·k` even, `k < n` | `circulant n k` | explicit witness, `Regular (circulant n k) k := by decide` |
+
+`lean_runner` routes any claim mentioning `FalconVerifier.Regular` to a dedicated tactic
+cascade (`fv_graph`) without a generic `decide`; the six claims of the integration test settle
+in ≈4 s. All 40 admissible `(n, k)` pairs with `2 ≤ n ≤ 12`, `k ≤ 9` are checked as circulant
+witnesses. The teaching feedback (`arabic_graph.explanation`) gives the parity argument in
+Arabic (`5 × 3 = 15` is odd but every friendship is counted twice) or describes the circulant
+construction («رتّب الأشخاص في دائرة …»).
+
+**Round-trip faithfulness for the LLM path.** Outside the fragments the formalizer is still an
+LLM, so the same structure loss can recur. `Formalizer.audit_roundtrip` now asks the LLM only to
+*extract a signature* of the question (does it involve a binary relation between individuals? is
+it symmetric? which counts does the claim structurally depend on?), reads the same signature off
+the Lean proposition mechanically (`prop_signature`: a `Fin n → Fin n → Bool` binder or an order
+over ℤ is binary; `Regular`/`f x y = f y x` marks symmetry; literals are the counts) and compares
+them deterministically (`compare_signatures`). Only *structure loss* is rejected — relation
+flattened to unary, symmetry dropped, a structural count absent — and a rejection downgrades the
+verdict to `unknown` instead of blaming Falcon. Legitimate abstraction (syllogisms as unary
+predicates, orderings as integers, facts as propositional letters) passes; a first design that
+asked the LLM to back-translate the Lean into Arabic and judge equivalence rejected all of these
+and was discarded.
 
 ## 6. Research directions (not needed for the demo)
 

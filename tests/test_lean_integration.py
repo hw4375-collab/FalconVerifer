@@ -158,3 +158,27 @@ def test_arabic_logic_fragment_is_decided_both_ways(runner):
         assert (pos, neg) == (
             (Verdict.VERIFIED, Verdict.REFUTED) if yes else (Verdict.REFUTED, Verdict.VERIFIED)
         ), k
+
+
+def test_regular_graph_claims_use_lemmas_not_enumeration(runner: LeanRunner):
+    """`FalconVerifier.Regular` claims must be settled by the handshake lemma / circulant
+    witness in seconds; a generic `decide` over `Fin 5 → Fin 5 → Bool` (2^25 relations) dies
+    with an unrecoverable max-recursion error, which is exactly what this guards against."""
+    res = runner.check_claims(
+        {
+            "five_three_lie": "∀ f : Fin 5 → Fin 5 → Bool, ¬ FalconVerifier.Regular f 3",
+            "five_three_no": "¬ (∀ f : Fin 5 → Fin 5 → Bool, ¬ FalconVerifier.Regular f 3)",
+            "six_three_possible": "∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 3",
+            "seven_three_possible": "∃ f : Fin 7 → Fin 7 → Bool, FalconVerifier.Regular f 3",
+            "four_four_lie": "∀ f : Fin 4 → Fin 4 → Bool, ¬ FalconVerifier.Regular f 4",
+            "eight_five_possible": "∃ f : Fin 8 → Fin 8 → Bool, FalconVerifier.Regular f 5",
+        }
+    )
+    v = {k: o.verdict for k, o in res.outcomes.items()}
+    assert v["five_three_lie"] == Verdict.VERIFIED
+    assert v["five_three_no"] == Verdict.REFUTED
+    assert v["six_three_possible"] == Verdict.VERIFIED
+    assert v["seven_three_possible"] == Verdict.REFUTED
+    assert v["four_four_lie"] == Verdict.VERIFIED
+    assert v["eight_five_possible"] == Verdict.VERIFIED
+    assert res.latency_s < 60

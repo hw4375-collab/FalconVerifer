@@ -3,8 +3,9 @@ from __future__ import annotations
 import json
 import logging
 import re
+from dataclasses import dataclass
 
-from . import arabic, arabic_logic
+from . import arabic, arabic_graph, arabic_logic
 from .llm import ChatModel, extract_json
 from .schemas import Formalization, FormalStep, ReasoningStep
 from .student import yes_no_polarity
@@ -43,6 +44,13 @@ Translation rules (follow strictly):
   `∀ (P Q : Prop), (P → Q) → ¬Q → ¬P`.
 - Ordering / comparison puzzles with named entities: use variables over ℕ or ℤ:
   `∀ (a b c : ℤ), a > b → b > c → a > c`.
+- A relation BETWEEN people (friends, handshakes, knows, played against) is a BINARY
+  relation `f : Fin n → Fin n → Bool`, never a per-person Bool. Symmetric-relation counting
+  puzzles ("n people, each has exactly k friends among them — must someone be lying?") use
+  the library predicate `FalconVerifier.Regular f k` (symmetric, irreflexive, every vertex
+  has degree k): "possible" ↦ `∃ f : Fin n → Fin n → Bool, FalconVerifier.Regular f k`;
+  "someone must lie" ↦ `∀ f : Fin n → Fin n → Bool, ¬ FalconVerifier.Regular f k`.
+  Never write `∀ x, ∑ y, …` or hand-rolled degree sums over the relation.
 - Steps that only restate the problem, set notation, or contain no checkable claim get
   `"kind": "skip", "lean_prop": null`.
 - Translate what the step ASSERTS, with its polarity. If a step says an inference does NOT
@@ -147,6 +155,23 @@ Inference as formalized: {prop}
 
 Answer with a JSON object: {{"faithful": true|false, "reason": "<one sentence>"}}"""
 
+SIGNATURE_PROMPT = """Extract the logical SIGNATURE of the question below (it may be Arabic). Do not
+answer the question. Return a JSON object with exactly these keys:
+
+- "binary_relations": relations that hold between TWO NAMED OR COUNTED PEOPLE/OBJECTS of the
+  same group, e.g. "Omar is taller than Yusuf", "each student is a friend of 3 others",
+  "every guest shook hands with". Give each as {{"relation": "...", "between": "<who and
+  whom>"}}. Statements that one CLASS is contained in / excluded from another ("all birds are
+  animals", "no bird is a mammal", "some doctors are rich") are class statements, NOT binary
+  relations — leave the list EMPTY for pure syllogisms. Whole-sentence facts ("it rained") are
+  not relations either.
+- "symmetric": true if at least one listed binary relation is mutual by meaning
+  (friendship, handshake, acquaintance, played against), else false.
+- "counts": integers that the claim structurally depends on — group sizes ("5 students") and
+  per-individual counts ("exactly 3 of the others"). Exclude numbers used only as labels.
+
+Question: {problem}"""
+
 REPAIR_PROMPT = """Some of your Lean propositions failed to type-check. Fix them and return the
 complete JSON object again (same schema, all steps). Lean errors:
 
@@ -217,6 +242,55 @@ def degenerate_inference(prop: str) -> bool:
     return concl in premises
 
 
+@dataclass(frozen=True)
+class Signature:
+    """Coarse semantic shape shared by a question and its formalization: does the claim
+    involve a two-place relation, is that relation symmetric, which counts does it hinge on."""
+
+    binary: bool
+    symmetric: bool
+    counts: frozenset[int]
+
+
+_BINARY_TYPES = re.compile(
+    r"Fin\s*\d+\s*→\s*Fin\s*\d+\s*→\s*(?:Bool|Prop)|(\w+)\s*→\s*\1\s*→\s*(?:Bool|Prop)"
+)
+_ORDER_REL = re.compile(r"[<>≤≥]")
+_INT_BINDERS = re.compile(r":\s*[ℤℕℚℝ]")
+_SYMMETRIC_MARKERS = re.compile(
+    r"FalconVerifier\.(?:Regular|IsGraph)|(\w+)\s+(\w+)\s+(\w+)\s*=\s*\1\s+\3\s+\2"
+)
+
+
+def prop_signature(prop: str) -> Signature:
+    """Read the `Signature` off a Lean proposition mechanically: a `Fin n → Fin n → Bool`
+    binder or an ordering over ℤ/ℕ is a binary relation; `FalconVerifier.Regular` or an explicit
+    `f x y = f y x` marks symmetry; numeric literals are the available counts."""
+    binary = bool(_BINARY_TYPES.search(prop)) or bool(
+        _INT_BINDERS.search(prop) and _ORDER_REL.search(prop)
+    )
+    symmetric = bool(_SYMMETRIC_MARKERS.search(prop))
+    counts = frozenset(int(n) for n in re.findall(r"(?<![\w.])(\d+)(?![\w.])", prop))
+    return Signature(binary=binary, symmetric=symmetric, counts=counts)
+
+
+def compare_signatures(question: Signature, formal: Signature) -> tuple[bool, str]:
+    """Deterministic faithfulness verdict. Only *structure loss* is rejected: a binary relation
+    the question is about that the formula does not have, symmetry that was dropped, or a
+    structural count that never appears in the formula."""
+    if question.binary and not formal.binary:
+        return (
+            False,
+            "round-trip: question is about a relation between individuals, formula has none",
+        )
+    if question.symmetric and formal.binary and not formal.symmetric:
+        return False, "round-trip: mutual relation formalized without symmetry"
+    missing = sorted(c for c in question.counts if not {c, c + 1} & formal.counts)
+    if question.binary and missing:
+        return False, f"round-trip: structural count(s) {missing} absent from the formula"
+    return True, "round-trip signature matches"
+
+
 def _norm_atom(s: str) -> str:
     s = re.sub(r"\s+", "", s)
     while s.startswith("(") and s.endswith(")") and _outer_negation("¬" + s) is not None:
@@ -277,9 +351,11 @@ class Formalizer:
                 grammar[s.index] = FormalStep(
                     index=s.index, kind="arith", lean_prop=prop, note=f"pregroup: {deriv}"
                 )
-        problem_hit = arabic.formalize_problem(
-            problem, final
-        ) or arabic_logic.formalize_logic_problem(problem)
+        problem_hit = (
+            arabic.formalize_problem(problem, final)
+            or arabic_logic.formalize_logic_problem(problem)
+            or arabic_graph.formalize_graph_problem(problem)
+        )
         self._problem_hit = problem_hit
 
         if len(grammar) == len(steps) and problem_hit:
@@ -336,6 +412,39 @@ class Formalizer:
             problem=problem, answer=answer, prop=inner if inner is not None else prop
         )
         return self._audit_call(msg)
+
+    def audit_roundtrip(
+        self, problem: str, answer: str, prop: str, arabic: bool = False
+    ) -> tuple[bool, str]:
+        """Structured round-trip faithfulness check. The LLM only *extracts* a signature
+        (binary relations, symmetry, structural counts) from the question; the signature of
+        the Lean proposition is read off mechanically by `prop_signature`; the two are then
+        compared deterministically. Catches the structure loss a free-form audit waves
+        through — a binary relation flattened to a per-individual Bool, a dropped "exactly k"."""
+        del answer, arabic
+        resp = self.model.chat(
+            [{"role": "user", "content": SIGNATURE_PROMPT.format(problem=problem)}],
+            temperature=0.0,
+            max_tokens=300,
+        )
+        try:
+            raw = json.loads(extract_json(resp.content))
+        except (json.JSONDecodeError, AttributeError):
+            return True, "round-trip unavailable; kept"
+        if not isinstance(raw, dict):
+            return True, "round-trip unavailable; kept"
+        rels = raw.get("binary_relations")
+        counts = raw.get("counts")
+        q = Signature(
+            binary=bool(rels) if isinstance(rels, list) else False,
+            symmetric=bool(raw.get("symmetric")),
+            counts=frozenset(
+                int(c) for c in counts if isinstance(c, int) and not isinstance(c, bool)
+            )
+            if isinstance(counts, list)
+            else frozenset(),
+        )
+        return compare_signatures(q, prop_signature(prop))
 
     def _audit_call(self, msg: str) -> tuple[bool, str]:
         resp = self.model.chat([{"role": "user", "content": msg}], temperature=0.0, max_tokens=300)

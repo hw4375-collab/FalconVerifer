@@ -1,0 +1,124 @@
+{
+ "problem": "عمر الأب اليوم 4 أمثال عمر ابنه، وعمر الابن 14 سنوات. كم سيكون عمر الأب بعد 5 سنوات؟",
+ "expected_answer": "61",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الخطوة 1: تحديد العلاقات بين الأعمار.\n- لنفترض أن عمر الابن هو \\( x \\)، وبالتالي عمر الأب هو \\( 4x \\).\n\nالخطوة 2: استخدام المعطى لحل المعادلة.\n- نعلم أن عمر الابن هو 14 سنة، إذًا \\( x = 14 \\).\n- بالتالي، عمر الأب هو \\( 4 \\times 14 = 56 \\) سنة.\n\nالخطوة 3: حساب عمر الأب بعد 5 سنوات.\n- عمر الأب بعد 5 سنوات = \\( 56 + 5 = 61 \\) سنة.\n\nالجواب النهائي: `الجواب: 61`\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "تحديد العلاقات بين الأعمار. - لنفترض أن عمر الابن هو \\( x \\)، وبالتالي عمر الأب هو \\( 4x \\)."
+     },
+     {
+      "index": 2,
+      "text": "استخدام المعطى لحل المعادلة. - نعلم أن عمر الابن هو 14 سنة، إذًا \\( x = 14 \\). - بالتالي، عمر الأب هو \\( 4 \\times 14 = 56 \\) سنة."
+     },
+     {
+      "index": 3,
+      "text": "حساب عمر الأب بعد 5 سنوات. - عمر الأب بعد 5 سنوات = \\( 56 + 5 = 61 \\) سنة."
+     }
+    ],
+    "final_answer": "الجواب: 61",
+    "latency_s": 4.230564832687378,
+    "tokens": 175
+   },
+   "formalization": {
+    "problem_prop": "(4:ℕ) * 14 + 5 = 61",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "defines relationship"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(4:ℕ) * 14 = 56",
+      "note": "current age of father"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "56 + 5 = 61",
+      "note": "age after 5 years"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(4:ℕ) * 14 + 5 = 61\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"defines relationship\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(4:ℕ) * 14 = 56\", \"note\": \"current age of father\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"56 + 5 = 61\", \"note\": \"age after 5 years\"}\n  ]\n}\n",
+    "latency_s": 9.301425695419312
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "تحديد العلاقات بين الأعمار. - لنفترض أن عمر الابن هو \\( x \\)، وبالتالي عمر الأب هو \\( 4x \\).",
+      "detail": "defines relationship"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(4:ℕ) * 14 = 56",
+      "step_text": "استخدام المعطى لحل المعادلة. - نعلم أن عمر الابن هو 14 سنة، إذًا \\( x = 14 \\). - بالتالي، عمر الأب هو \\( 4 \\times 14 = 56 \\) سنة.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "56 + 5 = 61",
+      "step_text": "حساب عمر الأب بعد 5 سنوات. - عمر الأب بعد 5 سنوات = \\( 56 + 5 = 61 \\) سنة.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (4:ℕ) * 14 = 56 := by sorry\ntheorem s2_pos : (4:ℕ) * 14 = 56 := by fv_auto\ntheorem s2_neg : ¬ ((4:ℕ) * 14 = 56) := by fv_auto\n\ntheorem s3_wf : 56 + 5 = 61 := by sorry\ntheorem s3_pos : 56 + 5 = 61 := by fv_auto\ntheorem s3_neg : ¬ (56 + 5 = 61) := by fv_auto\n\ntheorem final_wf : (4:ℕ) * 14 + 5 = 61 := by sorry\ntheorem final_pos : (4:ℕ) * 14 + 5 = 61 := by fv_auto\ntheorem final_neg : ¬ ((4:ℕ) * 14 + 5 = 61) := by fv_auto\n",
+    "lean_latency_s": 3.859203338623047,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 4 * 14 = 56\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 56 + 5 = 61\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 4 * 14 + 5 = 61\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "الجواب: 61",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 17.39
+}

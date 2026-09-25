@@ -335,10 +335,10 @@ def build() -> str:
             '<p class="note">Research direction: feature-indexed atoms as dependent types; Lambek calculus with modalities for pro-drop/clitics; VSO≡SVO as a 2-cell between derivations (bicategorical semantics).</p>'
         ),
         slide(
-            "<h2>Arabic evidence<small>76 Arabic problems (52 math, 24 logic), half with Eastern digits · Falcon 7B and 3B (Arabic-instruct)</small></h2>"
+            "<h2>Arabic evidence<small>86 Arabic problems (52 math, 34 logic incl. 10 relation/counting), a third with Eastern digits · Falcon 3B (Arabic-instruct); the 7B arm predates the 10 relation items</small></h2>"
             + arabic_slice(arms)
             + '<p class="note">“pregroup fragment” = bare arithmetic questions translated with zero LLM calls in the formalizer. '
-            "Same grading as the English arms: exact answer match, «نعم»/«لا» for logic. Logic questions: 16/24 are inside the deterministic quantifier fragment (decided by Lean in both polarities, 0 false alarms); "
+            "Same grading as the English arms: exact answer match, «نعم»/«لا» for logic. Logic questions: 16/34 are inside the deterministic quantifier fragment and 10/34 in the relation/counting fragment (handshake lemma; 10/10 correct after feedback, 0 false alarms); "
             "for the rest the yes/no polarity is fixed mechanically and a degeneracy filter plus an LLM faithfulness audit gate every refutation.</p>"
         ),
         slide(

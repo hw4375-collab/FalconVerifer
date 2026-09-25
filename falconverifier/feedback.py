@@ -108,6 +108,8 @@ def build_feedback(
     elif report.final_answer_verdict == Verdict.REFUTED and polarity is False:
         inner = _outer_negation(form.problem_prop or "") or form.problem_prop
         lines.append(t["no_wrong"].format(p=inner))
+        if countermodel:
+            lines.append(countermodel)
     elif report.final_answer_verdict == Verdict.REFUTED:
         lines.append(t["final_refuted"].format(p=form.problem_prop))
     if report.verified:

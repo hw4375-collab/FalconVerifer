@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import subprocess
 import time
 import uuid
@@ -19,6 +20,25 @@ log = logging.getLogger(__name__)
 _WITNESSES_1 = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 21)
 _WITNESSES_2 = ((0, 0), (0, 1), (1, 0), (1, 2), (2, 1), (2, 3), (3, 2), (2, 15), (3, 10), (5, 6))
 _CLOSERS = ("norm_num", "omega", "decide")
+_DEGREES = range(1, 10)
+
+# Regular-graph claims (`FalconVerifier.Regular`, see lean/FalconVerifier/Graph.lean) get their
+# own cascade: the handshake lemma for impossibility, an explicit circulant witness for
+# existence, and *no* generic `decide` — on `∃ f : Fin n → Fin n → Bool, …` it would enumerate
+# 2^(n²) relations and die with an unrecoverable max-recursion error.
+_FV_GRAPH_ALTERNATIVES = [
+    "exact FalconVerifier.no_regular_of_odd (by decide)",
+    "exact FalconVerifier.not_regular_of_odd (by decide)",
+    "push Not; exact FalconVerifier.no_regular_of_odd (by decide)",
+    "push Not; exact FalconVerifier.not_regular_of_odd (by decide)",
+    "exact FalconVerifier.not_regular_of_ge (by decide)",
+    "exact FalconVerifier.no_regular_of_ge (by decide)",
+    "push Not; exact FalconVerifier.no_regular_of_ge (by decide)",
+    "push Not; exact FalconVerifier.not_regular_of_ge (by decide)",
+    *(f"exact ⟨FalconVerifier.circulant _ {k}, by decide⟩" for k in _DEGREES),
+    *(f"push Not; exact ⟨FalconVerifier.circulant _ {k}, by decide⟩" for k in _DEGREES),
+]
+_GRAPH_CLAIM = re.compile(r"FalconVerifier\.(Regular|IsGraph|degree)\b")
 
 _FV_ALTERNATIVES = [
     "decide",
@@ -60,14 +80,21 @@ _FV_ALTERNATIVES = [
     # cannot backtrack from, so nothing may come after it
     "intros; nlinarith",
 ]
-FV_AUTO_MACRO = (
-    'macro "fv_auto" : tactic => `(tactic| first\n'
-    + "\n".join(f"  | ({alt}; done)" for alt in _FV_ALTERNATIVES)
-    + ")\n"
-)
+
+
+def _macro(name: str, alternatives: list[str]) -> str:
+    return (
+        f'macro "{name}" : tactic => `(tactic| first\n'
+        + "\n".join(f"  | ({alt}; done)" for alt in alternatives)
+        + ")\n"
+    )
+
+
+FV_AUTO_MACRO = _macro("fv_auto", _FV_ALTERNATIVES) + _macro("fv_graph", _FV_GRAPH_ALTERNATIVES)
 
 HEADER = (
     "import Mathlib\n"
+    "import FalconVerifier.Graph\n"
     "set_option maxHeartbeats 400000\n"
     "set_option linter.all false\n"
     "set_option autoImplicit false\n\n"
@@ -164,9 +191,10 @@ class LeanRunner:
             p = " ".join(prop.split())  # one physical line per declaration
             lines.append("")
             start = len(lines) + 1  # 1-based line number of the next appended line
+            tac = "fv_graph" if _GRAPH_CLAIM.search(p) else "fv_auto"
             lines.append(f"theorem {cid}_wf : {p} := by sorry")
-            lines.append(f"theorem {cid}_pos : {p} := by fv_auto")
-            lines.append(f"theorem {cid}_neg : ¬ ({p}) := by fv_auto")
+            lines.append(f"theorem {cid}_pos : {p} := by {tac}")
+            lines.append(f"theorem {cid}_neg : ¬ ({p}) := by {tac}")
             line_map[cid] = (start, start + 1, start + 2)
         return "\n".join(lines) + "\n", line_map
 
