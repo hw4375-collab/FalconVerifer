@@ -9,8 +9,8 @@ export function Turnstile({ className = '' }: { className?: string }) {
 }
 
 export const PRODUCT = 'NYU Falcon'
-export const ORG = 'ChaosButterfly.org'
-export const ORG_URL = 'https://chaosbutterfly.org'
+export const ORG = 'ChaosButterfly.ai'
+export const ORG_URL = 'https://chaosbutterfly.ai'
 
 export function Wordmark({ className = '', collapse = false }: { className?: string; collapse?: boolean }) {
   return (

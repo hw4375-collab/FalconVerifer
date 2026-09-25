@@ -118,7 +118,7 @@ export function Org() {
         </a>
         <div className="max-w-[60ch]">
           <p className="text-[13px] uppercase tracking-[0.14em] text-ink-2">
-            {t({ en: 'A ChaosButterfly.org project', ar: 'مشروع من ChaosButterfly.org' })}
+            {t({ en: 'A ChaosButterfly.ai project', ar: 'مشروع من ChaosButterfly.ai' })}
           </p>
           <h2 className="mt-2 text-[clamp(26px,3.2vw,40px)] font-semibold leading-[1.1] tracking-[-0.03em]">
             {t({
@@ -134,7 +134,7 @@ export function Org() {
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
             <a href={ORG_URL} target="_blank" rel="noreferrer" className="press rounded-full border border-ink px-5 py-2.5 text-[15px] font-medium text-ink hover:bg-ink hover:text-paper">
-              chaosbutterfly.org ↗
+              chaosbutterfly.ai ↗
             </a>
             <a href={REPO_URL} target="_blank" rel="noreferrer" className="press rounded-full px-5 py-2.5 text-[15px] font-medium text-ink hover:bg-panel">
               {t({ en: 'Open source on GitHub', ar: 'مفتوح المصدر على GitHub' })}
