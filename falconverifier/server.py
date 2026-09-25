@@ -22,6 +22,7 @@ from pydantic import BaseModel
 from .agent import VerifyAndTeachAgent
 from .config import PROVIDER_PRESETS, Settings
 from .lean_runner import LeanRunner
+from .memory import memory_from_env
 
 STATIC_DIR = Path(__file__).parent / "static"
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -120,6 +121,9 @@ ALLOWED_STUDENTS = {
 }
 
 
+_memory = memory_from_env(Settings.from_env().runs_dir)
+
+
 def _settings(req: SolveRequest) -> Settings:
     provider = req.formalizer if req.formalizer in PROVIDER_PRESETS else None
     s = Settings.from_env(provider)
@@ -144,7 +148,9 @@ def _run_stream(req: SolveRequest) -> Iterator[str]:
                 q.put(("error", {"message": "server busy: all Lean workers are taken, retry"}))
                 return
             try:
-                agent = VerifyAndTeachAgent(settings, on_event=lambda k, p: q.put((k, p)))
+                agent = VerifyAndTeachAgent(
+                    settings, on_event=lambda k, p: q.put((k, p)), memory=_memory
+                )
                 trace = agent.run(req.problem, expected_answer=req.expected, max_rounds=req.rounds)
                 path = agent.save_trace(trace)
                 q.put(("saved", {"path": str(path)}))
@@ -224,8 +230,9 @@ def solve(req: SolveRequest, request: Request) -> JSONResponse:
     _gate(request, req.problem, req.rounds)
     settings = _settings(req)
     with _slots:
-        agent = VerifyAndTeachAgent(settings)
+        agent = VerifyAndTeachAgent(settings, memory=_memory)
         trace = agent.run(req.problem, expected_answer=req.expected, max_rounds=req.rounds)
+        agent.save_trace(trace)
     return JSONResponse(trace.model_dump())
 
 
@@ -235,7 +242,7 @@ def check(req: CheckRequest, request: Request) -> JSONResponse:
         raise HTTPException(413, "at most 50 propositions per call")
     _gate(request, "\n".join(req.props), None)
     settings = Settings.from_env()
-    runner = LeanRunner(settings.lean_project_dir, settings.lean_timeout)
+    runner = LeanRunner(settings.lean_project_dir, settings.lean_timeout, memory=_memory)
     with _slots:
         res = runner.check_claims({f"c{i}": p for i, p in enumerate(req.props)})
     return JSONResponse(
@@ -245,12 +252,22 @@ def check(req: CheckRequest, request: Request) -> JSONResponse:
                     "prop": p,
                     "verdict": res.outcomes[f"c{i}"].verdict.value,
                     "detail": res.outcomes[f"c{i}"].detail,
+                    "cached": res.outcomes[f"c{i}"].cached,
                 }
                 for i, p in enumerate(req.props)
             ],
             "lean_latency_s": res.latency_s,
+            "cache_hits": res.cache_hits,
         }
     )
+
+
+@app.get("/api/memory")
+def memory_stats() -> JSONResponse:
+    """What the verifier remembers: kernel verdicts, formalizations and problems seen."""
+    if _memory is None:
+        return JSONResponse({"enabled": False})
+    return JSONResponse({"enabled": True, **_memory.summary()})
 
 
 @app.get("/api/config")

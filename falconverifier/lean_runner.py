@@ -10,6 +10,7 @@ import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
+from .memory import Memory, env_fingerprint
 from .schemas import LeanDiagnostic, Verdict
 
 log = logging.getLogger(__name__)
@@ -105,6 +106,7 @@ HEADER = (
 class ClaimOutcome:
     verdict: Verdict
     detail: str
+    cached: bool = False
 
 
 @dataclass
@@ -113,6 +115,7 @@ class LeanRunResult:
     diagnostics: list[LeanDiagnostic]
     source: str
     latency_s: float
+    cache_hits: int = 0
 
 
 class LeanRunner:
@@ -125,11 +128,13 @@ class LeanRunner:
     and map the compiler diagnostics back by line number.
     """
 
-    def __init__(self, project_dir: Path, timeout: float = 120.0):
+    def __init__(self, project_dir: Path, timeout: float = 120.0, memory: Memory | None = None):
         self.project_dir = Path(project_dir).resolve()
         self.timeout = timeout
         self.scratch = self.project_dir / "scratch"
         self.scratch.mkdir(exist_ok=True)
+        self.memory = memory
+        self.env_id = env_fingerprint(self.project_dir, HEADER + FV_AUTO_MACRO) if memory else ""
 
     # -- public API -----------------------------------------------------------------
 
@@ -137,25 +142,37 @@ class LeanRunner:
         """claims: id -> Lean Prop source (single expression)."""
         if not claims:
             return LeanRunResult({}, [], "", 0.0)
-        source, line_map = self._build_source(claims)
+        outcomes: dict[str, ClaimOutcome] = {}
+        remembered: dict[str, str] = {}
+        if self.memory is not None:
+            for cid, prop in claims.items():
+                hit = self.memory.get_verdict(self.env_id, prop, _tactic_for(prop))
+                if hit is not None:
+                    when = time.strftime("%Y-%m-%d", time.gmtime(hit.created_at))
+                    note = f"kernel verdict from memory (first decided {when}, hit #{hit.hits})"
+                    outcomes[cid] = ClaimOutcome(
+                        hit.verdict, f"{hit.detail} · {note}" if hit.detail else note, True
+                    )
+                    remembered[cid] = " ".join(prop.split())
+        fresh = {cid: p for cid, p in claims.items() if cid not in outcomes}
+        if not fresh:
+            return LeanRunResult(outcomes, [], _memory_note(remembered), 0.0, len(remembered))
+        source, line_map = self._build_source(fresh)
         t0 = time.time()
         diags = self._compile(source)
         latency = time.time() - t0
+        source += _memory_note(remembered)
+        claims = fresh
 
         errors_by_line: dict[int, list[str]] = {}
         for d in diags:
             if d.severity == "error":
                 errors_by_line.setdefault(d.line, []).append(d.message)
 
-        outcomes: dict[str, ClaimOutcome] = {}
         if 0 in errors_by_line:  # global failure (timeout / crash): nothing is decided
             detail = _first_line(errors_by_line[0][0])
-            return LeanRunResult(
-                {cid: ClaimOutcome(Verdict.UNKNOWN, detail) for cid in claims},
-                diags,
-                source,
-                latency,
-            )
+            outcomes.update({cid: ClaimOutcome(Verdict.UNKNOWN, detail) for cid in claims})
+            return LeanRunResult(outcomes, diags, source, latency, len(remembered))
         for cid in claims:
             wf_line, pos_line, neg_line = line_map[cid]
             wf_err = errors_by_line.get(wf_line)
@@ -176,7 +193,11 @@ class LeanRunner:
                 outcomes[cid] = ClaimOutcome(
                     Verdict.UNKNOWN, _first_line(errors_by_line.get(pos_line, [""])[0])
                 )
-        return LeanRunResult(outcomes, diags, source, latency)
+        if self.memory is not None:
+            for cid, prop in claims.items():
+                o = outcomes[cid]
+                self.memory.put_verdict(self.env_id, prop, _tactic_for(prop), o.verdict, o.detail)
+        return LeanRunResult(outcomes, diags, source, latency, len(remembered))
 
     def compile_snippet(self, body: str) -> list[LeanDiagnostic]:
         return self._compile(HEADER + body)
@@ -191,7 +212,7 @@ class LeanRunner:
             p = " ".join(prop.split())  # one physical line per declaration
             lines.append("")
             start = len(lines) + 1  # 1-based line number of the next appended line
-            tac = "fv_graph" if _GRAPH_CLAIM.search(p) else "fv_auto"
+            tac = _tactic_for(p)
             lines.append(f"theorem {cid}_wf : {p} := by sorry")
             lines.append(f"theorem {cid}_pos : {p} := by {tac}")
             lines.append(f"theorem {cid}_neg : ¬ ({p}) := by {tac}")
@@ -244,6 +265,18 @@ class LeanRunner:
                 LeanDiagnostic(line=0, severity="error", message=proc.stderr.strip()[:2000])
             )
         return diags
+
+
+def _tactic_for(prop: str) -> str:
+    return "fv_graph" if _GRAPH_CLAIM.search(prop) else "fv_auto"
+
+
+def _memory_note(remembered: dict[str, str]) -> str:
+    if not remembered:
+        return ""
+    lines = ["", "-- claims below were not recompiled: verdicts served from kernel memory"]
+    lines += [f"-- {cid} : {p}" for cid, p in remembered.items()]
+    return "\n".join(lines) + "\n"
 
 
 def _first_line(msg: str) -> str:

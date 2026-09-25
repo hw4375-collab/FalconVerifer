@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -63,6 +64,7 @@ class StepResult(BaseModel):
     lean_prop: str | None
     step_text: str
     detail: str = ""  # Lean message that justified the verdict (for refuted/ill_formed)
+    cached: bool = False  # verdict served from kernel memory (same prop decided earlier)
 
 
 class VerificationReport(BaseModel):
@@ -72,6 +74,7 @@ class VerificationReport(BaseModel):
     lean_file: str
     lean_latency_s: float
     diagnostics: list[LeanDiagnostic] = []
+    cache_hits: int = 0  # claims answered from kernel memory instead of recompiling
 
     @property
     def refuted(self) -> list[StepResult]:
@@ -116,6 +119,10 @@ class Trace(BaseModel):
     status: str  # verified | refuted | unknown | max_rounds
     assurance_score: float = Field(ge=0, le=1)
     total_latency_s: float = 0.0
+    memory: dict[str, Any] = Field(
+        default_factory=dict,
+        description="kernel/formalizer cache hits and prior sightings of this problem",
+    )
 
     @property
     def n_rounds(self) -> int:

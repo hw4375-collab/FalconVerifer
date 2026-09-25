@@ -16,6 +16,7 @@ from .feedback import build_feedback
 from .formalizer import Formalizer, degenerate_inference
 from .lean_runner import LeanRunner
 from .llm import ChatModel, OpenAICompatibleClient
+from .memory import Memory, memory_from_env
 from .schemas import Formalization, Round, Trace, Verdict, VerificationReport
 from .student import Student, yes_no_polarity
 from .verifier import (
@@ -69,14 +70,18 @@ class VerifyAndTeachAgent:
         runner: LeanRunner | None = None,
         on_event: EventCallback | None = None,
         audit_refutations: bool = True,
+        memory: Memory | None = None,
     ):
         self.settings = settings
         self.audit_refutations = audit_refutations
+        self.memory = memory if memory is not None else memory_from_env(settings.runs_dir)
         self.student = Student(student_model or OpenAICompatibleClient(settings.student))
         self.formalizer = Formalizer(
-            formalizer_model or OpenAICompatibleClient(settings.formalizer)
+            formalizer_model or OpenAICompatibleClient(settings.formalizer), memory=self.memory
         )
-        self.runner = runner or LeanRunner(settings.lean_project_dir, settings.lean_timeout)
+        self.runner = runner or LeanRunner(
+            settings.lean_project_dir, settings.lean_timeout, memory=self.memory
+        )
         self.on_event = on_event or (lambda kind, payload: None)
 
     @staticmethod
@@ -175,6 +180,17 @@ class VerifyAndTeachAgent:
         history: list[dict[str, str]] = [{"role": "user", "content": problem}]
         last_report: VerificationReport | None = None
         final_answer: str | None = None
+        mem: dict[str, Any] = {"lean_hits": 0, "formalizer_hits": 0}
+        if self.memory is not None:
+            prior = self.memory.get_problem(problem)
+            if prior is not None:
+                mem["seen_before"] = prior.seen
+                mem["last_status"] = prior.last_status
+                mem["prior_traces"] = prior.traces[-5:]
+                if expected_answer is None and prior.expected_answer:
+                    expected_answer = prior.expected_answer
+                    mem["expected_answer_from_memory"] = True
+                self._emit("memory", **mem)
 
         for r in range(max_rounds):
             self._emit("round_start", round=r + 1, max_rounds=max_rounds)
@@ -184,6 +200,7 @@ class VerifyAndTeachAgent:
             self._emit("student_answer", round=r + 1, answer=answer.model_dump())
 
             form, fmsgs = self.formalizer.formalize(problem, answer.steps, answer.final_answer)
+            mem["formalizer_hits"] += self.formalizer.last_memory_hits
             self._emit("formalized", round=r + 1, formalization=form.model_dump())
             report = verify(self.runner, answer.steps, form)
 
@@ -200,6 +217,8 @@ class VerifyAndTeachAgent:
             check_final_grounding(answer.final_answer, form, report)
             if self.audit_refutations:
                 self._audit(problem, form, report, answer.final_answer)
+            mem["lean_hits"] += report.cache_hits
+            self.formalizer.remember(problem, answer.steps, answer.final_answer, form, report)
             self._emit("verified", round=r + 1, report=report.model_dump())
             last_report = report
 
@@ -249,6 +268,7 @@ class VerifyAndTeachAgent:
             status=status,
             assurance_score=assurance_score(last_report),
             total_latency_s=round(time.time() - t_start, 2),
+            memory=mem,
         )
         self._emit("done", trace=trace.model_dump())
         return trace
@@ -256,7 +276,11 @@ class VerifyAndTeachAgent:
     def save_trace(self, trace: Trace, directory: Path | None = None) -> Path:
         directory = directory or self.settings.runs_dir
         directory.mkdir(parents=True, exist_ok=True)
-        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
         path = directory / f"trace_{stamp}.json"
         path.write_text(json.dumps(trace.model_dump(), ensure_ascii=False, indent=2))
+        if self.memory is not None:
+            self.memory.remember_problem(
+                trace.problem, trace.expected_answer, trace.status, trace.final_answer, str(path)
+            )
         return path

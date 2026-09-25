@@ -7,7 +7,8 @@ from dataclasses import dataclass
 
 from . import arabic, arabic_graph, arabic_logic
 from .llm import ChatModel, extract_json
-from .schemas import Formalization, FormalStep, ReasoningStep
+from .memory import Memory
+from .schemas import Formalization, FormalStep, ReasoningStep, Verdict, VerificationReport
 from .student import yes_no_polarity
 
 log = logging.getLogger(__name__)
@@ -317,11 +318,72 @@ def align_polarity(prop: str | None, final: str | None) -> str | None:
     return prop
 
 
+_PROBLEM_SLOT = "\x00problem_prop"
+
+
 class Formalizer:
-    def __init__(self, model: ChatModel, max_tokens: int = 2500):
+    def __init__(self, model: ChatModel, max_tokens: int = 2500, memory: Memory | None = None):
         self.model = model
         self.max_tokens = max_tokens
+        self.memory = memory
         self._problem_hit: tuple[str, str] | None = None
+        self._certified: dict[int, FormalStep] = {}
+        self.last_memory_hits = 0
+
+    def _recall_step(self, problem: str, step: ReasoningStep) -> FormalStep | None:
+        if self.memory is None:
+            return None
+        hit = self.memory.get_formalization(self.model.model, problem, step.text)
+        if hit is None:
+            return None
+        note = f"memory: {hit.note}" if hit.note else "memory: formalization reused"
+        return FormalStep(index=step.index, kind=hit.kind, lean_prop=hit.lean_prop, note=note[:200])
+
+    def _recall_problem(self, problem: str, final: str | None) -> str | None:
+        if self.memory is None:
+            return None
+        hit = self.memory.get_formalization(
+            self.model.model, problem, f"{_PROBLEM_SLOT}|{final or ''}"
+        )
+        return hit.lean_prop if hit else None
+
+    def remember(
+        self,
+        problem: str,
+        steps: list[ReasoningStep],
+        final: str | None,
+        form: Formalization,
+        report: VerificationReport,
+    ) -> None:
+        """Store LLM-produced translations that type-checked, so the same sentence of the
+        same problem is never sent to the model twice."""
+        if self.memory is None or form.raw == "pregroup":
+            return
+        verdict_by_index = {s.index: s.verdict for s in report.steps}
+        text_by_index = {s.index: s.text for s in steps}
+        for fs in form.steps:
+            if fs.note.startswith(("pregroup:", "memory:")):
+                continue
+            if verdict_by_index.get(fs.index) == Verdict.ILL_FORMED:
+                continue
+            step_text = text_by_index.get(fs.index)
+            if step_text:
+                self.memory.put_formalization(
+                    self.model.model, problem, step_text, fs.lean_prop, fs.kind, fs.note
+                )
+        if (
+            form.problem_prop
+            and not form.problem_note.startswith("pregroup:")
+            and report.final_answer_verdict != Verdict.ILL_FORMED
+        ):
+            self.memory.put_formalization(
+                self.model.model,
+                problem,
+                f"{_PROBLEM_SLOT}|{final or ''}",
+                form.problem_prop,
+                "problem",
+                "",
+            )
 
     def _messages(self, problem: str, steps: list[ReasoningStep], final: str | None):
         return [
@@ -343,6 +405,7 @@ class Formalizer:
         remaining steps (and the problem claim, if the grammar could not parse the
         question) are sent to the LLM.
         """
+        self.last_memory_hits = 0
         grammar: dict[int, FormalStep] = {}
         for s in steps:
             hit = arabic.formalize_step(s.text)
@@ -351,12 +414,21 @@ class Formalizer:
                 grammar[s.index] = FormalStep(
                     index=s.index, kind="arith", lean_prop=prop, note=f"pregroup: {deriv}"
                 )
+                continue
+            recalled = self._recall_step(problem, s)
+            if recalled is not None:
+                grammar[s.index] = recalled
+                self.last_memory_hits += 1
         problem_hit = (
             arabic.formalize_problem(problem, final)
             or arabic_logic.formalize_logic_problem(problem)
             or arabic_graph.formalize_graph_problem(problem)
         )
         self._problem_hit = problem_hit
+        self._certified = grammar
+        recalled_problem = None if problem_hit else self._recall_problem(problem, final)
+        if recalled_problem is not None:
+            self.last_memory_hits += 1
 
         if len(grammar) == len(steps) and problem_hit:
             form = Formalization(
@@ -367,7 +439,17 @@ class Formalizer:
             )
             return form, self._messages(problem, steps, final)
 
-        messages = self._messages(problem, steps, final)
+        pending = [s for s in steps if s.index not in grammar]
+        if not pending and (problem_hit or recalled_problem is not None):
+            form = Formalization(
+                problem_prop=align_polarity(recalled_problem, final),
+                problem_note="memory: problem claim reused",
+                steps=[grammar[s.index] for s in steps],
+                raw="memory",
+            )
+            return form, self._messages(problem, steps, final)
+
+        messages = self._messages(problem, pending or steps, final)
         resp = self.model.chat(messages, temperature=0.0, max_tokens=self.max_tokens)
         messages.append({"role": "assistant", "content": resp.content})
         form = self._parse(resp.content, steps)
@@ -376,6 +458,9 @@ class Formalizer:
         if problem_hit:
             form.problem_prop = problem_hit[0]
             form.problem_note = f"pregroup: {problem_hit[1]}"
+        elif recalled_problem is not None:
+            form.problem_prop = recalled_problem
+            form.problem_note = "memory: problem claim reused"
         form.problem_prop = align_polarity(form.problem_prop, final)
         return form, messages
 
@@ -392,11 +477,17 @@ class Formalizer:
         messages.append({"role": "assistant", "content": resp.content})
         form = self._parse(resp.content, steps)
         form.latency_s = resp.latency_s
+        form.steps = [self._keep_certified(fs) for fs in form.steps]
         if self._problem_hit:  # the grammar's problem claim is not up for LLM revision
             form.problem_prop = self._problem_hit[0]
             form.problem_note = f"pregroup: {self._problem_hit[1]}"
         form.problem_prop = align_polarity(form.problem_prop, final)
         return form, messages
+
+    def _keep_certified(self, fs: FormalStep) -> FormalStep:
+        """Grammar/memory steps carry a certificate; a repair round must not overwrite them."""
+        kept = self._certified.get(fs.index)
+        return kept if kept is not None else fs
 
     def audit(self, problem: str, step_text: str, prop: str) -> tuple[bool, str]:
         """Second-opinion check that `prop` faithfully encodes `step_text`."""

@@ -80,6 +80,22 @@ per-step verdicts, the feedback sent back to Falcon and the kernel output.
 | `FORMALIZER_BASE_URL/_API_KEY/_MODEL` | – | full override of the formalizer endpoint |
 | `MAX_ROUNDS` | `3` | verify → teach → revise rounds |
 | `LEAN_PROJECT_DIR` | `./lean` | Lake project with Mathlib |
+| `FV_MEMORY` | `1` | `0` disables the on-disk memory (kernel verdict / translation cache, problem history) |
+| `FV_MEMORY_PATH` | `runs/memory.sqlite` | where the memory lives |
+
+### Memory: what is reused and what is never reused
+
+Repeated (or near-identical — Arabic digits, diacritics and whitespace are normalised) questions
+get faster without weakening the assurance semantics:
+
+| remembered | key | reused how |
+|---|---|---|
+| Lean kernel verdicts (`verified` / `refuted` / `ill_formed` only; `unknown` is retried) | normalised proposition + tactic + fingerprint of `lean-toolchain`, `lake-manifest.json`, the Lean prelude and the scratch header | the claim is not recompiled; the step is marked `cached` and listed in the audit source |
+| NL → Lean translations that type-checked | formalizer model + problem + sentence | the sentence is not sent to the formalizer; the proposition is still checked by Lean |
+| problem history | normalised problem text | shows earlier sightings/status/trace paths; recalls the expected answer |
+
+Falcon's *answer* is never reused: every run samples a fresh answer and every reported verdict is
+about that answer. Hits are visible in `report.cache_hits`, `trace.memory` and `GET /api/memory`.
 
 ## Arabic track: pregroup grammar → Lean (see `docs/ARABIC.md`)
 
@@ -167,6 +183,7 @@ falconverifier/
   verifier.py     steps + final answer → VerificationReport
   feedback.py     Lean verdicts → teaching message for Falcon
   agent.py        the verify-and-teach loop, assurance trace
+  memory.py       SQLite memory: kernel-verdict cache, translation cache, problem history
   bench.py        baseline vs verified evaluation
   cli.py / server.py   CLI and FastAPI web UI
 lean/             Lake project: Mathlib + FalconVerifier/Prelude.lean (fv_auto)

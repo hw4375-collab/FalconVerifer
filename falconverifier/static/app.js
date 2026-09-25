@@ -107,7 +107,8 @@ function renderReport(card, rep) {
   if (fr && rep.final_answer_verdict === "refuted") fr.closest("tr").style.background = "rgba(255,92,122,.07)";
   if (fr) fr.innerHTML = badge(rep.final_answer_verdict) + (rep.final_answer_detail ? `<div class="muted" style="font-size:11px;margin-top:4px">${esc(rep.final_answer_detail.slice(0, 160))}</div>` : "");
   const h = card.querySelector(".col:last-child h3");
-  h.textContent = `Lean 4 claims · kernel verdict (${rep.lean_latency_s.toFixed(1)}s)`;
+  h.textContent = `Lean 4 claims · kernel verdict (${rep.lean_latency_s.toFixed(1)}s)` + (rep.cache_hits ? ` · ${rep.cache_hits} from memory` : "");
+  h.title = rep.cache_hits ? "Some propositions were decided by the kernel earlier under the same Lean/Mathlib fingerprint; their verdicts are reused verbatim and not recompiled." : "";
   if (rep.lean_file) {
     const d = card.querySelector(".leansrc");
     d.classList.remove("hidden");
@@ -220,7 +221,8 @@ function handle(kind, p) {
     case "audit_discard": setStatus(`round ${p.round ?? ""}: refutation of step ${p.step} discarded after faithfulness audit`); break;
     case "verified": renderReport(roundCard(p.round), p.report); break;
     case "feedback": renderFeedback(roundCard(p.round), p.feedback); setStatus(`round ${p.round}: teaching Falcon what Lean refuted…`); break;
-    case "done": renderResult(p.trace); setStatus(`done — ${p.trace.status} in ${p.trace.total_latency_s}s`, false); break;
+    case "done": { const m = p.trace.memory || {}; const hits = (m.lean_hits || 0) + (m.formalizer_hits || 0); renderResult(p.trace); setStatus(`done — ${p.trace.status} in ${p.trace.total_latency_s}s` + (hits ? ` · memory: ${m.lean_hits || 0} kernel verdicts, ${m.formalizer_hits || 0} translations reused` : ""), false); break; }
+    case "memory": setStatus(`seen this problem ${p.seen_before}× before (last: ${p.last_status}) — Falcon still answers afresh; only kernel verdicts and translations are reused`); break;
     case "status": setStatus(p.message); break;
     case "saved": break;
     case "error": setStatus("error: " + p.message, false); break;

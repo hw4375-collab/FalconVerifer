@@ -51,6 +51,7 @@ def verify(
                 lean_prop=fs.lean_prop,
                 step_text=text_by_index.get(fs.index, ""),
                 detail=out.detail,
+                cached=out.cached,
             )
         )
 
@@ -67,6 +68,7 @@ def verify(
         lean_file=run.source,
         lean_latency_s=run.latency_s,
         diagnostics=run.diagnostics,
+        cache_hits=run.cache_hits,
     )
 
 
