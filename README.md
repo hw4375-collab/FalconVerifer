@@ -184,11 +184,49 @@ falconverifier/
   feedback.py     Lean verdicts → teaching message for Falcon
   agent.py        the verify-and-teach loop, assurance trace
   memory.py       SQLite memory: kernel-verdict cache, translation cache, problem history
+  arabic.py       Arabic pregroup arithmetic/quantifier fragment → Lean (with derivation certificate)
+  arabic_logic.py / arabic_graph.py   Arabic syllogisms / relation-counting (handshake) fragments
+  arabic_word.py  Arabic quantity word problems (boxes, compound discount, averages …)
+  arabic_daily.py everyday Arabic dialogue: weekday, clock, currency/unit, bills
   bench.py        baseline vs verified evaluation
   cli.py / server.py   CLI and FastAPI web UI
 lean/             Lake project: Mathlib + FalconVerifier/Prelude.lean (fv_auto)
 bench/            dataset generator, problems.jsonl, results
 ```
+
+## For contributors
+
+All current work lives on the PR branch `devin/1790279948-web-ui-tests`
+(<https://github.com/hw4375-collab/FalconVerifer/pull/1>); `main` still holds the initial
+scaffold until that PR is merged.
+
+```bash
+git clone -b devin/1790279948-web-ui-tests https://github.com/hw4375-collab/FalconVerifer.git
+cd FalconVerifer            # then follow Quickstart (venv, elan + lake, .env)
+
+# before every push
+.venv/bin/ruff check . && .venv/bin/ruff format --check .
+FV_MEMORY=0 .venv/bin/pytest -q            # ~2 min; includes Lean integration tests
+cd lean && lake build && cd ..             # only if you touched lean/
+```
+
+Where to read first:
+
+| doc | what |
+|---|---|
+| `docs/WORK_SUMMARY.md` | end-to-end overview of the system (Chinese) |
+| `docs/ARABIC.md` | pregroup grammar → Lean, why Arabic, faithfulness |
+| `docs/DAILY.md` | everyday Arabic dialogue: fragments, `unverified_premise`, benchmark |
+| `docs/LOGIC20.md` | English vs Arabic control experiment, tokenizer ratio |
+| `docs/BENCHMARK.md` | all benchmark runs (regenerate with `python bench/report.py`) |
+| `docs/DPO.md` | exporting Lean-refuted traces as preference pairs |
+| `docs/DEPLOY.md` | Docker / Caddy / GHCR deployment |
+| `docs/PITCH.md`, `docs/pitch.html` | 5-minute pitch + live-demo script |
+
+Design rules that every change must keep: Lean is the only verdict authority; deterministic
+fragments fail closed (return `None` rather than guess); a refutation from an LLM translation
+must survive the faithfulness audit or become `unknown`; world-knowledge premises are
+`unverified_premise`, never `refuted`.
 
 ## Security
 
