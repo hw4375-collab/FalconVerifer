@@ -91,3 +91,14 @@ def test_bench_trace_rejects_path_traversal(client):
         pid = run["rows"][0]["id"]
         t = client.get(f"/api/bench/trace/falcon3b_arabic/{run['run']}/{pid}").json()
         assert t["problem"] == run["problems"][pid] and t["rounds"]
+
+
+def test_bench_hardness_counts_weak_student_round1_errors(client):
+    data = client.get("/api/bench/hardness").json()
+    assert isinstance(data, dict)
+    for text, h in data.items():
+        assert text and 0 <= h["wrong"] <= h["total"]
+        assert h["trace"].count("/") == 2
+        if "fixed_trace" in h:
+            assert h["wrong"] >= 1
+    assert client.get("/api/bench/hardness").json() == data

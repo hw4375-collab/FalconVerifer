@@ -331,6 +331,44 @@ def _build_runs_payload(latest: list[Path]) -> dict[str, Any]:
     return out
 
 
+@app.get("/api/bench/hardness")
+def bench_hardness() -> JSONResponse:
+    """Per problem text: how often the weak (3B) student got round 1 wrong across every
+    committed run, plus the most recent trace of it. Drives the example badges in the UI."""
+    latest = _latest_results()
+    key = ("hardness", tuple((p.as_posix(), p.stat().st_mtime_ns) for p in latest))
+    with _runs_lock:
+        if _runs_cache.get("hardness_key") == key:
+            return JSONResponse(_runs_cache["hardness"])
+        out: dict[str, dict[str, Any]] = {}
+        for rp in sorted(BENCH_RESULTS.glob("*/run_*/results.json")):
+            data = json.loads(rp.read_text())
+            if "3b" not in str(data.get("student_model", "")).lower():
+                continue
+            ds = REPO_ROOT / str(data.get("dataset", ""))
+            if not ds.is_file():
+                continue
+            text_of = {}
+            for line in ds.read_text().splitlines():
+                if line.strip():
+                    item = json.loads(line)
+                    text_of[item["id"]] = item["problem"]
+            rel_run = rp.parent.relative_to(BENCH_RESULTS).as_posix()
+            for row in data.get("rows", []):
+                if row.get("error") or row["id"] not in text_of:
+                    continue
+                h = out.setdefault(
+                    text_of[row["id"]], {"wrong": 0, "total": 0, "expected": row.get("expected")}
+                )
+                h["total"] += 1
+                h["wrong"] += 0 if row.get("baseline_correct") else 1
+                if not row.get("baseline_correct") and row.get("final_correct"):
+                    h["fixed_trace"] = f"{rel_run}/{row['id']}"
+                h["trace"] = f"{rel_run}/{row['id']}"
+        _runs_cache.update(hardness_key=key, hardness=out)
+    return JSONResponse(out)
+
+
 @app.get("/api/bench/trace/{sub}/{run}/{problem_id}")
 def bench_trace(sub: str, run: str, problem_id: str) -> FileResponse:
     """One assurance trace from a benchmark run (the same JSON that is committed to GitHub)."""

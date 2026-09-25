@@ -1,30 +1,39 @@
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+// [label, problem, expected, English translation (Arabic items)]
 const EXAMPLES = [
+  ["عربي · ضرب ثم طرح", "اشترى يوسف 81 علبة تحتوي كل منها على 39 زجاجة، ثم أعطى 235 زجاجة من مجموعها لأصدقائه. كم زجاجة بقي لدى يوسف؟", "2924",
+    "Yusuf bought 81 boxes with 39 bottles each, then gave 235 bottles to his friends. How many bottles does he have left?"],
+  ["عربي · أرقام شرقية", "اشترى راشد ٧٤ علبة تحتوي كل منها على ٤٧ عملة، ثم أعطى ٢٣٦ عملة من مجموعها لأصدقائه. كم عملة بقي لدى راشد؟", "3242",
+    "Rashid bought 74 boxes with 47 coins each (Eastern Arabic digits), then gave away 236 coins. How many coins are left?"],
+  ["عربي · مجموع وفرق", "احسب مجموع ٨١٢ و ٤٦٥ ناقص ٤٨.", "1229",
+    "Compute the sum of 812 and 465 minus 48."],
+  ["عربي · خصم مركب", "يبلغ سعر هاتف 800 درهماً. خُفِّض بنسبة 10٪ ثم خُفِّض السعر الجديد بنسبة 20٪ أخرى. ما هو السعر النهائي بالدرهم؟", "576",
+    "A phone costs 800 dirhams. It is reduced by 10%, then the new price by another 20%. What is the final price?"],
+  ["عربي · ترتيب العمليات", "احسب قيمة ٣٦ + ٩ × ٨ − ٣² باتباع ترتيب العمليات.", "99",
+    "Evaluate 36 + 9 × 8 − 3² following the order of operations."],
+  ["عربي · منطق", "كل الأطباء متعلمون، وبعض المتعلمين أثرياء. هل يلزم أن بعض الأطباء أثرياء؟ أجب بنعم أو لا.", "لا",
+    "All doctors are educated, and some educated people are wealthy. Must some doctors be wealthy? Answer yes or no."],
+  ["عربي · شرط", "إذا أمطرت فإن الأرض تبتل. الأرض مبتلة. هل يلزم أنها أمطرت؟ أجب بنعم أو لا.", "لا",
+    "If it rains, the ground gets wet. The ground is wet. Must it have rained? Answer yes or no."],
+  ["عربي · مصافحة", "خمسة طلاب يجلسون في الفصل، ويقول كل واحد منهم إن ثلاثة من الأربعة الباقين أصدقاؤه. هل يلزم أن أحدهم يكذب؟ أجب بنعم أو لا.", "نعم",
+    "Five students sit in class; each says three of the other four are his friends. Must one of them be lying? Answer yes or no. (Handshake lemma: 5×3 is odd.)"],
   ["Muffins", "A bakery makes 48 muffins per batch. It bakes 7 batches and then sells 5 boxes of 12 muffins each. How many muffins are left?", "276"],
   ["Percent", "A jacket costs $120. It is discounted by 25%, then a 10% sales tax is added. What is the final price?", "99"],
   ["Doctors", "All doctors are educated. Some educated people are wealthy. Does it follow that some doctors are wealthy? Answer Yes or No.", "No"],
-  ["Rain", "If it rains, the street is wet. The street is wet. Does it follow that it rained? Answer Yes or No.", "No"],
   ["Ages", "Tom is 3 times as old as Jerry. In 8 years Tom will be twice as old as Jerry. How old is Jerry now?", "8"],
-  ["Divisible", "Is 7 * 12 + 5 divisible by 3? Answer Yes or No.", "No"],
-  ["عربي · حساب", "ما هو ناتج ١٧ × ٢٣؟", "391"],
-  ["عربي · نسبة", "سعر حقيبة ١٢٠ درهماً. خُفّض السعر بنسبة ٢٥٪ ثم أُضيفت ضريبة ١٠٪. ما السعر النهائي؟", "99"],
-  ["عربي · صعب", "يبلغ سعر هاتف 800 درهماً. خُفِّض بنسبة 10٪ ثم خُفِّض السعر الجديد بنسبة 20٪ أخرى. ما هو السعر النهائي بالدرهم؟", "576"],
-  ["عربي · ترتيب العمليات", "احسب قيمة ٣٦ + ٩ × ٨ − ٣² باتباع ترتيب العمليات.", "99"],
-  ["عربي · منطق", "كل الأطباء متعلمون، وبعض المتعلمين أثرياء. هل يلزم أن بعض الأطباء أثرياء؟ أجب بنعم أو لا.", "لا"],
-  ["عربي · شرط", "إذا أمطرت فإن الأرض تبتل. الأرض مبتلة. هل يلزم أنها أمطرت؟ أجب بنعم أو لا.", "لا"],
-  ["عربي · مصافحة", "خمسة طلاب يجلسون في الفصل، ويقول كل واحد منهم إن ثلاثة من الأربعة الباقين أصدقاؤه. هل يلزم أن أحدهم يكذب؟ أجب بنعم أو لا.", "نعم"],
 ];
+const WEAK_STUDENT = "falcon-h1-arabic-3b-instruct";
 
-const state = { rounds: {}, es: null, ctrl: null };
+const state = { rounds: {}, es: null, ctrl: null, t0: 0, timer: null, hardness: {} };
 
 function badge(v) { return `<span class="badge ${v}">${v.replace("_", "-")}</span>`; }
 
 function setStatus(msg, busy = true) {
   const el = $("#status");
   el.classList.remove("hidden");
-  el.innerHTML = `${busy ? '<span class="dot"></span>' : ""}<span>${esc(msg)}</span>`;
+  el.innerHTML = `${busy ? '<span class="dot"></span>' : ""}<span>${esc(msg)}</span>${busy ? '<span class="elapsed muted"></span>' : ""}`;
 }
 
 function roundCard(n) {
@@ -70,7 +79,23 @@ function renderFormalization(card, f) {
   card.querySelector("tbody").innerHTML = rows.join("");
 }
 
+const VERDICTS = ["verified", "refuted", "unknown", "ill_formed", "skipped"];
+
+function renderCotBar(card, rep) {
+  const all = [...rep.steps.map((s) => s.verdict), rep.final_answer_verdict];
+  const n = all.length;
+  const bar = card.querySelector(".cotbar");
+  const counts = Object.fromEntries(VERDICTS.map((v) => [v, all.filter((x) => x === v).length]));
+  bar.classList.remove("hidden");
+  bar.querySelector(".seg").innerHTML = VERDICTS.filter((v) => counts[v])
+    .map((v) => `<i class="${v}" style="flex:${counts[v]}" title="${counts[v]} ${v}"></i>`).join("");
+  const decided = counts.verified + counts.refuted;
+  bar.querySelector(".sum").innerHTML = `CoT verifiability: Lean decided <b>${decided}/${n}</b> claims (steps + final) · `
+    + VERDICTS.filter((v) => counts[v]).map((v) => `${counts[v]} ${v.replace("_", "-")}`).join(" · ");
+}
+
 function renderReport(card, rep) {
+  renderCotBar(card, rep);
   for (const s of rep.steps) {
     const tr = card.querySelector(`tr[data-idx="${s.index}"]`);
     if (!tr) continue;
@@ -79,6 +104,7 @@ function renderReport(card, rep) {
     if (s.lean_prop && !tr.querySelector("code").textContent.trim()) tr.querySelector("code").textContent = s.lean_prop;
   }
   const fr = card.querySelector('tr[data-idx="final"] .verdict');
+  if (fr && rep.final_answer_verdict === "refuted") fr.closest("tr").style.background = "rgba(255,92,122,.07)";
   if (fr) fr.innerHTML = badge(rep.final_answer_verdict) + (rep.final_answer_detail ? `<div class="muted" style="font-size:11px;margin-top:4px">${esc(rep.final_answer_detail.slice(0, 160))}</div>` : "");
   const h = card.querySelector(".col:last-child h3");
   h.textContent = `2 · Formalized to Lean 4 → 3 · Lean kernel verdict (${rep.lean_latency_s.toFixed(1)}s)`;
@@ -100,13 +126,20 @@ function renderFeedback(card, fb) {
 function renderResult(t) {
   const el = $("#result");
   el.classList.remove("hidden");
-  const exp = t.expected_answer ? `<div class="kpi"><div class="muted">expected</div><div class="v">${esc(t.expected_answer)}</div></div>` : "";
+  const exp = t.expected_answer ? `<div class="kpi"><div class="muted">expected</div><div class="v" dir="auto">${esc(t.expected_answer)}</div></div>` : "";
+  const steps = t.rounds.flatMap((r) => [...r.report.steps.map((s) => s.verdict), r.report.final_answer_verdict]);
+  const decided = steps.filter((v) => v === "verified" || v === "refuted").length;
+  const refuted = steps.filter((v) => v === "refuted").length;
+  const story = t.rounds.length > 1 && t.status === "verified"
+    ? `round 1 refuted → taught → round ${t.rounds.length} verified`
+    : t.status === "verified" ? "every checkable claim proved in round 1" : `ended ${t.status}`;
   el.innerHTML = `
-    <div class="kpi"><div class="muted">status</div><div class="v ${t.status}">${t.status}</div></div>
+    <div class="kpi"><div class="muted">status</div><div class="v ${t.status}">${t.status}</div><div class="sub muted">${story}</div></div>
     <div class="kpi"><div class="muted">final answer</div><div class="v" dir="auto">${esc(t.final_answer ?? "—")}</div></div>
-    <div class="kpi"><div class="muted">assurance score</div><div class="v">${(t.assurance_score * 100).toFixed(0)}%</div></div>
+    <div class="kpi"><div class="muted">assurance score</div><div class="v">${(t.assurance_score * 100).toFixed(0)}%</div><div class="sub muted">last round: ½ verified share of checkable steps + ½ final-answer verdict</div></div>
+    <div class="kpi"><div class="muted">claims decided by Lean</div><div class="v">${decided}/${steps.length}</div><div class="sub muted">all rounds, steps + final · ${refuted} refuted · ${steps.length - decided} unknown/skipped</div></div>
     <div class="kpi"><div class="muted">rounds · time</div><div class="v">${t.rounds.length} · ${t.total_latency_s}s</div></div>${exp}
-    <div class="kpi"><div class="muted">evidence</div><div class="v"><a id="dl" download="assurance_trace.json">download trace</a></div></div>`;
+    <div class="kpi"><div class="muted">evidence</div><div class="v"><a id="dl" download="assurance_trace.json">download trace</a></div><div class="sub muted">full JSON: answers, Lean claims, verdicts, feedback, kernel source</div></div>`;
   $("#dl").href = URL.createObjectURL(new Blob([JSON.stringify(t, null, 1)], { type: "application/json" }));
   el.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
@@ -118,6 +151,10 @@ async function run(baselineOnly = false) {
   $("#roundlist").innerHTML = "";
   $("#result").classList.add("hidden");
   $("#run").disabled = $("#baseline").disabled = true;
+  $("#stop").classList.remove("hidden");
+  state.t0 = Date.now();
+  clearInterval(state.timer);
+  state.timer = setInterval(() => { const e = $("#status .elapsed"); if (e) e.textContent = `${((Date.now() - state.t0) / 1000).toFixed(0)}s`; }, 500);
   setStatus("asking Falcon…");
   const body = {
     problem,
@@ -160,7 +197,10 @@ async function run(baselineOnly = false) {
     }
   } catch (e) {
     if (e.name !== "AbortError") setStatus("error: " + e.message, false);
+    else setStatus("stopped", false);
   } finally {
+    clearInterval(state.timer);
+    $("#stop").classList.add("hidden");
     $("#run").disabled = $("#baseline").disabled = false;
   }
 }
@@ -209,16 +249,57 @@ async function loadBench() {
   $("#bench").innerHTML = parts.join("");
 }
 
-async function init() {
+function hardnessBadge(text) {
+  const h = state.hardness[text];
+  if (!h || !h.total) return "";
+  const cls = h.wrong === h.total ? "hard" : h.wrong ? "mid" : "easy";
+  return `<span class="hb ${cls}" title="Falcon 3B Arabic answered round 1 wrong in ${h.wrong} of ${h.total} benchmark runs">3B ✗ ${h.wrong}/${h.total}</span>`;
+}
+
+function renderExamples() {
   const ex = $("#examples");
-  for (const [name, text, expected] of EXAMPLES) {
+  ex.innerHTML = "";
+  for (const [name, text, expected, translation] of EXAMPLES) {
     const b = document.createElement("button");
-    b.textContent = name;
-    b.onclick = () => { $("#problem").value = text; $("#expected").value = expected; };
+    b.innerHTML = `${esc(name)} ${hardnessBadge(text)}`;
+    if (translation) b.title = translation;
+    b.onclick = () => {
+      $("#problem").value = text;
+      $("#expected").value = expected;
+      $("#translation").textContent = translation ? `English: ${translation}` : "";
+      if (state.hardness[text] && state.hardness[text].wrong) $("#student").value = WEAK_STUDENT;
+    };
     ex.appendChild(b);
   }
+}
+
+async function loadReplays() {
+  const el = $("#replaylist");
+  try {
+    const data = await (await fetch("/api/bench/runs")).json();
+    const run = data.runs.falcon3b_arabic;
+    if (!run) { $("#replays").classList.add("hidden"); return; }
+    const wrong = run.rows.filter((r) => !r.error && !r.baseline_correct);
+    const short = (r) => r.baseline_answer && r.baseline_answer.length <= 14 && String(r.final_answer).length <= 14;
+    const pool = wrong.filter((r) => r.final_correct && r.status === "verified" && short(r))
+      .sort((a, b) => a.rounds - b.rounds || a.id.localeCompare(b.id));
+    const fixed = [...pool.filter((r) => r.id.startsWith("armath")).slice(0, 3), ...pool.filter((r) => !r.id.startsWith("armath")).slice(0, 3)];
+    el.classList.remove("muted");
+    el.innerHTML = fixed.map((r) => `<a class="replay" href="/?trace=falcon3b_arabic/${run.run}/${r.id}">
+        <span class="ar" dir="rtl">${esc(run.problems[r.id])}</span>
+        <span class="meta"><span class="badge refuted">R1 ${esc(r.baseline_answer)}</span> → <span class="badge verified">R${r.rounds} ${esc(r.final_answer)}</span> · gold ${esc(r.expected)}</span></a>`).join("")
+      + `<div class="muted small">${fixed.length} of the ${wrong.length} round-1 errors in the latest ${run.rows.length}-problem run, caught and fixed by Lean feedback — <a href="/benchmark">all of them, with evidence →</a></div>`;
+  } catch { el.textContent = "benchmark traces unavailable"; }
+}
+
+async function init() {
+  renderExamples();
   $("#run").onclick = () => run(false);
   $("#baseline").onclick = () => run(true);
+  $("#stop").onclick = () => state.ctrl && state.ctrl.abort();
+  $("#problem").addEventListener("input", () => { $("#translation").textContent = ""; });
+  fetch("/api/bench/hardness").then((r) => r.json()).then((h) => { state.hardness = h; renderExamples(); }).catch(() => {});
+  loadReplays();
   try {
     const c = await (await fetch("/api/config")).json();
     $("#cfg").innerHTML = `student <b>${esc(c.student)}</b><br>formalizer <b>${esc(c.formalizer)}</b> · kernel <b>Lean 4 + Mathlib</b>`;
@@ -240,6 +321,9 @@ async function replayTrace(ref) {
   const t = await res.json();
   $("#problem").value = t.problem;
   $("#expected").value = t.expected_answer ?? "";
+  const ex = EXAMPLES.find((e) => e[1] === t.problem);
+  $("#translation").textContent = ex && ex[3] ? `English: ${ex[3]}` : "";
+  if (t.student_model) $("#student").value = t.student_model;
   $("#roundlist").innerHTML = "";
   state.rounds = {};
   setStatus(`replaying benchmark trace ${ref} · student ${t.student_model} · formalizer ${t.formalizer_model}`, false);
@@ -251,6 +335,6 @@ async function replayTrace(ref) {
     if (r.feedback) renderFeedback(card, r.feedback);
   });
   renderResult(t);
-  window.scrollTo({ top: 0 });
+  $("#status").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 init();

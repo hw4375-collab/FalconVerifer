@@ -28,9 +28,26 @@
 </header>
 
 <main>
+  <section class="card intro">
+    <div class="steps">
+      <div><b>1</b> Falcon answers in Arabic or English</div>
+      <div><b>2</b> every reasoning step is translated to a Lean 4 claim</div>
+      <div><b>3</b> the Lean kernel proves or refutes each claim</div>
+      <div><b>4</b> refuted claims are taught back; Falcon revises</div>
+      <div><b>5</b> you get a machine-checked assurance trace</div>
+    </div>
+    <div class="legend verdicts">
+      <span class="badge verified">verified</span> Lean proved it
+      <span class="badge refuted">refuted</span> Lean proved the negation
+      <span class="badge unknown">unknown</span> neither side proved
+      <span class="badge skipped">skipped</span> not a checkable claim
+    </div>
+  </section>
+
   <section class="card input">
-    <label for="problem">Problem for Falcon</label>
-    <textarea id="problem" rows="3" dir="auto" placeholder="Type a basic math or logic problem…"></textarea>
+    <label for="problem">Problem for Falcon <span class="muted" id="exhint">— pick an example (badge = how often the 3B student got it wrong in round 1 on our benchmark) or type your own</span></label>
+    <textarea id="problem" rows="3" dir="auto" placeholder="Type a basic math or logic problem in Arabic or English…"></textarea>
+    <div class="translation muted" id="translation"></div>
     <div class="row">
       <div class="examples" id="examples"></div>
     </div>
@@ -53,7 +70,13 @@
       <label>Expected <input id="expected" type="text" placeholder="optional"></label>
       <button id="run">Verify with Lean 4</button>
       <button id="baseline" class="ghost" title="Raw Falcon, no verification">Baseline only</button>
+      <button id="stop" class="ghost hidden">Stop</button>
     </div>
+  </section>
+
+  <section class="card replays" id="replays">
+    <h2>No time to wait? Replay a recorded correction <small>committed benchmark traces · same renderer · zero model calls</small></h2>
+    <div id="replaylist" class="replaylist muted">loading…</div>
   </section>
 
   <section id="status" class="status hidden"></section>
@@ -83,6 +106,7 @@
       </div>
       <div class="col">
         <h3>2 · Formalized to Lean 4 &nbsp;→&nbsp; 3 · Lean kernel verdict</h3>
+        <div class="cotbar hidden"><div class="seg"></div><div class="sum muted"></div></div>
         <table class="lean">
           <thead><tr><th>step</th><th>natural language</th><th>Lean 4 claim</th><th>verdict</th></tr></thead>
           <tbody><tr><td colspan="4" class="muted">formalizing…</td></tr></tbody>
