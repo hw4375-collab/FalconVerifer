@@ -91,6 +91,8 @@ def lift_to_rat(prop: str) -> str | None:
     """
     if not ("/" in prop or "-" in prop) or "∀" in prop or "∃" in prop:
         return None
+    if "%" in prop or "∣" in prop:
+        return None  # modular arithmetic is meaningless over ℚ
     if _TRUNC_RE.search(prop):
         return _TRUNC_RE.sub(":ℚ", prop)
     if _ANY_TYPE_RE.search(prop):

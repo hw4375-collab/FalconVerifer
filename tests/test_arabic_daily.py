@@ -59,3 +59,10 @@ def test_fail_closed():
     assert analyze("الفاتورة ٢٤٠ درهماً، تضاف ضريبة ٥٪. كم يدفع كل واحد؟") is None
     assert analyze("اشترى سعيد ٩٣ علبة. كم بقي؟") is None
     assert formalize_daily("كم دقيقة في ٤ ساعات؟", None) is None
+
+
+def test_answer_expression_uses_right_hand_side():
+    q = "العميل: ١ دولار = ٣٫٧٥ ريال. كم ريالاً يساوي ١٥٠ دولاراً؟"
+    good = formalize_daily(q, "150 دولار × 3.75 ريال/دولار = 562.5 ريال")
+    plain = formalize_daily(q, "562.5")
+    assert good is not None and good[0] == plain[0]

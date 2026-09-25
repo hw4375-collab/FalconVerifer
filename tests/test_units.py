@@ -303,3 +303,10 @@ def test_step_audit_rejects_degenerate_inference_without_llm():
     f = Formalizer.__new__(Formalizer)  # no client needed: the check is mechanical
     ok, reason = Formalizer.audit(f, "q", "s", "¬ (∀ (P Q : Prop), P → ¬ Q → (P ∨ Q) → ¬ Q)")
     assert not ok and "degenerate" in reason
+
+
+def test_rat_lift_never_touches_modular_arithmetic():
+    from falconverifier.verifier import lift_to_rat
+
+    assert lift_to_rat("((2:ℕ) + 7 - 4) % 7 = 0") is None
+    assert lift_to_rat("(7:ℕ) - 3 = 4") == "(7:ℚ) - 3 = 4"

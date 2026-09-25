@@ -259,3 +259,8 @@ def test_everyday_arabic_fragment_props_decide(runner: LeanRunner):
         "bill_ok": Verdict.VERIFIED,
         "bill_bad": Verdict.REFUTED,
     }
+
+
+def test_large_batches_are_not_cut_off_by_max_errors(runner: LeanRunner):
+    res = runner.check_claims({f"c{i}": f"({i}:ℕ) + 1 = {i + 3}" for i in range(110)})
+    assert {o.verdict for o in res.outcomes.values()} == {Verdict.REFUTED}

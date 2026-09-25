@@ -1,0 +1,101 @@
+{
+ "problem": "العميل: أبو ابن عمي، ما علاقته بأبي؟",
+ "expected_answer": "أخوه",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الخطوة 1: فهم السؤال\n- السؤال يسأل عن العلاقة بين أبو ابن عمي وأبي.\n\nالخطوة 2: تحليل العلاقات العائلية\n- في العائلات العربية، أبو الابن هو والد الابن.\n- ابن العم هو شخص تربطه علاقة قرابة بالآخر عبر أخيه أو أخته.\n\nالخطوة 3: استنتاج العلاقة\n- أبو ابن عمي هو والد ابن عمي.\n- والد ابن عمي ليس بالضرورة والدًا لي، إلا إذا كان ابن عمي هو أخي من الأب.\n\nالجواب النهائي: أبو ابن عمي هو والد ابن عمي، وليس بالضرورة والدًا لي.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "فهم السؤال - السؤال يسأل عن العلاقة بين أبو ابن عمي وأبي."
+     },
+     {
+      "index": 2,
+      "text": "تحليل العلاقات العائلية - في العائلات العربية، أبو الابن هو والد الابن. - ابن العم هو شخص تربطه علاقة قرابة بالآخر عبر أخيه أو أخته."
+     },
+     {
+      "index": 3,
+      "text": "استنتاج العلاقة - أبو ابن عمي هو والد ابن عمي. - والد ابن عمي ليس بالضرورة والدًا لي، إلا إذا كان ابن عمي هو أخي من الأب."
+     }
+    ],
+    "final_answer": "أبو ابن عمي هو والد ابن عمي، وليس بالضرورة والدًا لي",
+    "latency_s": 3.4115378856658936,
+    "tokens": 149
+   },
+   "formalization": {
+    "problem_prop": null,
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "understanding the question"
+     },
+     {
+      "index": 2,
+      "kind": "fact",
+      "lean_prop": null,
+      "note": "family relations background"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "inference about the relationship"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"null\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"understanding the question\"},\n    {\"index\": 2, \"kind\": \"fact\", \"lean_prop\": null, \"note\": \"family relations background\"},\n    {\"index\": 3, \"kind\": \"logic\", \"lean_prop\": null, \"note\": \"inference about the relationship\"}\n  ]\n}\n",
+    "latency_s": 7.87850284576416
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "فهم السؤال - السؤال يسأل عن العلاقة بين أبو ابن عمي وأبي.",
+      "detail": "understanding the question",
+      "cached": false
+     },
+     {
+      "index": 2,
+      "verdict": "unverified_premise",
+      "lean_prop": null,
+      "step_text": "تحليل العلاقات العائلية - في العائلات العربية، أبو الابن هو والد الابن. - ابن العم هو شخص تربطه علاقة قرابة بالآخر عبر أخيه أو أخته.",
+      "detail": "world-knowledge premise, not checkable by Lean: family relations background",
+      "cached": false
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "استنتاج العلاقة - أبو ابن عمي هو والد ابن عمي. - والد ابن عمي ليس بالضرورة والدًا لي، إلا إذا كان ابن عمي هو أخي من الأب.",
+      "detail": "inference about the relationship",
+      "cached": false
+     }
+    ],
+    "final_answer_verdict": "skipped",
+    "final_answer_detail": "final answer not formalizable",
+    "lean_file": "",
+    "lean_latency_s": 0.0,
+    "diagnostics": [],
+    "cache_hits": 0
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "أبو ابن عمي هو والد ابن عمي، وليس بالضرورة والدًا لي",
+ "status": "unknown",
+ "assurance_score": 0.45,
+ "total_latency_s": 11.29,
+ "memory": {
+  "lean_hits": 0,
+  "formalizer_hits": 0
+ }
+}

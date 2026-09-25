@@ -243,7 +243,14 @@ class LeanRunner:
             env["PATH"] = f"{elan_bin}:{env.get('PATH', '')}"
         try:
             proc = subprocess.run(
-                ["lake", "env", "lean", "--json", str(path)],
+                [
+                    "lake",
+                    "env",
+                    "lean",
+                    "--json",
+                    "-DmaxErrors=100000",  # every failing claim is an error by design
+                    str(path),
+                ],
                 cwd=self.project_dir,
                 capture_output=True,
                 text=True,

@@ -111,7 +111,8 @@ class Daily:
     fired: list[str]
 
     def prop(self, answer: str) -> str | None:
-        a = _clean(answer)
+        # «150 × 3.75 = 562.5 ريال»: the asserted value is what follows the last «=»/«≈»
+        a = _clean(re.split(r"[=≈]", answer)[-1])
         if self.kind == "weekday":
             m = re.search(_DAY_RE, a)
             if not m:
