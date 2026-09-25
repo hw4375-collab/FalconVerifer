@@ -273,18 +273,40 @@ def bench_latest(request: Request) -> JSONResponse:
     return JSONResponse(out)
 
 
+_runs_cache: dict[str, Any] = {"key": None, "payload": None}
+_runs_lock = threading.Lock()
+
+
+def _latest_results() -> list[Path]:
+    if not BENCH_RESULTS.exists():
+        return []
+    out = []
+    for sub in sorted(BENCH_RESULTS.iterdir()):
+        runs = sorted(sub.glob("run_*/results.json"))
+        if runs:
+            out.append(runs[-1])
+    return out
+
+
 @app.get("/api/bench/runs")
 def bench_runs() -> JSONResponse:
     """Latest full results (summary + per-problem rows) per results sub-directory, with
-    GitHub links to the dataset, the results file and every assurance trace."""
+    GitHub links to the dataset, the results file and every assurance trace. Cached until
+    any results.json changes on disk."""
+    latest = _latest_results()
+    key = tuple((p.as_posix(), p.stat().st_mtime_ns) for p in latest)
+    with _runs_lock:
+        if _runs_cache["key"] == key:
+            return JSONResponse(_runs_cache["payload"])
+        payload = _build_runs_payload(latest)
+        _runs_cache.update(key=key, payload=payload)
+    return JSONResponse(payload)
+
+
+def _build_runs_payload(latest: list[Path]) -> dict[str, Any]:
     out: dict[str, Any] = {"github": GITHUB_BLOB_BASE, "runs": {}}
-    if not BENCH_RESULTS.exists():
-        return JSONResponse(out)
-    for sub in sorted(BENCH_RESULTS.iterdir()):
-        runs = sorted(sub.glob("run_*/results.json"))
-        if not runs:
-            continue
-        rp = runs[-1]
+    for rp in latest:
+        sub = rp.parent.parent
         data = json.loads(rp.read_text())
         rel_run = rp.parent.relative_to(REPO_ROOT).as_posix()
         problems: dict[str, str] = {}
@@ -306,7 +328,7 @@ def bench_runs() -> JSONResponse:
             "rows": data.get("rows", []),
             "paths": {"results": f"{rel_run}/results.json", "traces": rel_run},
         }
-    return JSONResponse(out)
+    return out
 
 
 @app.get("/api/bench/trace/{sub}/{run}/{problem_id}")

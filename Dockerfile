@@ -33,7 +33,7 @@ COPY bench/ bench/
 RUN pip install --no-cache-dir . && mkdir -p runs lean/scratch
 
 EXPOSE 8000
-ENV LEAN_PROJECT_DIR=/app/lean FV_MAX_CONCURRENT=2
+ENV LEAN_PROJECT_DIR=/app/lean FV_MAX_CONCURRENT=2 FV_GITHUB_REF=main
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \
     CMD curl -sf http://localhost:8000/healthz || exit 1
 CMD ["uvicorn", "falconverifier.server:app", "--host", "0.0.0.0", "--port", "8000"]

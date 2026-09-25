@@ -52,8 +52,20 @@ Ubuntu VPS (≥ 8 GB RAM):
 curl -fsSL https://raw.githubusercontent.com/hw4375-collab/FalconVerifer/main/deploy/install.sh | sudo bash
 ```
 
-then fill `deploy/.env.production` and re-run. Details and the public API in
+then fill `deploy/.env.production` and re-run (`FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest`
+pulls the CI-built image instead of compiling Mathlib). Details and the public API in
 [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+### Use it as middleware (one call from any Falcon app)
+
+```bash
+curl -s localhost:8000/api/solve -H 'content-type: application/json' \
+  -d '{"problem":"ما هو ناتج ١٧ × ٢٣؟","rounds":3,"student_model":"falcon-h1-arabic-3b-instruct"}' \
+  | jq '{final: .final_answer, verdict: .rounds[-1].report.final_answer_verdict, assurance: .assurance_score}'
+```
+
+The response is the full assurance trace: every round's answer, the Lean propositions,
+per-step verdicts, the feedback sent back to Falcon and the kernel output.
 
 ## Configuration
 

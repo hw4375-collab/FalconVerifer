@@ -56,3 +56,38 @@ def test_formalizer_choice_does_not_mutate_process_env(client, monkeypatch):
     import os
 
     assert "FORMALIZER_PROVIDER" not in os.environ
+
+
+def test_pages_served(client):
+    for path in ("/", "/benchmark", "/about"):
+        r = client.get(path)
+        assert r.status_code == 200 and "ChaosButterfly" in r.text
+
+
+def test_bench_runs_payload_links_to_evidence(client):
+    data = client.get("/api/bench/runs").json()
+    assert data["github"].startswith("https://github.com/")
+    for run in data["runs"].values():
+        assert run["paths"]["results"].endswith("/results.json")
+        assert run["paths"]["traces"].startswith("bench/results/")
+        assert "all" in run["summary"]
+        assert all(r["id"] in run["problems"] for r in run["rows"] if not r.get("error"))
+
+
+def test_bench_runs_is_cached(client, monkeypatch):
+    client.get("/api/bench/runs")
+    calls = []
+    monkeypatch.setattr(server, "_build_runs_payload", lambda latest: calls.append(1) or {})
+    client.get("/api/bench/runs")
+    assert calls == []
+
+
+def test_bench_trace_rejects_path_traversal(client):
+    assert client.get("/api/bench/trace/..%2F..%2Fetc/x/passwd").status_code in (400, 404)
+    assert client.get("/api/bench/trace/falcon3b_arabic/run_x/nope").status_code == 404
+    data = client.get("/api/bench/runs").json()
+    if "falcon3b_arabic" in data["runs"]:
+        run = data["runs"]["falcon3b_arabic"]
+        pid = run["rows"][0]["id"]
+        t = client.get(f"/api/bench/trace/falcon3b_arabic/{run['run']}/{pid}").json()
+        assert t["problem"] == run["problems"][pid] and t["rounds"]

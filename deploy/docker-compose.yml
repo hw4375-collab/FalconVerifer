@@ -3,12 +3,16 @@
 #   cp deploy/.env.production.example deploy/.env.production   # fill keys + DOMAIN
 #   docker compose -f deploy/docker-compose.yml --env-file deploy/.env.production up -d --build
 #
+# Faster: pull the image CI publishes to GHCR instead of building Mathlib on the VPS:
+#   FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest \
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env.production up -d --pull always
+#
 services:
   app:
     build:
       context: ..
       dockerfile: Dockerfile
-    image: falconverifier:latest
+    image: ${FV_IMAGE:-falconverifier:latest}
     restart: unless-stopped
     env_file: .env.production
     environment:

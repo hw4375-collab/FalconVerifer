@@ -24,7 +24,13 @@ if [ ! -f deploy/.env.production ]; then
   exit 0
 fi
 
-docker compose -f deploy/docker-compose.yml --env-file deploy/.env.production up -d --build
+# FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest pulls the CI-built image (minutes)
+# instead of building Mathlib locally (15-20 min).
+if [ -n "${FV_IMAGE:-}" ]; then
+  FV_IMAGE="$FV_IMAGE" docker compose -f deploy/docker-compose.yml --env-file deploy/.env.production up -d --pull always --no-build
+else
+  docker compose -f deploy/docker-compose.yml --env-file deploy/.env.production up -d --build
+fi
 echo ">>> Waiting for the app to become healthy..."
 for _ in $(seq 1 60); do
   if docker compose -f deploy/docker-compose.yml --env-file deploy/.env.production exec -T app \

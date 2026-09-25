@@ -28,6 +28,18 @@ the provider firewall.
 
 Upgrade later: `cd /opt/falconverifier && git pull && bash deploy/install.sh`.
 
+### Skip the Mathlib build: pull the CI image
+
+`.github/workflows/docker.yml` publishes `ghcr.io/hw4375-collab/falconverifer:latest` (and
+`:sha-…`, `:vX.Y.Z` on tags) on every push to `main`. On the server:
+
+```bash
+FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest bash deploy/install.sh
+```
+
+The package must be public (GitHub → Packages → falconverifer → Change visibility) or the
+server needs `docker login ghcr.io` with a read-only PAT.
+
 ## Runtime guards (env vars, see `deploy/.env.production.example`)
 
 - `FV_MAX_CONCURRENT` — Lean loops that may run at once (semaphore; extra requests queue
@@ -37,6 +49,9 @@ Upgrade later: `cd /opt/falconverifier && git pull && bash deploy/install.sh`.
 - `FV_ACCESS_TOKEN` — when set, every API call needs header `X-FV-Token`; the web UI asks
   for it once and stores it in `localStorage`. Use this for a semi-private hackathon demo.
 - `FV_STUDENT_MODELS` — allow-list of student models a client may request.
+- `FV_GITHUB_REPO` / `FV_GITHUB_REF` / `FV_GITHUB_BLOB_BASE` — where the `/benchmark` page
+  links its evidence (problems, `results.json`, traces, code). Defaults to the current git
+  branch of the checkout, falling back to `main` — set `FV_GITHUB_REF=main` inside Docker.
 
 `GET /healthz` reports Lean availability, key presence and free workers; Docker uses it
 as the container health check.
@@ -49,8 +64,14 @@ POST /api/solve/stream           # SSE events: config, round_start, student_answ
 POST /api/solve                  # same loop, one JSON AgentTrace when finished
 POST /api/check                  # {"props": ["(2:ℕ) + 2 = 4", ...]} -> Lean verdicts only
 GET  /api/config                 # configured models / providers
+GET  /api/bench/latest           # summary per benchmark run (home-page table)
+GET  /api/bench/runs             # full results + per-problem rows + GitHub evidence links
+GET  /api/bench/trace/{run_dir}/{run}/{problem_id}   # one committed assurance trace
 GET  /healthz
 ```
+
+Pages: `/` verifier, `/benchmark` charts + evidence, `/about` method; `/?trace=<run_dir>/<run>/<id>`
+replays a committed benchmark trace through the live UI.
 
 Request body for `/api/solve*`:
 
