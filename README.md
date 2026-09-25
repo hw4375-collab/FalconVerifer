@@ -196,12 +196,11 @@ bench/            dataset generator, problems.jsonl, results
 
 ## For contributors
 
-All current work lives on the PR branch `devin/1790279948-web-ui-tests`
-(<https://github.com/hw4375-collab/FalconVerifer/pull/1>); `main` still holds the initial
-scaffold until that PR is merged.
+`main` is the current state of the project. Work on a feature branch and open a PR;
+CI runs lint, tests and the Lean build.
 
 ```bash
-git clone -b devin/1790279948-web-ui-tests https://github.com/hw4375-collab/FalconVerifer.git
+git clone https://github.com/hw4375-collab/FalconVerifer.git
 cd FalconVerifer            # then follow Quickstart (venv, elan + lake, .env)
 
 # before every push
