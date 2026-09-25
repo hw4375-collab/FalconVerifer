@@ -48,6 +48,7 @@
   says into Lean 4 and lets the kernel decide.</p>
 
   <h2>The loop</h2>
+  <img class="chart" src="/static/pipeline.svg" alt="FalconVerifier pipeline: Falcon answers → parse steps → formalize → Lean 4 kernel → teach → assurance trace, with a revision loop and a memory of kernel verdicts" style="border:1px solid var(--line);border-radius:6px;margin:6px 0 14px">
   <ol class="steps">
     <li><b>Falcon answers</b>The student model (Falcon-H1 3B/7B) answers in Arabic or English, with its reasoning steps.</li>
     <li><b>Formalize</b>Each step and the final answer become Lean 4 propositions — deterministically for the Arabic pregroup fragments, otherwise via Falcon-H1-Arabic-34B with a round-trip faithfulness audit.</li>
