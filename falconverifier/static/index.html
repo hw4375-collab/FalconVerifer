@@ -24,59 +24,50 @@
     <a href="/about">Method</a>
     <a href="https://github.com/hw4375-collab/FalconVerifer" target="_blank" rel="noopener">GitHub</a>
   </nav>
-  <div class="cfg" id="cfg">loading config…</div>
 </header>
 
 <main>
-  <section class="card intro">
-    <div class="steps">
-      <div><b>1</b> Falcon answers in Arabic or English</div>
-      <div><b>2</b> every reasoning step is translated to a Lean 4 claim</div>
-      <div><b>3</b> the Lean kernel proves or refutes each claim</div>
-      <div><b>4</b> refuted claims are taught back; Falcon revises</div>
-      <div><b>5</b> you get a machine-checked assurance trace</div>
-    </div>
-    <div class="legend verdicts">
-      <span class="badge verified">verified</span> Lean proved it
-      <span class="badge refuted">refuted</span> Lean proved the negation
-      <span class="badge unknown">unknown</span> neither side proved
-      <span class="badge skipped">skipped</span> not a checkable claim
-    </div>
+  <section class="hero">
+    <p class="tagline">Every step Falcon says, proved or refuted by the Lean 4 kernel.</p>
+    <ol class="flow">
+      <li title="Falcon (3B/7B) answers in Arabic or English with its reasoning">Falcon answers</li>
+      <li title="Each reasoning step becomes a Lean 4 proposition — deterministic Arabic pregroup grammar first, Falcon 34B as fallback">steps → Lean 4</li>
+      <li title="The Lean kernel proves each claim or its negation; undecided claims stay unknown">kernel decides</li>
+      <li title="Refuted claims are explained back to Falcon in its own language; it revises">Falcon is taught</li>
+      <li title="Full trace: answers, Lean claims, verdicts, feedback, kernel source">assurance trace</li>
+    </ol>
   </section>
 
   <section class="card input">
-    <label for="problem">Problem for Falcon <span class="muted" id="exhint">— pick an example (Arabic examples select the 3B student; badge = how often 3B got it wrong in round 1 on our benchmark) or type your own</span></label>
-    <textarea id="problem" rows="3" dir="auto" placeholder="Type a basic math or logic problem in Arabic or English…"></textarea>
+    <textarea id="problem" rows="3" dir="auto" placeholder="Ask Falcon a math or logic question in Arabic or English…"></textarea>
     <div class="translation muted" id="translation"></div>
-    <div class="row">
-      <div class="examples" id="examples"></div>
-    </div>
-    <div class="row controls">
-      <label>Student
-        <select id="student">
-          <option value="">Falcon 7B (default)</option>
-          <option value="falcon-h1-arabic-3b-instruct">Falcon 3B Arabic (weak student)</option>
-          <option value="falcon-h1r-7b">Falcon H1R 7B (reasoning)</option>
-        </select>
-      </label>
-      <label>Formalizer
-        <select id="formalizer">
-          <option value="falcon">Falcon 34B (Falcon verifies Falcon)</option>
-          <option value="openai">GPT-4.1-mini</option>
-          <option value="openrouter">OpenRouter (free)</option>
-        </select>
-      </label>
-      <label>Rounds <input id="rounds" type="number" min="1" max="5" value="3"></label>
-      <label>Expected <input id="expected" type="text" placeholder="optional"></label>
+    <div class="examples" id="examples" title="Arabic examples use the weak Falcon 3B student · red badge = how often 3B got it wrong in round 1 on our benchmark"></div>
+    <div class="actions">
       <button id="run">Verify with Lean 4</button>
       <button id="baseline" class="ghost" title="Raw Falcon, no verification">Baseline only</button>
       <button id="stop" class="ghost hidden">Stop</button>
+      <details class="settings" id="settings">
+        <summary><span id="cfg">settings</span></summary>
+        <div class="row controls">
+          <label>Student
+            <select id="student">
+              <option value="">Falcon 7B (default)</option>
+              <option value="falcon-h1-arabic-3b-instruct">Falcon 3B Arabic (weak student)</option>
+              <option value="falcon-h1r-7b">Falcon H1R 7B (reasoning)</option>
+            </select>
+          </label>
+          <label>Formalizer
+            <select id="formalizer">
+              <option value="falcon">Falcon 34B (Falcon verifies Falcon)</option>
+              <option value="openai">GPT-4.1-mini</option>
+              <option value="openrouter">OpenRouter (free)</option>
+            </select>
+          </label>
+          <label>Rounds <input id="rounds" type="number" min="1" max="5" value="3"></label>
+          <label>Expected answer <input id="expected" type="text" placeholder="optional"></label>
+        </div>
+      </details>
     </div>
-  </section>
-
-  <section class="card replays" id="replays">
-    <h2>No time to wait? Replay a recorded correction <small>committed benchmark traces · same renderer · zero model calls</small></h2>
-    <div id="replaylist" class="replaylist muted">loading…</div>
   </section>
 
   <section id="status" class="status hidden"></section>
@@ -85,10 +76,28 @@
 
   <section id="result" class="card result hidden"></section>
 
-  <section class="card bench">
-    <h2>Benchmark: baseline Falcon vs. Falcon + FalconVerifier <small><a href="/benchmark">full results, charts and evidence →</a></small></h2>
+  <section class="strip" id="benchstrip"></section>
+
+  <details class="card fold" id="replays">
+    <summary>Replay a recorded correction <small>benchmark traces · no model calls</small></summary>
+    <div id="replaylist" class="replaylist muted">loading…</div>
+  </details>
+
+  <details class="card fold">
+    <summary>Benchmark detail <small><a href="/benchmark">charts, per-problem evidence →</a></small></summary>
     <div id="bench">no benchmark results yet — run <code>falconverifier bench</code></div>
-  </section>
+  </details>
+
+  <details class="card fold">
+    <summary>How to read the verdicts</summary>
+    <div class="legend verdicts">
+      <span class="badge verified">verified</span> Lean proved it
+      <span class="badge refuted">refuted</span> Lean proved the negation
+      <span class="badge unknown">unknown</span> neither side proved
+      <span class="badge skipped">skipped</span> not a checkable claim
+    </div>
+    <p class="muted small">Lean certifies the formalized proposition, not that every nuance of the sentence was captured; anything it cannot decide is reported as unknown, never guessed. Assurance score = ½ verified share of checkable steps + ½ final-answer verdict, last round.</p>
+  </details>
 </main>
 
 <footer>
@@ -100,12 +109,12 @@
     <h2>Round <span class="n"></span></h2>
     <div class="cols">
       <div class="col">
-        <h3>1 · Falcon says</h3>
+        <h3>Falcon says</h3>
         <pre class="answer">…</pre>
         <details class="cot hidden"><summary>hidden chain-of-thought</summary><pre></pre></details>
       </div>
       <div class="col">
-        <h3>2 · Formalized to Lean 4 &nbsp;→&nbsp; 3 · Lean kernel verdict</h3>
+        <h3>Lean 4 claims · kernel verdict</h3>
         <div class="cotbar hidden"><div class="seg"></div><div class="sum muted"></div></div>
         <table class="lean">
           <thead><tr><th>step</th><th>natural language</th><th>Lean 4 claim</th><th>verdict</th></tr></thead>
@@ -115,7 +124,7 @@
       </div>
     </div>
     <div class="feedback hidden">
-      <h3>4 · Teaching Falcon</h3>
+      <h3>Teaching Falcon</h3>
       <pre></pre>
     </div>
   </article>

@@ -90,7 +90,7 @@ function renderCotBar(card, rep) {
   bar.querySelector(".seg").innerHTML = VERDICTS.filter((v) => counts[v])
     .map((v) => `<i class="${v}" style="flex:${counts[v]}" title="${counts[v]} ${v}"></i>`).join("");
   const decided = counts.verified + counts.refuted;
-  bar.querySelector(".sum").innerHTML = `CoT verifiability: Lean decided <b>${decided}/${n}</b> claims (steps + final) · `
+  bar.querySelector(".sum").innerHTML = `Lean decided <b>${decided}/${n}</b> claims · `
     + VERDICTS.filter((v) => counts[v]).map((v) => `${counts[v]} ${v.replace("_", "-")}`).join(" · ");
 }
 
@@ -107,7 +107,7 @@ function renderReport(card, rep) {
   if (fr && rep.final_answer_verdict === "refuted") fr.closest("tr").style.background = "rgba(255,92,122,.07)";
   if (fr) fr.innerHTML = badge(rep.final_answer_verdict) + (rep.final_answer_detail ? `<div class="muted" style="font-size:11px;margin-top:4px">${esc(rep.final_answer_detail.slice(0, 160))}</div>` : "");
   const h = card.querySelector(".col:last-child h3");
-  h.textContent = `2 · Formalized to Lean 4 → 3 · Lean kernel verdict (${rep.lean_latency_s.toFixed(1)}s)`;
+  h.textContent = `Lean 4 claims · kernel verdict (${rep.lean_latency_s.toFixed(1)}s)`;
   if (rep.lean_file) {
     const d = card.querySelector(".leansrc");
     d.classList.remove("hidden");
@@ -140,10 +140,10 @@ function renderResult(t) {
   el.innerHTML = `
     <div class="kpi"><div class="muted">status</div><div class="v ${t.status}">${t.status}</div><div class="sub muted">${story}</div></div>
     <div class="kpi"><div class="muted">final answer</div><div class="v" dir="auto">${esc(t.final_answer ?? "—")}</div></div>
-    <div class="kpi"><div class="muted">assurance score</div><div class="v">${(t.assurance_score * 100).toFixed(0)}%</div><div class="sub muted">last round: ½ verified share of checkable steps + ½ final-answer verdict</div></div>
-    <div class="kpi"><div class="muted">claims decided by Lean</div><div class="v">${decided}/${steps.length}</div><div class="sub muted">all rounds, steps + final · ${refuted} refuted · ${steps.length - decided} unknown/skipped</div></div>
+    <div class="kpi" title="last round: ½ verified share of checkable steps + ½ final-answer verdict"><div class="muted">assurance</div><div class="v">${(t.assurance_score * 100).toFixed(0)}%</div></div>
+    <div class="kpi" title="all rounds, steps + final answer"><div class="muted">decided by Lean</div><div class="v">${decided}/${steps.length}</div><div class="sub muted">${refuted} refuted · ${steps.length - decided} unknown/skipped</div></div>
     <div class="kpi"><div class="muted">rounds · time</div><div class="v">${t.rounds.length} · ${t.total_latency_s}s</div></div>${exp}
-    <div class="kpi"><div class="muted">evidence</div><div class="v"><a id="dl" download="assurance_trace.json">download trace</a></div><div class="sub muted">full JSON: answers, Lean claims, verdicts, feedback, kernel source</div></div>`;
+    <div class="kpi" title="full JSON: answers, Lean claims, verdicts, feedback, kernel source"><div class="muted">evidence</div><div class="v"><a id="dl" download="assurance_trace.json">download trace</a></div></div>`;
   $("#dl").href = URL.createObjectURL(new Blob([JSON.stringify(t, null, 1)], { type: "application/json" }));
   el.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
@@ -212,7 +212,7 @@ async function run(baselineOnly = false) {
 
 function handle(kind, p) {
   switch (kind) {
-    case "config": $("#cfg").innerHTML = `student <b>${esc(p.student)}</b><br>formalizer <b>${esc(p.formalizer)}</b> · kernel <b>Lean 4 + Mathlib</b>`; break;
+    case "config": setCfg(p.student, p.formalizer); break;
     case "round_start": roundCard(p.round); setStatus(`round ${p.round}/${p.max_rounds}: Falcon is answering…`); break;
     case "student_answer": renderAnswer(roundCard(p.round), p.answer); setStatus(`round ${p.round}: translating steps to Lean 4…`); break;
     case "formalized": renderFormalization(roundCard(p.round), p.formalization); setStatus(`round ${p.round}: Lean 4 kernel is checking…`); break;
@@ -227,6 +227,10 @@ function handle(kind, p) {
   }
 }
 
+function setCfg(student, formalizer) {
+  $("#cfg").innerHTML = `student <b>${esc(student)}</b> · formalizer <b>${esc(formalizer)}</b> · kernel <b>Lean 4 + Mathlib</b>`;
+}
+
 function pct(x) { return x == null ? "–" : (x * 100).toFixed(0) + "%"; }
 
 async function loadBench() {
@@ -234,6 +238,16 @@ async function loadBench() {
   const headline = ["falcon3b_arabic", "falcon3b_arabic_scale", "falcon7b_arabic"].filter((k) => data[k]);
   const keys = headline.length ? headline : Object.keys(data);
   if (!keys.length) return;
+  const hero = data.falcon3b_arabic_scale || data.falcon3b_arabic;
+  if (hero) {
+    const a = hero.summary.all;
+    $("#benchstrip").innerHTML = `
+      <div><b>${pct(a.baseline_accuracy)} → ${pct(a.verified_accuracy)}</b><span>Falcon 3B Arabic, ${a.n} problems, baseline → verified</span></div>
+      <div><b>${pct(a.detection_recall)}</b><span>of wrong answers caught by Lean</span></div>
+      <div><b>${(a.regressions ?? 0)}</b><span>correct answers broken</span></div>
+      <div><b>${a.assured_and_correct}/${a.assured_final_answers}</b><span>Lean-assured answers that are correct</span></div>
+      <a href="/benchmark">evidence →</a>`;
+  }
   const parts = keys.map((k) => {
     const s = data[k].summary;
     const slices = ["all", "math", "logic"].filter((x) => s[x]);
@@ -272,7 +286,7 @@ function renderExamples() {
       $("#problem").value = text;
       $("#expected").value = expected;
       $("#translation").textContent = translation ? `English: ${translation}` : "";
-      if (translation) $("#student").value = WEAK_STUDENT;
+      if (translation) { $("#student").value = WEAK_STUDENT; $("#student").dispatchEvent(new Event("change")); }
     };
     ex.appendChild(b);
   }
@@ -293,7 +307,7 @@ async function loadReplays() {
     el.innerHTML = fixed.map((r) => `<a class="replay" href="/?trace=falcon3b_arabic/${run.run}/${r.id}">
         <span class="ar" dir="rtl">${esc(run.problems[r.id])}</span>
         <span class="meta"><span class="badge refuted">R1 ${esc(r.baseline_answer)}</span> → <span class="badge verified">R${r.rounds} ${esc(r.final_answer)}</span> · gold ${esc(r.expected)}</span></a>`).join("")
-      + `<div class="muted small">${fixed.length} of the ${wrong.length} round-1 errors in the latest ${run.rows.length}-problem run, caught and fixed by Lean feedback — <a href="/benchmark">all of them, with evidence →</a></div>`;
+      + `<div class="muted small">${fixed.length} of ${wrong.length} round-1 errors fixed by Lean feedback in the latest ${run.rows.length}-problem run · <a href="/benchmark">all, with evidence →</a></div>`;
   } catch { el.textContent = "benchmark traces unavailable"; }
 }
 
@@ -303,11 +317,13 @@ async function init() {
   $("#baseline").onclick = () => run(true);
   $("#stop").onclick = () => state.ctrl && state.ctrl.abort();
   $("#problem").addEventListener("input", () => { $("#translation").textContent = ""; });
+  for (const id of ["#student", "#formalizer"]) $(id).addEventListener("change", () => setCfg(
+    $("#student").selectedOptions[0].textContent, $("#formalizer").selectedOptions[0].textContent));
   fetch("/api/bench/hardness").then((r) => r.json()).then((h) => { state.hardness = h; renderExamples(); }).catch(() => {});
   loadReplays();
   try {
     const c = await (await fetch("/api/config")).json();
-    $("#cfg").innerHTML = `student <b>${esc(c.student)}</b><br>formalizer <b>${esc(c.formalizer)}</b> · kernel <b>Lean 4 + Mathlib</b>`;
+    setCfg(c.student, c.formalizer);
     $("#formalizer").value = c.formalizer_provider;
     for (const opt of $("#formalizer").options) {
       if (c.providers[opt.value] && !c.providers[opt.value].configured) { opt.disabled = true; opt.textContent += " (no key)"; }
@@ -328,10 +344,10 @@ async function replayTrace(ref) {
   $("#expected").value = t.expected_answer ?? "";
   const ex = EXAMPLES.find((e) => e[1] === t.problem);
   $("#translation").textContent = ex && ex[3] ? `English: ${ex[3]}` : "";
-  if (t.student_model) $("#student").value = t.student_model;
+  if (t.student_model) { $("#student").value = t.student_model; $("#student").dispatchEvent(new Event("change")); }
   $("#roundlist").innerHTML = "";
   state.rounds = {};
-  setStatus(`replaying benchmark trace ${ref} · student ${t.student_model} · formalizer ${t.formalizer_model}`, false);
+  setStatus(`replay · benchmark trace ${ref.split("/").pop()} · student ${t.student_model}`, false);
   t.rounds.forEach((r, i) => {
     const card = roundCard(i + 1);
     renderAnswer(card, r.answer);
