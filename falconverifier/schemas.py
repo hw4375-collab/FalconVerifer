@@ -12,6 +12,9 @@ class Verdict(str, Enum):
     UNKNOWN = "unknown"  # well-formed, but automation could neither prove nor refute
     ILL_FORMED = "ill_formed"  # the Lean statement itself does not type-check
     SKIPPED = "skipped"  # step carries no checkable mathematical content
+    # a world-knowledge premise ("Mecca is in Saudi Arabia") — Lean has no fact base, so it is
+    # neither checked nor refuted; only the inference drawn from it is
+    UNVERIFIED_PREMISE = "unverified_premise"
 
 
 class ReasoningStep(BaseModel):
@@ -34,7 +37,7 @@ class FormalStep(BaseModel):
     """Lean 4 rendering of one reasoning step."""
 
     index: int
-    kind: str = Field(description="arith | algebra | logic | skip")
+    kind: str = Field(description="arith | algebra | logic | fact | skip")
     lean_prop: str | None = Field(description="A Lean 4 `Prop` (no `theorem`, no proof)")
     note: str = ""
 

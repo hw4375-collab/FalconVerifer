@@ -123,7 +123,7 @@ def cot_coverage(run_dir: Path) -> list[str]:
     n_steps = sum(steps.values())
     if not rounds or not n_steps:
         return []
-    order = ("verified", "refuted", "unknown", "ill_formed", "skipped")
+    order = ("verified", "refuted", "unknown", "ill_formed", "unverified_premise", "skipped")
     decided = steps["verified"] + steps["refuted"]
     decided_final = finals["verified"] + finals["refuted"]
     return [

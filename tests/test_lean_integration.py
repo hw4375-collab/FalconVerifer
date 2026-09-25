@@ -213,3 +213,49 @@ def test_arabic_word_problems_decided_by_kernel(runner: LeanRunner):
     res = runner.check_claims(claims)
     for k, (_, _, want) in cases.items():
         assert res.outcomes[k].verdict == want, (k, claims[k], res.outcomes[k].detail)
+
+
+def test_logic20_gaps_are_now_decided(runner: LeanRunner):
+    """Shapes that came back `unknown` in both arms of the 20-item EN/AR logic comparison:
+    a 3-variable propositional non-validity, a valid ∃∀→∀∃ swap over a Bool relation (where
+    `decide` blows the recursion depth), squares over ℤ, and a positive existential."""
+    res = runner.check_claims(
+        {
+            "prop_cex": "¬ (∀ (P Q R : Prop), (P ∧ Q → R) → ¬R → ¬P)",
+            "exists_forall_swap": "¬ (∀ (S : Fin 3 → Fin 3 → Bool), (∃ x, ∀ y, S x y) → ∀ y, ∃ x, S x y)",
+            "squares": "¬ (∀ (x y : ℤ), 0 < y → y < x → y^2 < x^2)",
+            "even_product_witness": "∃ (x y : ℤ), x * y % 2 = 0 ∧ x % 2 ≠ 0",
+        }
+    )
+    v = {k: o.verdict for k, o in res.outcomes.items()}
+    assert v["prop_cex"] == Verdict.VERIFIED
+    assert v["exists_forall_swap"] == Verdict.REFUTED
+    assert v["squares"] == Verdict.REFUTED
+    assert v["even_product_witness"] == Verdict.VERIFIED
+
+
+def test_everyday_arabic_fragment_props_decide(runner: LeanRunner):
+    from falconverifier.arabic_daily import formalize_daily
+
+    wd = "العميل: اليوم الخميس، والرحلة بعد ١٢ أيام. ما اليوم بعد ١٢ أيام؟"
+    ck = "بدأ الاجتماع في الساعة ٩:٣٠ واستمر ساعتين و٤٥ دقيقة. في أي ساعة انتهى؟"
+    bill = "الفاتورة ٢٤٠ درهماً، تضاف ضريبة ٥٪ ورسوم خدمة ١٠٪، وتقاسمها ٣ أشخاص بالتساوي. كم يدفع كل واحد؟"
+    res = runner.check_claims(
+        {
+            "wd_ok": formalize_daily(wd, "الثلاثاء")[0],
+            "wd_bad": formalize_daily(wd, "الأربعاء")[0],
+            "ck_ok": formalize_daily(ck, "12:15")[0],
+            "ck_bad": formalize_daily(ck, "11:15")[0],
+            "bill_ok": formalize_daily(bill, "92.4")[0],
+            "bill_bad": formalize_daily(bill, "88")[0],
+        }
+    )
+    v = {k: o.verdict for k, o in res.outcomes.items()}
+    assert v == {
+        "wd_ok": Verdict.VERIFIED,
+        "wd_bad": Verdict.REFUTED,
+        "ck_ok": Verdict.VERIFIED,
+        "ck_bad": Verdict.REFUTED,
+        "bill_ok": Verdict.VERIFIED,
+        "bill_bad": Verdict.REFUTED,
+    }

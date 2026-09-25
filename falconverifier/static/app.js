@@ -19,6 +19,10 @@ const EXAMPLES = [
     "If it rains, the ground gets wet. The ground is wet. Must it have rained? Answer yes or no."],
   ["عربي · مصافحة", "خمسة طلاب يجلسون في الفصل، ويقول كل واحد منهم إن ثلاثة من الأربعة الباقين أصدقاؤه. هل يلزم أن أحدهم يكذب؟ أجب بنعم أو لا.", "نعم",
     "Five students sit in class; each says three of the other four are his friends. Must one of them be lying? Answer yes or no. (Handshake lemma: 5×3 is odd.)"],
+  ["عربي · فاتورة مطعم", "العميل: الفاتورة ٢٤٠ درهماً، تضاف ضريبة ٥٪ ورسوم خدمة ١٠٪، وتقاسمها ٣ أشخاص بالتساوي. كم يدفع كل واحد؟", "92.4",
+    "Customer: the bill is 240 dirhams, 5% tax and a 10% service charge are added, and 3 people split it equally. How much does each pay? (everyday fragment, deterministic)"],
+  ["عربي · موعد", "العميل: اليوم الخميس، والرحلة بعد ١٢ أيام. ما اليوم بعد ١٢ أيام؟", "الثلاثاء",
+    "Customer: today is Thursday and the trip is in 12 days. What day is that? (weekday arithmetic mod 7)"],
   ["Muffins", "A bakery makes 48 muffins per batch. It bakes 7 batches and then sells 5 boxes of 12 muffins each. How many muffins are left?", "276"],
   ["Percent", "A jacket costs $120. It is discounted by 25%, then a 10% sales tax is added. What is the final price?", "99"],
   ["Doctors", "All doctors are educated. Some educated people are wealthy. Does it follow that some doctors are wealthy? Answer Yes or No.", "No"],
@@ -79,7 +83,7 @@ function renderFormalization(card, f) {
   card.querySelector("tbody").innerHTML = rows.join("");
 }
 
-const VERDICTS = ["verified", "refuted", "unknown", "ill_formed", "skipped"];
+const VERDICTS = ["verified", "refuted", "unknown", "ill_formed", "unverified_premise", "skipped"];
 
 function renderCotBar(card, rep) {
   const all = [...rep.steps.map((s) => s.verdict), rep.final_answer_verdict];
@@ -133,6 +137,7 @@ function renderResult(t) {
   const steps = t.rounds.flatMap((r) => [...r.report.steps.map((s) => s.verdict), r.report.final_answer_verdict]);
   const decided = steps.filter((v) => v === "verified" || v === "refuted").length;
   const refuted = steps.filter((v) => v === "refuted").length;
+  const premises = steps.filter((v) => v === "unverified_premise").length;
   const last = t.rounds[t.rounds.length - 1].report;
   const open = last.steps.filter((s) => s.verdict === "unknown" || s.verdict === "ill_formed").length;
   const story = t.rounds.length > 1 && t.status === "verified"
@@ -144,7 +149,7 @@ function renderResult(t) {
     <div class="kpi"><div class="muted">status</div><div class="v ${t.status}">${t.status}</div><div class="sub muted">${story}</div></div>
     <div class="kpi"><div class="muted">final answer</div><div class="v" dir="auto">${esc(t.final_answer ?? "—")}</div></div>
     <div class="kpi" title="last round: ½ verified share of checkable steps + ½ final-answer verdict"><div class="muted">assurance</div><div class="v">${(t.assurance_score * 100).toFixed(0)}%</div></div>
-    <div class="kpi" title="all rounds, steps + final answer"><div class="muted">decided by Lean</div><div class="v">${decided}/${steps.length}</div><div class="sub muted">${refuted} refuted · ${steps.length - decided} unknown/skipped</div></div>
+    <div class="kpi" title="all rounds, steps + final answer"><div class="muted">decided by Lean</div><div class="v">${decided}/${steps.length}</div><div class="sub muted">${refuted} refuted · ${steps.length - decided} unknown/skipped${premises ? ` · ${premises} premise${premises > 1 ? "s" : ""} not for Lean` : ""}</div></div>
     <div class="kpi"><div class="muted">rounds · time</div><div class="v">${t.rounds.length} · ${t.total_latency_s}s</div></div>${exp}
     <div class="kpi" title="full JSON: answers, Lean claims, verdicts, feedback, kernel source"><div class="muted">evidence</div><div class="v"><a id="dl" download="assurance_trace.json">download trace</a></div></div>`;
   $("#dl").href = URL.createObjectURL(new Blob([JSON.stringify(t, null, 1)], { type: "application/json" }));

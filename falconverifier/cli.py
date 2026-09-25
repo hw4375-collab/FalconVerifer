@@ -23,6 +23,7 @@ VERDICT_STYLE = {
     Verdict.UNKNOWN: "yellow",
     Verdict.ILL_FORMED: "magenta",
     Verdict.SKIPPED: "dim",
+    Verdict.UNVERIFIED_PREMISE: "cyan",
 }
 
 

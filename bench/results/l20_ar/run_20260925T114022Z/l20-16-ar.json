@@ -1,0 +1,363 @@
+{
+ "problem": "P أو Q. ليس P. ليس Q. النتيجة: R. هل تلزم النتيجة بالضرورة من المقدمات؟ أجب بنعم أو لا.",
+ "expected_answer": "نعم",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: لا، النتيجة R لا تلزم بالضرورة من المقدمات P أو Q.\n",
+    "reasoning": null,
+    "steps": [],
+    "final_answer": "لا، النتيجة R لا تلزم بالضرورة من المقدمات P أو Q",
+    "latency_s": 2.8429903984069824,
+    "tokens": 25
+   },
+   "formalization": {
+    "problem_prop": "¬ (∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R)",
+    "problem_note": "",
+    "steps": [],
+    "raw": "{\n  \"problem_prop\": \"¬ (∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R)\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates premises and conclusion\"}\n  ]\n}\n",
+    "latency_s": 6.416470050811768
+   },
+   "report": {
+    "steps": [],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem final_wf : ¬ (∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R) := by sorry\ntheorem final_pos : ¬ (∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R) := by fv_auto\ntheorem final_neg : ¬ (¬ (∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R)) := by fv_auto\n",
+    "lean_latency_s": 8.879420280456543,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 143,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     }
+    ],
+    "cache_hits": 0
+   },
+   "feedback": "أجبت «لا»، لكن Lean 4 أثبت أن النتيجة تلزم بالضرورة من المقدمات: `∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R` مبرهنة، فالجواب الصحيح هو «نعم». أعد استنتاج سلسلة اللوازم من المقدمات خطوة خطوة.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: نعم، النتيجة R تلزم بالضرورة من المقدمات P أو Q.\n\nالتصحيح:\n\nالخطوة 1: `P أو Q` (أو: `P ∨ Q`) - هذا صحيح، حيث أن \"أو\" في المنطق الرياضي تعني اتحاد المجموعات.\n\nالخطوة 2: `ليس P` (أو: `¬P`) - هذا صحيح، نفترض أن P غير صحيح.\n\nالخطوة 3: `ليس Q` (أو: `¬Q`) - هذا صحيح، نفترض أن Q غير صحيح.\n\nالخطوة 4: `R` - هذه هي النتيجة التي نريد إثباتها.\n\nالآن، لنثبت أن `R` تلزم من `¬P` و `¬Q`:\n\n1. نفترض `¬P` و `¬Q`.\n2. من المقدمة، لدينا `(P ∨ Q) → (¬P ∨ ¬Q)`.\n3. بتطبيق خاصية توزيع النفي على الاتحاد (قانون دي مورغان)، نحصل على:\n   `¬P ∨ ¬Q` صحيح إذا كان `¬P` صحيحًا أو `¬Q` صحيحًا.\n4. بما أن كل من `¬P` و `¬Q` صحيحان (من افتراضاتنا)، فإن `¬P ∨ ¬Q` صحيح.\n5. من المقدمة أيضًا، لدينا `(¬P ∨ ¬Q) → ¬P → ¬Q → R`.\n6. بما أن `¬P ∨ ¬Q` صحيح (من الخطوة 4)، فإن المقدمة الشرطية تضمن أن `¬P → ¬Q → R` صحيحة.\n7. بتطبيق خاصية الشرط المتصل (الشرط المزدوج)، نحصل على:\n   `¬P → ¬Q → R` تعني أن إذا كان `¬P` صحيحًا، فإن `¬Q` يجب أن يكون صحيحًا لإنتاج `R`.\n8. بما أن `¬P` و `¬Q` صحيحان (من الخطوة 2)، فإن `¬Q` صحيح، وبالتالي `R` صحيح.\n\nالجواب النهائي: نعم، النتيجة R تلزم بالضرورة من المقدمات P أو Q.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "التصحيح:"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 1: `P أو Q` (أو: `P ∨ Q`) - هذا صحيح، حيث أن \"أو\" في المنطق الرياضي تعني اتحاد المجموعات."
+     },
+     {
+      "index": 3,
+      "text": "الخطوة 2: `ليس P` (أو: `¬P`) - هذا صحيح، نفترض أن P غير صحيح."
+     },
+     {
+      "index": 4,
+      "text": "الخطوة 3: `ليس Q` (أو: `¬Q`) - هذا صحيح، نفترض أن Q غير صحيح."
+     },
+     {
+      "index": 5,
+      "text": "الخطوة 4: `R` - هذه هي النتيجة التي نريد إثباتها."
+     },
+     {
+      "index": 6,
+      "text": "الآن، لنثبت أن `R` تلزم من `¬P` و `¬Q`:"
+     },
+     {
+      "index": 7,
+      "text": "1. نفترض `¬P` و `¬Q`."
+     },
+     {
+      "index": 8,
+      "text": "2. من المقدمة، لدينا `(P ∨ Q) → (¬P ∨ ¬Q)`."
+     },
+     {
+      "index": 9,
+      "text": "3. بتطبيق خاصية توزيع النفي على الاتحاد (قانون دي مورغان)، نحصل على:\n   `¬P ∨ ¬Q` صحيح إذا كان `¬P` صحيحًا أو `¬Q` صحيحًا."
+     },
+     {
+      "index": 10,
+      "text": "4. بما أن كل من `¬P` و `¬Q` صحيحان (من افتراضاتنا)، فإن `¬P ∨ ¬Q` صحيح."
+     },
+     {
+      "index": 11,
+      "text": "5. من المقدمة أيضًا، لدينا `(¬P ∨ ¬Q) → ¬P → ¬Q → R`."
+     },
+     {
+      "index": 12,
+      "text": "6. بما أن `¬P ∨ ¬Q` صحيح (من الخطوة 4)، فإن المقدمة الشرطية تضمن أن `¬P → ¬Q → R` صحيحة."
+     }
+    ],
+    "final_answer": "نعم، النتيجة R تلزم بالضرورة من المقدمات P أو Q",
+    "latency_s": 9.235008716583252,
+    "tokens": 578
+   },
+   "formalization": {
+    "problem_prop": "∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates premise"
+     },
+     {
+      "index": 2,
+      "kind": "logic",
+      "lean_prop": "∀ (P Q : Prop), (P ∨ Q) → ¬P → ¬Q → False",
+      "note": "Law of excluded middle"
+     },
+     {
+      "index": 3,
+      "kind": "logic",
+      "lean_prop": "∀ (P Q : Prop), ¬P → ¬Q → ¬(P ∨ Q)",
+      "note": "De Morgan's law"
+     },
+     {
+      "index": 4,
+      "kind": "logic",
+      "lean_prop": "∀ (P Q : Prop), ¬(P ∨ Q) → ¬P ∧ ¬Q",
+      "note": "De Morgan's law"
+     },
+     {
+      "index": 5,
+      "kind": "logic",
+      "lean_prop": "∀ (P Q : Prop), ¬P ∧ ¬Q → ¬(P ∨ Q)",
+      "note": "De Morgan's law"
+     },
+     {
+      "index": 6,
+      "kind": "logic",
+      "lean_prop": "∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R",
+      "note": "the inference"
+     },
+     {
+      "index": 7,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": ""
+     },
+     {
+      "index": 8,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": ""
+     },
+     {
+      "index": 9,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": ""
+     },
+     {
+      "index": 10,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": ""
+     },
+     {
+      "index": 11,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": ""
+     },
+     {
+      "index": 12,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": ""
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"¬ (∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R)\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates premise\"},\n    {\"index\": 2, \"kind\": \"logic\", \"lean_prop\": \"∀ (P Q : Prop), (P ∨ Q) → ¬P → ¬Q → False\", \"note\": \"Law of excluded middle\"},\n    {\"index\": 3, \"kind\": \"logic\", \"lean_prop\": \"∀ (P Q : Prop), ¬P → ¬Q → ¬(P ∨ Q)\", \"note\": \"De Morgan's law\"},\n    {\"index\": 4, \"kind\": \"logic\", \"lean_prop\": \"∀ (P Q : Prop), ¬(P ∨ Q) → ¬P ∧ ¬Q\", \"note\": \"De Morgan's law\"},\n    {\"index\": 5, \"kind\": \"logic\", \"lean_prop\": \"∀ (P Q : Prop), ¬P ∧ ¬Q → ¬(P ∨ Q)\", \"note\": \"De Morgan's law\"},\n    {\"index\": 6, \"kind\": \"logic\", \"lean_prop\": \"∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R\", \"note\": \"the inference\"}\n  ]\n}\n",
+    "latency_s": 13.57111406326294
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "التصحيح:",
+      "detail": "restates premise",
+      "cached": false
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "∀ (P Q : Prop), (P ∨ Q) → ¬P → ¬Q → False",
+      "step_text": "الخطوة 1: `P أو Q` (أو: `P ∨ Q`) - هذا صحيح، حيث أن \"أو\" في المنطق الرياضي تعني اتحاد المجموعات.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "∀ (P Q : Prop), ¬P → ¬Q → ¬(P ∨ Q)",
+      "step_text": "الخطوة 2: `ليس P` (أو: `¬P`) - هذا صحيح، نفترض أن P غير صحيح.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "∀ (P Q : Prop), ¬(P ∨ Q) → ¬P ∧ ¬Q",
+      "step_text": "الخطوة 3: `ليس Q` (أو: `¬Q`) - هذا صحيح، نفترض أن Q غير صحيح.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "∀ (P Q : Prop), ¬P ∧ ¬Q → ¬(P ∨ Q)",
+      "step_text": "الخطوة 4: `R` - هذه هي النتيجة التي نريد إثباتها.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R",
+      "step_text": "الآن، لنثبت أن `R` تلزم من `¬P` و `¬Q`:",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 7,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "1. نفترض `¬P` و `¬Q`.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 8,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "2. من المقدمة، لدينا `(P ∨ Q) → (¬P ∨ ¬Q)`.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 9,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "3. بتطبيق خاصية توزيع النفي على الاتحاد (قانون دي مورغان)، نحصل على:\n   `¬P ∨ ¬Q` صحيح إذا كان `¬P` صحيحًا أو `¬Q` صحيحًا.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 10,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "4. بما أن كل من `¬P` و `¬Q` صحيحان (من افتراضاتنا)، فإن `¬P ∨ ¬Q` صحيح.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 11,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "5. من المقدمة أيضًا، لدينا `(¬P ∨ ¬Q) → ¬P → ¬Q → R`.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 12,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "6. بما أن `¬P ∨ ¬Q` صحيح (من الخطوة 4)، فإن المقدمة الشرطية تضمن أن `¬P → ¬Q → R` صحيحة.",
+      "detail": "",
+      "cached": false
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : ∀ (P Q : Prop), (P ∨ Q) → ¬P → ¬Q → False := by sorry\ntheorem s2_pos : ∀ (P Q : Prop), (P ∨ Q) → ¬P → ¬Q → False := by fv_auto\ntheorem s2_neg : ¬ (∀ (P Q : Prop), (P ∨ Q) → ¬P → ¬Q → False) := by fv_auto\n\ntheorem s3_wf : ∀ (P Q : Prop), ¬P → ¬Q → ¬(P ∨ Q) := by sorry\ntheorem s3_pos : ∀ (P Q : Prop), ¬P → ¬Q → ¬(P ∨ Q) := by fv_auto\ntheorem s3_neg : ¬ (∀ (P Q : Prop), ¬P → ¬Q → ¬(P ∨ Q)) := by fv_auto\n\ntheorem s4_wf : ∀ (P Q : Prop), ¬(P ∨ Q) → ¬P ∧ ¬Q := by sorry\ntheorem s4_pos : ∀ (P Q : Prop), ¬(P ∨ Q) → ¬P ∧ ¬Q := by fv_auto\ntheorem s4_neg : ¬ (∀ (P Q : Prop), ¬(P ∨ Q) → ¬P ∧ ¬Q) := by fv_auto\n\ntheorem s5_wf : ∀ (P Q : Prop), ¬P ∧ ¬Q → ¬(P ∨ Q) := by sorry\ntheorem s5_pos : ∀ (P Q : Prop), ¬P ∧ ¬Q → ¬(P ∨ Q) := by fv_auto\ntheorem s5_neg : ¬ (∀ (P Q : Prop), ¬P ∧ ¬Q → ¬(P ∨ Q)) := by fv_auto\n\ntheorem s6_wf : ∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R := by sorry\ntheorem s6_pos : ∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R := by fv_auto\ntheorem s6_neg : ¬ (∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R) := by fv_auto\n\ntheorem final_wf : ∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R := by sorry\ntheorem final_pos : ∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R := by fv_auto\ntheorem final_neg : ¬ (∀ (P Q R : Prop), (P ∨ Q) → ¬P → ¬Q → R) := by fv_auto\n",
+    "lean_latency_s": 10.983082056045532,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     },
+     {
+      "line": 154,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 156,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     },
+     {
+      "line": 158,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 160,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     },
+     {
+      "line": 162,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 164,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     }
+    ],
+    "cache_hits": 0
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "نعم، النتيجة R تلزم بالضرورة من المقدمات P أو Q",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 57.94,
+ "memory": {
+  "lean_hits": 0,
+  "formalizer_hits": 0
+ }
+}

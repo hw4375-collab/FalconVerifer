@@ -33,13 +33,16 @@ def verify(
     for fs in form.steps:
         cid = f"s{fs.index}"
         if fs.lean_prop is None:
+            fact = fs.kind == "fact"
             results.append(
                 StepResult(
                     index=fs.index,
-                    verdict=Verdict.SKIPPED,
+                    verdict=Verdict.UNVERIFIED_PREMISE if fact else Verdict.SKIPPED,
                     lean_prop=None,
                     step_text=text_by_index.get(fs.index, ""),
-                    detail=fs.note,
+                    detail=("world-knowledge premise, not checkable by Lean: " + fs.note)
+                    if fact
+                    else fs.note,
                 )
             )
             continue

@@ -45,7 +45,9 @@ def assurance_score(report: VerificationReport | None) -> float:
         return 0.0
     if report.has_errors:
         return 0.1
-    checkable = [s for s in report.steps if s.verdict != Verdict.SKIPPED]
+    checkable = [
+        s for s in report.steps if s.verdict not in (Verdict.SKIPPED, Verdict.UNVERIFIED_PREMISE)
+    ]
     step_part = (len(report.verified) / len(checkable)) if checkable else 0.5
     final_part = {
         Verdict.VERIFIED: 1.0,
@@ -298,6 +300,8 @@ class VerifyAndTeachAgent:
                 )
 
         status = "unverified" if not check else status_of(last_report)
+        if status == "verified" and rounds and rounds[-1].answer.final_answer is None:
+            status = "unknown"  # nothing was stated, so nothing was verified
         if status == "refuted" and len(rounds) == max_rounds:
             status = "max_rounds"
         trace = Trace(

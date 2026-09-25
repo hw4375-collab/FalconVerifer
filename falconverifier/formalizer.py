@@ -5,7 +5,7 @@ import logging
 import re
 from dataclasses import dataclass
 
-from . import arabic, arabic_graph, arabic_logic, arabic_word
+from . import arabic, arabic_daily, arabic_graph, arabic_logic, arabic_word
 from .llm import ChatModel, extract_json
 from .memory import Memory
 from .schemas import Formalization, FormalStep, ReasoningStep, Verdict, VerificationReport
@@ -21,7 +21,7 @@ Output a single JSON object and nothing else:
   "problem_prop": "<Lean Prop stating that the FINAL ANSWER is correct, derived from the
                    PROBLEM data, or null if the problem cannot be expressed formally>",
   "steps": [
-    {"index": 1, "kind": "arith|algebra|logic|skip", "lean_prop": "<Lean Prop or null>",
+    {"index": 1, "kind": "arith|algebra|logic|fact|skip", "lean_prop": "<Lean Prop or null>",
      "note": "<short justification>"}
   ]
 }
@@ -68,6 +68,10 @@ Translation rules (follow strictly):
   `prime`, `odd`, `mod`. A single counterexample question ("does 3 ∣ n imply 6 ∣ n?") is a
   closed ∀ over ℕ, negated `¬ (∀ n : ℕ, …)` when the answer is No.
 - Never invent facts that are not in the problem or the steps.
+- A step that asserts WORLD KNOWLEDGE not given in the problem (geography, history, prices,
+  religious calendar, "Mecca is in Saudi Arabia", "Ramadan has 29 or 30 days") is a PREMISE,
+  not mathematics: give it `"kind": "fact", "lean_prop": null`. Lean has no fact base; only the
+  inference drawn from such a premise is checked. Never encode a fact as a Lean Prop.
 - The problem and steps may be in Arabic (Modern Standard Arabic, possibly with Eastern
   Arabic digits ٠١٢٣٤٥٦٧٨٩). Translate the mathematics exactly as written; word order
   (VSO/SVO) does not change the claim. «نعم» = Yes, «لا» = No, «كل» = all, «بعض» = some,
@@ -145,9 +149,10 @@ variables or elements of a finite type, transitivity/ordering puzzles allowed to
 
 Do NOT judge whether the inference is valid, and do NOT complain that it is "more general" than
 the question, that it uses ∀/Fin/ℤ/abstract P Q instead of the concrete nouns ("it rained"
-↦ P is FINE — propositional schemas are the intended encoding), or that the student's answer is
-short. Answer false ONLY if a premise stated in the question is completely absent, an extra
-premise was invented, the conclusion is about a different relation/direction than the
+↦ P is FINE — propositional schemas are the intended encoding), that "a number"/"an integer" is
+typed ℕ instead of ℤ (or vice versa), or that the student's answer is short. Answer false ONLY
+if a premise stated in the question is completely absent, an extra premise was invented, the
+conclusion is about a different relation/direction than the
 question asks, or the formula is degenerate (a premise repeated as the conclusion). When in
 doubt answer true — the Lean kernel, not you, decides validity.
 
@@ -422,6 +427,7 @@ class Formalizer:
         problem_hit = (
             arabic.formalize_problem(problem, final)
             or arabic_word.formalize_word_problem(problem, final)
+            or arabic_daily.formalize_daily(problem, final)
             or arabic_logic.formalize_logic_problem(problem)
             or arabic_graph.formalize_graph_problem(problem)
         )
@@ -492,6 +498,8 @@ class Formalizer:
 
     def audit(self, problem: str, step_text: str, prop: str) -> tuple[bool, str]:
         """Second-opinion check that `prop` faithfully encodes `step_text`."""
+        if degenerate_inference(prop):
+            return False, "degenerate inference: the conclusion is one of the premises"
         msg = AUDIT_PROMPT.format(problem=problem, step=step_text, prop=prop)
         return self._audit_call(msg)
 
@@ -567,8 +575,10 @@ class Formalizer:
                 continue
             prop = _clean_prop(item.get("lean_prop"))
             kind = str(item.get("kind", "arith" if prop else "skip"))
-            if prop is None:
+            if prop is None and kind != "fact":
                 kind = "skip"
+            if kind == "fact":
+                prop = None
             by_index[idx] = FormalStep(
                 index=idx, kind=kind, lean_prop=prop, note=str(item.get("note", ""))[:200]
             )

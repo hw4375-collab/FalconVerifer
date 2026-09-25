@@ -82,6 +82,7 @@ table.lean code { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
 .badge.unknown { color: var(--warn); background: rgba(168, 105, 11, .08); }
 .badge.ill_formed { color: var(--ill); background: rgba(107, 63, 160, .08); }
 .badge.skipped { color: var(--skip); background: rgba(138, 148, 173, .1); }
+.badge.unverified_premise { color: #1f6f8b; background: rgba(31, 111, 139, .08); border-style: dashed; }
 .muted { color: var(--muted); }
 .feedback { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
 .feedback pre { border-left: 3px solid var(--navy); }
@@ -153,7 +154,7 @@ a.replay .meta { font-size: 12px; color: var(--muted); }
 .cotbar .seg { display: flex; height: 8px; border-radius: 1px; overflow: hidden; background: var(--line); gap: 1px; }
 .cotbar .seg i { display: block; }
 .cotbar .seg .verified { background: var(--ok); } .cotbar .seg .refuted { background: var(--bad); }
-.cotbar .seg .unknown { background: var(--warn); } .cotbar .seg .ill_formed { background: var(--ill); } .cotbar .seg .skipped { background: var(--skip); }
+.cotbar .seg .unknown { background: var(--warn); } .cotbar .seg .ill_formed { background: var(--ill); } .cotbar .seg .skipped { background: var(--skip); } .cotbar .seg .unverified_premise { background: #1f6f8b; }
 .cotbar .sum { font-size: 12px; margin-top: 5px; } .cotbar .sum b { color: var(--navy); }
 .result { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .result .kpi .sub { font-size: 11px; margin-top: 6px; line-height: 1.4; text-transform: none; letter-spacing: normal; }

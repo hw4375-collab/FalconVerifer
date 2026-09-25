@@ -8,6 +8,7 @@ import subprocess
 import time
 import uuid
 from dataclasses import dataclass
+from itertools import product
 from pathlib import Path
 
 from .memory import Memory, env_fingerprint
@@ -42,12 +43,14 @@ _FV_GRAPH_ALTERNATIVES = [
 _GRAPH_CLAIM = re.compile(r"FalconVerifier\.(Regular|IsGraph|degree)\b")
 
 _FV_ALTERNATIVES = [
+    # aesop first: `decide` on a `∀ f : Fin n → Fin n → Bool, …` blows the recursion depth, a
+    # runtime exception `first` cannot backtrack from, so pure-logic goals must be closed before
+    "intros; aesop",
     "decide",
     "norm_num",
     "omega",
     "simp",
     "rfl",
-    "intros; tauto",
     "intros; omega",
     "intros; linarith",
     "intros; simp_all",
@@ -70,15 +73,27 @@ _FV_ALTERNATIVES = [
     "push Not; intros; simp_all; omega",
     "push Not; intros; simp_all; linarith",
     "push Not; intros; aesop",
+    "intros; gcongr",
+    "push Not; intros; gcongr",
+    # propositional countermodels: ¬ ∀ (P Q R : Prop), body — instantiate with True/False
+    *(
+        f"intro h; exact absurd (h {' '.join(c)}) (by decide)"
+        for k in (1, 2, 3, 4)
+        for c in product(("True", "False"), repeat=k)
+    ),
     # counterexample search for refuting `∀ n, …` / `∀ a b, …` over small literals
     *(f"push Not; refine ⟨{k}, ?_⟩; {t}" for k in _WITNESSES_1 for t in _CLOSERS),
     *(f"push Not; refine ⟨{a}, {b}, ?_⟩; {t}" for a, b in _WITNESSES_2 for t in _CLOSERS),
+    # witnesses for positive existentials (`∃ x y, …`, e.g. a counterexample the student gave)
+    *(f"refine ⟨{k}, ?_⟩; {t}" for k in _WITNESSES_1 for t in _CLOSERS),
+    *(f"refine ⟨{a}, {b}, ?_⟩; {t}" for a, b in _WITNESSES_2 for t in _CLOSERS),
     "intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]",
     "intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]",
     "rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]",
     "intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]",
     # last: bare nlinarith can *log* (not throw) an error on ∀-hypotheses, which `first`
     # cannot backtrack from, so nothing may come after it
+    "push Not; intros; nlinarith",
     "intros; nlinarith",
 ]
 

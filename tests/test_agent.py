@@ -212,3 +212,46 @@ def test_baseline_run_sends_nothing_to_lean(settings):
     assert all(s.verdict == Verdict.SKIPPED for s in rep.steps)
     assert trace.rounds[0].feedback is None
     assert "formalized" not in events and "feedback" not in events and events[-1] == "done"
+
+
+def test_fact_steps_become_unverified_premise_not_refuted():
+    from falconverifier.formalizer import Formalizer
+    from falconverifier.schemas import ReasoningStep
+
+    steps = [
+        ReasoningStep(index=1, text="مكة في السعودية"),
+        ReasoningStep(index=2, text="2 + 2 = 4"),
+    ]
+    form = Formalizer._parse(
+        '{"problem_prop": null, "steps": ['
+        '{"index": 1, "kind": "fact", "lean_prop": "True", "note": "geography"},'
+        '{"index": 2, "kind": "arith", "lean_prop": "(2:ℕ) + 2 = 4"}]}',
+        steps,
+    )
+    assert form.steps[0].kind == "fact" and form.steps[0].lean_prop is None
+    assert form.steps[1].lean_prop == "(2:ℕ) + 2 = 4"
+
+
+def test_verifier_marks_fact_steps_unverified_premise():
+    from conftest import FakeRunner
+
+    from falconverifier.schemas import Formalization, FormalStep, ReasoningStep, Verdict
+    from falconverifier.verifier import verify
+
+    steps = [
+        ReasoningStep(index=1, text="مكة في السعودية"),
+        ReasoningStep(index=2, text="2 + 2 = 4"),
+    ]
+    form = Formalization(
+        problem_prop=None,
+        steps=[
+            FormalStep(index=1, kind="fact", lean_prop=None, note="geography"),
+            FormalStep(index=2, kind="arith", lean_prop="(2:ℕ) + 2 = 4"),
+        ],
+        raw="",
+    )
+    rep = verify(FakeRunner({"(2:ℕ) + 2 = 4": Verdict.VERIFIED}), steps, form)
+    assert rep.steps[0].verdict == Verdict.UNVERIFIED_PREMISE
+    assert "not checkable by Lean" in rep.steps[0].detail
+    assert rep.steps[1].verdict == Verdict.VERIFIED
+    assert not rep.has_errors

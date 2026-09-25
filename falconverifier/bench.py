@@ -56,7 +56,11 @@ def answers_match(pred: str | None, expected: str) -> bool:
     if pn is not None and en is not None:
         return pn == en
     p_key, e_key = (re.sub(r"[^a-z0-9\u0621-\u064a]", "", x) for x in (p, e))
-    return bool(e_key) and p_key == e_key
+    if not e_key:
+        return False
+    # "الجمعة" ⊂ "يوم الجمعة", "12:15" ⊂ "12:15 ظهراً": accept a contained answer when it is
+    # long enough not to be a stray particle
+    return p_key == e_key or (len(e_key) >= 4 and e_key in p_key)
 
 
 # --- benchmark -----------------------------------------------------------------------
@@ -84,7 +88,15 @@ def evaluate_trace(trace: Trace, expected: str) -> dict[str, Any]:
     r1_flagged = bool(r1_report and r1_report.has_errors)
     r1_refuted_steps = len(r1_report.refuted) if r1_report else 0
     r1_checkable = (
-        len([s for s in r1_report.steps if s.verdict != Verdict.SKIPPED]) if r1_report else 0
+        len(
+            [
+                s
+                for s in r1_report.steps
+                if s.verdict not in (Verdict.SKIPPED, Verdict.UNVERIFIED_PREMISE)
+            ]
+        )
+        if r1_report
+        else 0
     )
     r1_verified = len(r1_report.verified) if r1_report else 0
     return {

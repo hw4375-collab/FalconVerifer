@@ -295,3 +295,11 @@ def test_degenerate_inference_detection():
     assert not degenerate_inference("∀ (a b c : ℤ), a > b → b > c → a > c")
     assert not degenerate_inference("∀ (P Q : Prop), (P → Q) → ¬Q → ¬P")
     assert not degenerate_inference("(17:ℕ) * 23 = 391")
+
+
+def test_step_audit_rejects_degenerate_inference_without_llm():
+    from falconverifier.formalizer import Formalizer
+
+    f = Formalizer.__new__(Formalizer)  # no client needed: the check is mechanical
+    ok, reason = Formalizer.audit(f, "q", "s", "¬ (∀ (P Q : Prop), P → ¬ Q → (P ∨ Q) → ¬ Q)")
+    assert not ok and "degenerate" in reason
