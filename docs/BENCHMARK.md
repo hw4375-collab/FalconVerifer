@@ -79,6 +79,173 @@ student `falcon-h1-arabic-3b-instruct` · formalizer `falcon-h1-arabic-34b-instr
 
 </details>
 
+## falcon3b_arabic_scale — `run_20260925T082947Z`
+
+student `falcon-h1-arabic-3b-instruct` · formalizer `falcon-h1-arabic-34b-instruct` · max rounds 3 · wall 2569s · errors 1
+
+| metric | all | math | logic | hard | fragment | eastern-digits |
+|---|---|---|---|---|---|---|
+| problems | 244 | 199 | 45 | 40 | 60 | 100 |
+| baseline acc | 47.9% | 45.7% | 57.8% | 40.0% | 75.0% | 41.0% |
+| verified acc | 76.2% | 75.9% | 77.8% | 72.5% | 88.3% | 78.0% |
+| abs gain | 28.3% | 30.1% | 20.0% | 32.5% | 13.3% | 37.0% |
+| rel. error ↓ | 54.3% | 55.6% | 47.4% | 54.2% | 53.3% | 62.7% |
+| wrong (baseline) | 127 | 108 | 19 | 24 | 15 | 59 |
+| caught by Lean | 117 | 99 | 18 | 20 | 15 | 54 |
+| detection recall | 92.1% | 91.7% | 94.7% | 83.3% | 100.0% | 91.5% |
+| fixed after feedback | 69 | 60 | 9 | 13 | 8 | 37 |
+| fix rate | 54.3% | 55.6% | 47.4% | 54.2% | 53.3% | 62.7% |
+| false alarms | 1 | 1 | 0 | 0 | 0 | 0 |
+| false-alarm rate | 0.9% | 1.1% | 0.0% | 0.0% | 0.0% | 0.0% |
+| regressions | 0 | 0 | 0 | 0 | 0 | 0 |
+| assured ∧ correct | 185 | 150 | 35 | 29 | 53 | 78 |
+| mean rounds | 1.86 | 1.91 | 1.6 | 1.95 | 1.5 | 1.94 |
+| mean latency (s) | 40.8 | 41.9 | 36.1 | 47.1 | 17.5 | 41.4 |
+
+**CoT verifiability** (453 rounds, 1314 reasoning steps): Lean decided 54.6% of steps and 97.6% of final answers.
+
+| verdict | steps | final answers |
+|---|---|---|
+| verified | 666 (50.7%) | 197 (43.5%) |
+| refuted | 51 (3.9%) | 245 (54.1%) |
+| unknown | 45 (3.4%) | 11 (2.4%) |
+| ill_formed | 2 (0.2%) | 0 (0.0%) |
+| skipped | 550 (41.9%) | 0 (0.0%) |
+
+<details><summary>Problems Falcon got wrong at baseline</summary>
+
+| id | expected | baseline | final | Lean flagged r1 | status |
+|---|---|---|---|---|---|
+| sarmath-008 | 4371 | 4391 | 4371 | yes | verified |
+| sarmath-021 | 651 | 652 | 651 | yes | verified |
+| sarmath-027 | 755 | 973 | 973 | yes | max_rounds |
+| sarmath-030 | 1231 | 1221 | 1219 | yes | max_rounds |
+| sarmath-029 | 1029 | 1135 | 1116 | yes | max_rounds |
+| sarmath-031 | 1134 | 1080 | 1134 | yes | verified |
+| sarmath-032 | 659 | 645 | None | yes | verified |
+| sarmath-033 | 629 | 449 | 629 | yes | verified |
+| sarmath-035 | 705 | 515 | 705 | yes | verified |
+| sarmath-034 | 1372 | 1462 | 1372 | yes | verified |
+| sarmath-037 | 1248 | 1348 | 1248 | yes | verified |
+| sarmath-036 | 501 | 491 | 491 | yes | max_rounds |
+| sarmath-039 | 959 | 1260 | 1260 | yes | max_rounds |
+| sarmath-038 | 1099 | 943 | 940 | yes | max_rounds |
+| sarmath-055 | 360 | 180 | 360 | yes | verified |
+| sarmath-061 | 3920 | 250 كرسيًا | 3920 كرسيًا | yes | verified |
+| sarmath-062 | 781 | 585 تذكرة | 585 تذكرة | yes | max_rounds |
+| sarmath-063 | 4025 | 1837 تمرة | 4025 تمرة | yes | verified |
+| sarmath-066 | 1541 | 1454 | 1541 | yes | verified |
+| sarmath-065 | 622 | 582 كرسيًا | 622 كرسيًا | yes | verified |
+| sarmath-067 | 956 | 426 صندوقاً | 956 صندوقاً | yes | verified |
+| sarmath-068 | 1929 | 165 | 1929 زجاجة | yes | verified |
+| sarmath-069 | 1784 | 157 كوبًا | 1784 كوبًا | yes | verified |
+| sarmath-072 | 2592 | 126 صندوقاً | 2592 صندوقاً | yes | verified |
+| sarmath-071 | 3656 | 214 كرسياً | 3656 كرسياً | yes | verified |
+| sarmath-070 | 565 | 535 كرسيًا | None | yes | verified |
+| sarmath-073 | 670 | 834 | 670 | yes | verified |
+| sarmath-075 | 3050 | 172 | 3050 | yes | verified |
+| sarmath-077 | 2728 | 1620 عملة | 2728 عملة | yes | verified |
+| sarmath-076 | 1293 | 549 | 1293 | yes | verified |
+| sarmath-074 | 660 | 120 قلماً | 120 قلماً | yes | max_rounds |
+| sarmath-078 | 360 | 45 | 360 | yes | verified |
+| sarmath-082 | 128 | 127.50 درهماً | 127.50 درهماً | no | verified |
+| sarmath-079 | 2417 | 2570 كتاباً | 2417 كتاباً | yes | verified |
+| sarmath-083 | 128 | 127.5 | 127.5 | no | verified |
+| sarmath-084 | 280 | 260 درهماً | 280 درهماً | yes | verified |
+| sarmath-080 | 1823 | 1337 تذكرة | 1337 تذكرة | yes | max_rounds |
+| sarmath-085 | 144 | 96 درهماً | 96 درهماً | yes | max_rounds |
+| sarmath-094 | 113 | 112.50 | 112.50 | no | verified |
+| sarmath-093 | 128 | 127.50 درهماً | 127.50 درهماً | no | verified |
+| sarmath-099 | 113 | السعر الجديد هو 112.5 درهماً | السعر الجديد هو 112.5 درهماً | no | verified |
+| sarmath-097 | 170 | 165 درهماً | 170 درهماً | yes | verified |
+| sarmath-101 | 61 | 60.5 | 51 | yes | max_rounds |
+| sarmath-102 | 73 | 77.5 | 73 | yes | verified |
+| sarmath-100 | 204 | 216 درهماً | 216 درهماً | yes | max_rounds |
+| sarmath-103 | 63 | متوسط درجات شمسة هو 58.5 | 10 | yes | unknown |
+| sarmath-104 | 80 | 79.0 | 78.0 | yes | max_rounds |
+| sarmath-105 | 60 | 64.4 | 60 | yes | verified |
+| sarmath-107 | 66 | 68 | 66 | yes | verified |
+| sarmath-109 | 80 | متوسط درجات ليلى هو 86.5 | متوسط درجات ليلى هو 78.3333 | yes | max_rounds |
+| sarmath-110 | 85 | 86.4 | 9. معدل درجات مريم هو 86.4 | yes | max_rounds |
+| sarmath-108 | 60 | 62.4 | 62.4 | yes | max_rounds |
+| sarmath-111 | 57 | 61.25 | 57 | yes | verified |
+| sarmath-113 | 70 | 62.8 | 70 | yes | verified |
+| sarmath-115 | 69 | 68 | 69 | yes | verified |
+| sarmath-116 | 69 | 70.5 | 69 | yes | verified |
+| sarmath-114 | 82 | 81.4 | 82 | yes | verified |
+| sarmath-117 | 71 | 71.5 | 71.5 | yes | max_rounds |
+| sarmath-112 | 78 | متوسط درجات هند هو 80.5 | متوسط درجات هند هو 80.5 | yes | max_rounds |
+| sarmath-118 | 72 | 70.5 | 72 | yes | verified |
+| sarmath-120 | 54 | 54.4 | 54.4 | yes | max_rounds |
+| sarmath-119 | 80 | 76 | 76 | yes | max_rounds |
+| sarmath-123 | 40 | 39 | 40 | yes | verified |
+| sarmath-129 | 29 | 3 صناديق ممتلئة | 3 صناديق ممتلئة | yes | max_rounds |
+| sarmath-143 | 129 | 2 درهماً | 129 درهماً | yes | verified |
+| sarmath-144 | 150 | 28 درهماً | 150 درهماً | yes | verified |
+| sarmath-141 | 112 | 10 دراهم | 112 درهماً | yes | verified |
+| sarmath-142 | 103 | 110 درهماً | 110 درهماً | yes | max_rounds |
+| sarmath-145 | 159 | 14 درهماً | 14 درهماً | yes | max_rounds |
+| sarmath-148 | 136 | 20 درهماً | 136 درهماً | yes | verified |
+| sarmath-146 | 193 | 12 درهماً | 193 درهماً | yes | verified |
+| sarmath-147 | 186 | 30 درهماً | 186 درهماً | yes | verified |
+| sarmath-151 | 144 | 158 درهماً | 144 درهماً | yes | verified |
+| sarmath-150 | 196 | 14 درهماً | 196 درهماً | yes | verified |
+| sarmath-149 | 110 | 150 درهماً | 150 درهماً | yes | max_rounds |
+| sarmath-155 | 130 | 15 درهماً | 130 درهماً | yes | verified |
+| sarmath-154 | 134 | 10 دراهم | 134 درهماً | yes | verified |
+| sarmath-152 | 199 | 14 درهماً | 349 درهماً | yes | max_rounds |
+| sarmath-153 | 101 | 10 دراهم | 10 دراهم | yes | max_rounds |
+| sarmath-157 | 199 | 19 درهماً | 19 درهماً | yes | max_rounds |
+| sarmath-158 | 197 | 13 درهماً | 197 درهماً | yes | verified |
+| sarmath-156 | 182 | 14 درهماً | 14 درهماً | yes | max_rounds |
+| sarmath-159 | 170 | 10 دراهم | لا تسترد ليلى أي مبلغ | yes | verified |
+| sarmath-163 | 480 | 588 درهماً | 480 درهماً | yes | verified |
+| sarmath-160 | 194 | 14 درهماً | 194 درهماً | yes | verified |
+| sarmath-166 | 540 | 680 درهماً | 540 درهماً | yes | verified |
+| sarmath-173 | 576 | 640 درهماً | 576 درهماً | yes | verified |
+| sarmath-169 | 843 | 1725 درهماً | 1725 درهماً | yes | max_rounds |
+| sarmath-179 | 360 | 320 درهماً | 320 درهماً | no | unknown |
+| sarmath-181 | 60 | 43 | 60 | yes | verified |
+| sarmath-184 | 14 | 173 | 173 | yes | max_rounds |
+| sarmath-183 | 86 | 146 | 86 | yes | verified |
+| sarmath-182 | -29 | 33 | None | yes | unknown |
+| sarmath-186 | 67 | 341 | 341 | no | unknown |
+| sarmath-189 | 66 | 39 | 39 | no | unknown |
+| sarmath-185 | 38 | 48 | 38 | yes | verified |
+| sarmath-187 | 47 | 100 | 47 | yes | verified |
+| sarmath-190 | 38 | 103 | 103 | no | unknown |
+| sarmath-188 | 72 | 31 | 31 | yes | max_rounds |
+| sarmath-191 | 94 | 182 | 94 | yes | verified |
+| sarmath-192 | 85 | 82 | 85 | yes | verified |
+| sarmath-194 | 15 | 213 | 193 | yes | max_rounds |
+| sarmath-195 | 80 | 103 | 80 | yes | verified |
+| sarmath-196 | 26 | 42 | 26 | yes | verified |
+| sarmath-197 | 135 | 97 | 135 | yes | verified |
+| sarmath-199 | 52 | 183 | 183 | yes | max_rounds |
+| sarmath-200 | -17 | 26 | -17 | yes | verified |
+| sarmath-198 | 100 | 70 | 70 | yes | max_rounds |
+| sarlogic-007 | نعم | لا | نعم | yes | verified |
+| sarlogic-008 | لا | نعم، بعض المعلمين ليست موظفين | لا، لا يلزم أن بعض المعلمين ليست موظفين | yes | verified |
+| sarlogic-005 | نعم | لا | لا | yes | max_rounds |
+| sarlogic-010 | لا | نعم، يلزم أن بعض الأطباء أطباء | نعم، يلزم أن بعض الأطباء أطباء | no | verified |
+| sarlogic-003 | نعم | لا | لا | yes | max_rounds |
+| sarlogic-011 | نعم | لا | لا | yes | max_rounds |
+| sarlogic-015 | نعم | لا | نعم | yes | verified |
+| sarlogic-016 | لا | None | لا، لا يلزم أن بعض الورود ليست نباتات | yes | verified |
+| sarlogic-021 | نعم | لا | نعم | yes | verified |
+| sarlogic-020 | لا | None | لا، لا يلزم أن بعض الورود ليست نباتات | yes | verified |
+| sarlogic-025 | نعم | لا | نعم | yes | verified |
+| sarlogic-027 | نعم | لا، لا يلزم أن يكون سعيد أطول من ماجد | نعم، يلزم أن سعيد أطول من ماجد | yes | verified |
+| sarlogic-019 | نعم | لا | لا | yes | max_rounds |
+| sarlogic-032 | نعم | لا | لا | yes | max_rounds |
+| sarlogic-037 | لا | None | لا، لا يمكن أن يكون الجميع صادقين | yes | verified |
+| sarlogic-035 | نعم | لا | لا | yes | max_rounds |
+| sarlogic-038 | نعم | لا | لا | yes | max_rounds |
+| sarlogic-041 | نعم | لا | لا | yes | max_rounds |
+| sarlogic-044 | نعم | لا | لا | yes | max_rounds |
+
+</details>
+
 ## falcon3b_formalizer — `run_20260924T204815Z`
 
 student `falcon-h1-arabic-3b-instruct` · formalizer `falcon-h1-arabic-34b-instruct` · max rounds 3 · wall 611s · errors 0

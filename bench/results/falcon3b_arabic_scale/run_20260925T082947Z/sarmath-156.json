@@ -1,0 +1,656 @@
+{
+ "problem": "اشترت عائشة 9 دفاتر بسعر 42 درهماً للدفتر و7 أقلام بسعر 20 درهماً للقلم، ودفعت 700 درهماً. كم درهماً تستعيد؟",
+ "expected_answer": "182",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 14 درهماً.\n\n### خطوات الحل:\n\n1. حساب تكلفة الدفاتر: 9 دفاتر × 42 درهماً للدفتر = 378 درهماً.\n2. حساب تكلفة الأقلام: 7 أقلام × 20 درهماً للقلم = 140 درهماً.\n3. مجموع التكلفة: 378 درهماً + 140 درهماً = 518 درهماً.\n4. المبلغ المدفوع: 700 درهماً.\n5. المبلغ المسترد: 700 درهماً - 518 درهماً = 182 درهماً.\n\nالجواب النهائي: 182 درهماً.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "### خطوات الحل:"
+     },
+     {
+      "index": 2,
+      "text": "1. حساب تكلفة الدفاتر: 9 دفاتر × 42 درهماً للدفتر = 378 درهماً."
+     },
+     {
+      "index": 3,
+      "text": "2. حساب تكلفة الأقلام: 7 أقلام × 20 درهماً للقلم = 140 درهماً."
+     },
+     {
+      "index": 4,
+      "text": "3. مجموع التكلفة: 378 درهماً + 140 درهماً = 518 درهماً."
+     },
+     {
+      "index": 5,
+      "text": "4. المبلغ المدفوع: 700 درهماً."
+     },
+     {
+      "index": 6,
+      "text": "5. المبلغ المسترد: 700 درهماً - 518 درهماً = 182 درهماً."
+     }
+    ],
+    "final_answer": "14 درهماً",
+    "latency_s": 4.2823991775512695,
+    "tokens": 185
+   },
+   "formalization": {
+    "problem_prop": "(9:ℤ) * 42 + (7:ℤ) * 20 - 700 = 14",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduction"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(9:ℤ) * 42 = 378",
+      "note": "cost of notebooks"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(7:ℤ) * 20 = 140",
+      "note": "cost of pens"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "378 + 140 = 518",
+      "note": "total cost"
+     },
+     {
+      "index": 5,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "amount paid"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "700 - 518 = 182",
+      "note": "amount to be refunded"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(9:ℤ) * 42 + (7:ℤ) * 20 - 700 = 14\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduction\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(9:ℤ) * 42 = 378\", \"note\": \"cost of notebooks\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(7:ℤ) * 20 = 140\", \"note\": \"cost of pens\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"378 + 140 = 518\", \"note\": \"total cost\"},\n    {\"index\": 5, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"amount paid\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"700 - 518 = 182\", \"note\": \"amount to be refunded\"}\n  ]\n}\n",
+    "latency_s": 15.155367612838745
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "### خطوات الحل:",
+      "detail": "introduction"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(9:ℤ) * 42 = 378",
+      "step_text": "1. حساب تكلفة الدفاتر: 9 دفاتر × 42 درهماً للدفتر = 378 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(7:ℤ) * 20 = 140",
+      "step_text": "2. حساب تكلفة الأقلام: 7 أقلام × 20 درهماً للقلم = 140 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "378 + 140 = 518",
+      "step_text": "3. مجموع التكلفة: 378 درهماً + 140 درهماً = 518 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "4. المبلغ المدفوع: 700 درهماً.",
+      "detail": "amount paid"
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "700 - 518 = 182",
+      "step_text": "5. المبلغ المسترد: 700 درهماً - 518 درهماً = 182 درهماً.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (9:ℤ) * 42 = 378 := by sorry\ntheorem s2_pos : (9:ℤ) * 42 = 378 := by fv_auto\ntheorem s2_neg : ¬ ((9:ℤ) * 42 = 378) := by fv_auto\n\ntheorem s3_wf : (7:ℤ) * 20 = 140 := by sorry\ntheorem s3_pos : (7:ℤ) * 20 = 140 := by fv_auto\ntheorem s3_neg : ¬ ((7:ℤ) * 20 = 140) := by fv_auto\n\ntheorem s4_wf : 378 + 140 = 518 := by sorry\ntheorem s4_pos : 378 + 140 = 518 := by fv_auto\ntheorem s4_neg : ¬ (378 + 140 = 518) := by fv_auto\n\ntheorem s6_wf : 700 - 518 = 182 := by sorry\ntheorem s6_pos : 700 - 518 = 182 := by fv_auto\ntheorem s6_neg : ¬ (700 - 518 = 182) := by fv_auto\n\ntheorem final_wf : (9:ℤ) * 42 + (7:ℤ) * 20 - 700 = 14 := by sorry\ntheorem final_pos : (9:ℤ) * 42 + (7:ℤ) * 20 - 700 = 14 := by fv_auto\ntheorem final_neg : ¬ ((9:ℤ) * 42 + (7:ℤ) * 20 - 700 = 14) := by fv_auto\n",
+    "lean_latency_s": 4.088603496551514,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 9 * 42 = 378\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 7 * 20 = 140\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 378 + 140 = 518\n⊢ False\nfailed"
+     },
+     {
+      "line": 154,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 156,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 700 - 518 = 182\n⊢ False\nfailed"
+     },
+     {
+      "line": 158,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 159,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\ncase h1\na✝ : 9 * 42 + 7 * 20 - 700 < 14\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "أثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `(9:ℤ) * 42 + (7:ℤ) * 20 - 700 = 14` خاطئ.\nالخطوات التي تحقق Lean 4 من صحتها: 2, 3, 4, 6.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 14 درهماً.\n\n### خطوات الحل المصححة:\n\n1. **الخطوة 1:** حساب تكلفة الدفاتر: 9 دفاتر × 42 درهماً للدفتر = 378 درهماً.\n2. **الخطوة 2:** حساب تكلفة الأقلام: 7 أقلام × 20 درهماً للقلم = 140 درهماً.\n3. **الخطوة 3:** مجموع التكلفة: 378 درهماً + 140 درهماً = 518 درهماً.\n4. **الخطوة 4:** المبلغ المدفوع: 700 درهماً.\n5. **الخطوة 5:** المبلغ المسترد: 700 درهماً - 518 درهماً = 182 درهماً.\n\nالجواب النهائي: 182 درهماً.\n\n### التصحيح:\n\nكان الخطأ في الخطوة 5 حيث تم طرح المبلغ المدفوع من مجموع التكلفة بشكل خاطئ. التصحيح هو طرح مجموع التكلفة من المبلغ المدفوع للحصول على المبلغ المسترد.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "### خطوات الحل المصححة:"
+     },
+     {
+      "index": 2,
+      "text": "1. **الخطوة 1:** حساب تكلفة الدفاتر: 9 دفاتر × 42 درهماً للدفتر = 378 درهماً."
+     },
+     {
+      "index": 3,
+      "text": "2. **الخطوة 2:** حساب تكلفة الأقلام: 7 أقلام × 20 درهماً للقلم = 140 درهماً."
+     },
+     {
+      "index": 4,
+      "text": "3. **الخطوة 3:** مجموع التكلفة: 378 درهماً + 140 درهماً = 518 درهماً."
+     },
+     {
+      "index": 5,
+      "text": "4. **الخطوة 4:** المبلغ المدفوع: 700 درهماً."
+     },
+     {
+      "index": 6,
+      "text": "5. **الخطوة 5:** المبلغ المسترد: 700 درهماً - 518 درهماً = 182 درهماً."
+     },
+     {
+      "index": 7,
+      "text": "### التصحيح:"
+     },
+     {
+      "index": 8,
+      "text": "كان الخطأ في الخطوة 5 حيث تم طرح المبلغ المدفوع من مجموع التكلفة بشكل خاطئ. التصحيح هو طرح مجموع التكلفة من المبلغ المدفوع للحصول على المبلغ المسترد."
+     }
+    ],
+    "final_answer": "14 درهماً",
+    "latency_s": 9.18421983718872,
+    "tokens": 279
+   },
+   "formalization": {
+    "problem_prop": "(9:ℤ) * 42 + (7:ℤ) * 20 - 700 = -14",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduction"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(9:ℤ) * 42 = 378",
+      "note": "cost of notebooks"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(7:ℤ) * 20 = 140",
+      "note": "cost of pens"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "378 + 140 = 518",
+      "note": "total cost"
+     },
+     {
+      "index": 5,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "amount paid"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "700 - 518 = 182",
+      "note": "amount to be refunded"
+     },
+     {
+      "index": 7,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction introduction"
+     },
+     {
+      "index": 8,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction explanation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(9:ℤ) * 42 + (7:ℤ) * 20 - 700 = -14\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduction\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(9:ℤ) * 42 = 378\", \"note\": \"cost of notebooks\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(7:ℤ) * 20 = 140\", \"note\": \"cost of pens\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"378 + 140 = 518\", \"note\": \"total cost\"},\n    {\"index\": 5, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"amount paid\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"700 - 518 = 182\", \"note\": \"amount to be refunded\"},\n    {\"index\": 7, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction introduction\"},\n    {\"index\": 8, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction explanation\"}\n  ]\n}\n",
+    "latency_s": 13.99543285369873
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "### خطوات الحل المصححة:",
+      "detail": "introduction"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(9:ℤ) * 42 = 378",
+      "step_text": "1. **الخطوة 1:** حساب تكلفة الدفاتر: 9 دفاتر × 42 درهماً للدفتر = 378 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(7:ℤ) * 20 = 140",
+      "step_text": "2. **الخطوة 2:** حساب تكلفة الأقلام: 7 أقلام × 20 درهماً للقلم = 140 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "378 + 140 = 518",
+      "step_text": "3. **الخطوة 3:** مجموع التكلفة: 378 درهماً + 140 درهماً = 518 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "4. **الخطوة 4:** المبلغ المدفوع: 700 درهماً.",
+      "detail": "amount paid"
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "700 - 518 = 182",
+      "step_text": "5. **الخطوة 5:** المبلغ المسترد: 700 درهماً - 518 درهماً = 182 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 7,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "### التصحيح:",
+      "detail": "correction introduction"
+     },
+     {
+      "index": 8,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "كان الخطأ في الخطوة 5 حيث تم طرح المبلغ المدفوع من مجموع التكلفة بشكل خاطئ. التصحيح هو طرح مجموع التكلفة من المبلغ المدفوع للحصول على المبلغ المسترد.",
+      "detail": "correction explanation"
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (9:ℤ) * 42 = 378 := by sorry\ntheorem s2_pos : (9:ℤ) * 42 = 378 := by fv_auto\ntheorem s2_neg : ¬ ((9:ℤ) * 42 = 378) := by fv_auto\n\ntheorem s3_wf : (7:ℤ) * 20 = 140 := by sorry\ntheorem s3_pos : (7:ℤ) * 20 = 140 := by fv_auto\ntheorem s3_neg : ¬ ((7:ℤ) * 20 = 140) := by fv_auto\n\ntheorem s4_wf : 378 + 140 = 518 := by sorry\ntheorem s4_pos : 378 + 140 = 518 := by fv_auto\ntheorem s4_neg : ¬ (378 + 140 = 518) := by fv_auto\n\ntheorem s6_wf : 700 - 518 = 182 := by sorry\ntheorem s6_pos : 700 - 518 = 182 := by fv_auto\ntheorem s6_neg : ¬ (700 - 518 = 182) := by fv_auto\n\ntheorem final_wf : (9:ℤ) * 42 + (7:ℤ) * 20 - 700 = -14 := by sorry\ntheorem final_pos : (9:ℤ) * 42 + (7:ℤ) * 20 - 700 = -14 := by fv_auto\ntheorem final_neg : ¬ ((9:ℤ) * 42 + (7:ℤ) * 20 - 700 = -14) := by fv_auto\n",
+    "lean_latency_s": 4.070184946060181,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 9 * 42 = 378\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 7 * 20 = 140\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 378 + 140 = 518\n⊢ False\nfailed"
+     },
+     {
+      "line": 154,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 156,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 700 - 518 = 182\n⊢ False\nfailed"
+     },
+     {
+      "line": 158,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 159,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\ncase h1\na✝ : 9 * 42 + 7 * 20 - 700 < -14\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "أثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `(9:ℤ) * 42 + (7:ℤ) * 20 - 700 = -14` خاطئ.\nالخطوات التي تحقق Lean 4 من صحتها: 2, 3, 4, 6.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 3,
+   "answer": {
+    "raw": "الجواب النهائي: 14 درهماً.\n\n### خطوات الحل المصححة:\n\n1. **الخطوة 1:** حساب تكلفة الدفاتر: 9 دفاتر × 42 درهماً للدفتر = 378 درهماً.\n2. **الخطوة 2:** حساب تكلفة الأقلام: 7 أقلام × 20 درهماً للقلم = 140 درهماً.\n3. **الخطوة 3:** مجموع التكلفة: 378 درهماً + 140 درهماً = 518 درهماً.\n4. **الخطوة 4:** المبلغ المدفوع: 700 درهماً.\n5. **الخطوة 5:** المبلغ المسترد: 700 درهماً - 518 درهماً = 182 درهماً.\n\nالجواب النهائي: 182 درهماً.\n\n### التصحيح:\n\nكان الخطأ في الخطوة 5 حيث تم طرح المبلغ المدفوع من مجموع التكلفة بشكل خاطئ. التصحيح هو طرح مجموع التكلفة من المبلغ المدفوع للحصول على المبلغ المسترد.\n\nالتصحيح: 700 درهماً - 518 درهماً = 182 درهماً.\n\nالجواب النهائي: 182 درهماً.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "### خطوات الحل المصححة:"
+     },
+     {
+      "index": 2,
+      "text": "1. **الخطوة 1:** حساب تكلفة الدفاتر: 9 دفاتر × 42 درهماً للدفتر = 378 درهماً."
+     },
+     {
+      "index": 3,
+      "text": "2. **الخطوة 2:** حساب تكلفة الأقلام: 7 أقلام × 20 درهماً للقلم = 140 درهماً."
+     },
+     {
+      "index": 4,
+      "text": "3. **الخطوة 3:** مجموع التكلفة: 378 درهماً + 140 درهماً = 518 درهماً."
+     },
+     {
+      "index": 5,
+      "text": "4. **الخطوة 4:** المبلغ المدفوع: 700 درهماً."
+     },
+     {
+      "index": 6,
+      "text": "5. **الخطوة 5:** المبلغ المسترد: 700 درهماً - 518 درهماً = 182 درهماً."
+     },
+     {
+      "index": 7,
+      "text": "### التصحيح:"
+     },
+     {
+      "index": 8,
+      "text": "كان الخطأ في الخطوة 5 حيث تم طرح المبلغ المدفوع من مجموع التكلفة بشكل خاطئ. التصحيح هو طرح مجموع التكلفة من المبلغ المدفوع للحصول على المبلغ المسترد."
+     },
+     {
+      "index": 9,
+      "text": "التصحيح: 700 درهماً - 518 درهماً = 182 درهماً."
+     }
+    ],
+    "final_answer": "14 درهماً",
+    "latency_s": 6.680909633636475,
+    "tokens": 325
+   },
+   "formalization": {
+    "problem_prop": "(9:ℤ) * 42 + (7:ℤ) * 20 = 518 ∧ 700 - 518 = 182",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduction"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(9:ℤ) * 42 = 378",
+      "note": "cost of notebooks"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(7:ℤ) * 20 = 140",
+      "note": "cost of pens"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "378 + 140 = 518",
+      "note": "total cost"
+     },
+     {
+      "index": 5,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "amount paid"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "700 - 518 = 182",
+      "note": "amount to be refunded"
+     },
+     {
+      "index": 7,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction introduction"
+     },
+     {
+      "index": 8,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "explanation of correction"
+     },
+     {
+      "index": 9,
+      "kind": "arith",
+      "lean_prop": "700 - 518 = 182",
+      "note": "correct refund amount"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(9:ℤ) * 42 + (7:ℤ) * 20 = 518 ∧ 700 - 518 = 182\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduction\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(9:ℤ) * 42 = 378\", \"note\": \"cost of notebooks\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(7:ℤ) * 20 = 140\", \"note\": \"cost of pens\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"378 + 140 = 518\", \"note\": \"total cost\"},\n    {\"index\": 5, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"amount paid\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"700 - 518 = 182\", \"note\": \"amount to be refunded\"},\n    {\"index\": 7, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction introduction\"},\n    {\"index\": 8, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"explanation of correction\"},\n    {\"index\": 9, \"kind\": \"arith\", \"lean_prop\": \"700 - 518 = 182\", \"note\": \"correct refund amount\"}\n  ]\n}\n",
+    "latency_s": 14.308817863464355
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "### خطوات الحل المصححة:",
+      "detail": "introduction"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(9:ℤ) * 42 = 378",
+      "step_text": "1. **الخطوة 1:** حساب تكلفة الدفاتر: 9 دفاتر × 42 درهماً للدفتر = 378 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(7:ℤ) * 20 = 140",
+      "step_text": "2. **الخطوة 2:** حساب تكلفة الأقلام: 7 أقلام × 20 درهماً للقلم = 140 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "378 + 140 = 518",
+      "step_text": "3. **الخطوة 3:** مجموع التكلفة: 378 درهماً + 140 درهماً = 518 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "4. **الخطوة 4:** المبلغ المدفوع: 700 درهماً.",
+      "detail": "amount paid"
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "700 - 518 = 182",
+      "step_text": "5. **الخطوة 5:** المبلغ المسترد: 700 درهماً - 518 درهماً = 182 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 7,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "### التصحيح:",
+      "detail": "correction introduction"
+     },
+     {
+      "index": 8,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "كان الخطأ في الخطوة 5 حيث تم طرح المبلغ المدفوع من مجموع التكلفة بشكل خاطئ. التصحيح هو طرح مجموع التكلفة من المبلغ المدفوع للحصول على المبلغ المسترد.",
+      "detail": "explanation of correction"
+     },
+     {
+      "index": 9,
+      "verdict": "verified",
+      "lean_prop": "700 - 518 = 182",
+      "step_text": "التصحيح: 700 درهماً - 518 درهماً = 182 درهماً.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `(9:ℤ) * 42 + (7:ℤ) * 20 = 518 ∧ 700 - 518 = 182`, which does not contain the stated FINAL ANSWER '14 درهماً'",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (9:ℤ) * 42 = 378 := by sorry\ntheorem s2_pos : (9:ℤ) * 42 = 378 := by fv_auto\ntheorem s2_neg : ¬ ((9:ℤ) * 42 = 378) := by fv_auto\n\ntheorem s3_wf : (7:ℤ) * 20 = 140 := by sorry\ntheorem s3_pos : (7:ℤ) * 20 = 140 := by fv_auto\ntheorem s3_neg : ¬ ((7:ℤ) * 20 = 140) := by fv_auto\n\ntheorem s4_wf : 378 + 140 = 518 := by sorry\ntheorem s4_pos : 378 + 140 = 518 := by fv_auto\ntheorem s4_neg : ¬ (378 + 140 = 518) := by fv_auto\n\ntheorem s6_wf : 700 - 518 = 182 := by sorry\ntheorem s6_pos : 700 - 518 = 182 := by fv_auto\ntheorem s6_neg : ¬ (700 - 518 = 182) := by fv_auto\n\ntheorem s9_wf : 700 - 518 = 182 := by sorry\ntheorem s9_pos : 700 - 518 = 182 := by fv_auto\ntheorem s9_neg : ¬ (700 - 518 = 182) := by fv_auto\n\ntheorem final_wf : (9:ℤ) * 42 + (7:ℤ) * 20 = 518 ∧ 700 - 518 = 182 := by sorry\ntheorem final_pos : (9:ℤ) * 42 + (7:ℤ) * 20 = 518 ∧ 700 - 518 = 182 := by fv_auto\ntheorem final_neg : ¬ ((9:ℤ) * 42 + (7:ℤ) * 20 = 518 ∧ 700 - 518 = 182) := by fv_auto\n",
+    "lean_latency_s": 4.128882884979248,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 9 * 42 = 378\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 7 * 20 = 140\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 378 + 140 = 518\n⊢ False\nfailed"
+     },
+     {
+      "line": 154,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 156,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 700 - 518 = 182\n⊢ False\nfailed"
+     },
+     {
+      "line": 158,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 160,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 700 - 518 = 182\n⊢ False\nfailed"
+     },
+     {
+      "line": 162,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 164,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "14 درهماً",
+ "status": "max_rounds",
+ "assurance_score": 0.1,
+ "total_latency_s": 92.44
+}

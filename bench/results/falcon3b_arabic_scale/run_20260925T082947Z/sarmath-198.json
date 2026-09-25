@@ -1,0 +1,416 @@
+{
+ "problem": "احسب قيمة 45 + 10 × 8 − 5² باتباع ترتيب العمليات.",
+ "expected_answer": "100",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 70\n",
+    "reasoning": null,
+    "steps": [],
+    "final_answer": "70",
+    "latency_s": 2.828242778778076,
+    "tokens": 10
+   },
+   "formalization": {
+    "problem_prop": "(45:ℤ) + 10 * 8 - 5^2 = 70",
+    "problem_note": "",
+    "steps": [],
+    "raw": "{\n  \"problem_prop\": \"(45:ℤ) + 10 * 8 - 5^2 = 70\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"10 * 8 = 80\", \"note\": \"multiplication first\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"5^2 = 25\", \"note\": \"exponentiation\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"45 + 80 - 25 = 70\", \"note\": \"addition and subtraction\"}\n  ]\n}\n",
+    "latency_s": 8.929848194122314
+   },
+   "report": {
+    "steps": [],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem final_wf : (45:ℤ) + 10 * 8 - 5^2 = 70 := by sorry\ntheorem final_pos : (45:ℤ) + 10 * 8 - 5^2 = 70 := by fv_auto\ntheorem final_neg : ¬ ((45:ℤ) + 10 * 8 - 5^2 = 70) := by fv_auto\n",
+    "lean_latency_s": 3.9703431129455566,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 143,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\ncase h2\na✝ : 70 < 45 + 10 * 8 - 5 ^ 2\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "أثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `(45:ℤ) + 10 * 8 - 5^2 = 70` خاطئ.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 70\n\nالتصحيح:\n\nالخطوة 1: 45 + 10 × 8 - 5² (تطبيق أولوية العمليات الحسابية)\nالخطوة 2: 10 × 8 = 80 (ضرب)\nالخطوة 3: 5² = 25 (رفع إلى القوة)\nالخطوة 4: 45 + 80 - 25 (جمع وطرح من اليسار إلى اليمين)\nالخطوة 5: 45 + 80 = 125\nالخطوة 6: 125 - 25 = 100\n\nالخطأ كان في الخطوة 3 حيث لم يتم حساب 5² بشكل صحيح. التصحيح هو:\n\n5² = 25\n\nإذًا، إعادة الحساب الصحيحة:\n\n45 + 80 - 25 = 100\n\nالجواب النهائي: 100\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "التصحيح:"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 1: 45 + 10 × 8 - 5² (تطبيق أولوية العمليات الحسابية)\nالخطوة 2: 10 × 8 = 80 (ضرب)\nالخطوة 3: 5² = 25 (رفع إلى القوة)\nالخطوة 4: 45 + 80 - 25 (جمع وطرح من اليسار إلى اليمين)\nالخطوة 5: 45 + 80 = 125\nالخطوة 6: 125 - 25 = 100"
+     },
+     {
+      "index": 3,
+      "text": "الخطأ كان في الخطوة 3 حيث لم يتم حساب 5² بشكل صحيح. التصحيح هو:"
+     },
+     {
+      "index": 4,
+      "text": "5² = 25"
+     },
+     {
+      "index": 5,
+      "text": "إذًا، إعادة الحساب الصحيحة:"
+     },
+     {
+      "index": 6,
+      "text": "45 + 80 - 25 = 100"
+     }
+    ],
+    "final_answer": "70",
+    "latency_s": 5.3082849979400635,
+    "tokens": 242
+   },
+   "formalization": {
+    "problem_prop": "45 + 10 * 8 - 5^2 = 70",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "problem restatement"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "problem restatement"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(10:ℤ) * 8 = 80",
+      "note": "multiplication"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "5^2 = 25",
+      "note": "exponentiation"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "45 + 80 - 25 = 100",
+      "note": "addition and subtraction"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "(45:ℚ) + 80 - 25 = (100:ℚ)",
+      "note": "pregroup: n nʳ n nˡ n nʳ n nˡ n nʳ s nˡ n → s"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"45 + 10 * 8 - 5^2 = 70\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"problem restatement\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"problem restatement\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(10:ℤ) * 8 = 80\", \"note\": \"multiplication\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"5^2 = 25\", \"note\": \"exponentiation\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"45 + 80 - 25 = 100\", \"note\": \"addition and subtraction\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"45 + 80 = 125\", \"note\": \"addition\"},\n    {\"index\": 7, \"kind\": \"arith\", \"lean_prop\": \"125 - 25 = 100\", \"note\": \"subtraction\"}\n  ]\n}\n",
+    "latency_s": 12.852242231369019
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "التصحيح:",
+      "detail": "problem restatement"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "الخطوة 1: 45 + 10 × 8 - 5² (تطبيق أولوية العمليات الحسابية)\nالخطوة 2: 10 × 8 = 80 (ضرب)\nالخطوة 3: 5² = 25 (رفع إلى القوة)\nالخطوة 4: 45 + 80 - 25 (جمع وطرح من اليسار إلى اليمين)\nالخطوة 5: 45 + 80 = 125\nالخطوة 6: 125 - 25 = 100",
+      "detail": "problem restatement"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(10:ℤ) * 8 = 80",
+      "step_text": "الخطأ كان في الخطوة 3 حيث لم يتم حساب 5² بشكل صحيح. التصحيح هو:",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "5^2 = 25",
+      "step_text": "5² = 25",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "45 + 80 - 25 = 100",
+      "step_text": "إذًا، إعادة الحساب الصحيحة:",
+      "detail": ""
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "(45:ℚ) + 80 - 25 = (100:ℚ)",
+      "step_text": "45 + 80 - 25 = 100",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s3_wf : (10:ℤ) * 8 = 80 := by sorry\ntheorem s3_pos : (10:ℤ) * 8 = 80 := by fv_auto\ntheorem s3_neg : ¬ ((10:ℤ) * 8 = 80) := by fv_auto\n\ntheorem s4_wf : 5^2 = 25 := by sorry\ntheorem s4_pos : 5^2 = 25 := by fv_auto\ntheorem s4_neg : ¬ (5^2 = 25) := by fv_auto\n\ntheorem s5_wf : 45 + 80 - 25 = 100 := by sorry\ntheorem s5_pos : 45 + 80 - 25 = 100 := by fv_auto\ntheorem s5_neg : ¬ (45 + 80 - 25 = 100) := by fv_auto\n\ntheorem s6_wf : (45:ℚ) + 80 - 25 = (100:ℚ) := by sorry\ntheorem s6_pos : (45:ℚ) + 80 - 25 = (100:ℚ) := by fv_auto\ntheorem s6_neg : ¬ ((45:ℚ) + 80 - 25 = (100:ℚ)) := by fv_auto\n\ntheorem final_wf : 45 + 10 * 8 - 5^2 = 70 := by sorry\ntheorem final_pos : 45 + 10 * 8 - 5^2 = 70 := by fv_auto\ntheorem final_neg : ¬ (45 + 10 * 8 - 5^2 = 70) := by fv_auto\n",
+    "lean_latency_s": 4.057687282562256,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 10 * 8 = 80\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 5 ^ 2 = 25\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 45 + 80 - 25 = 100\n⊢ False\nfailed"
+     },
+     {
+      "line": 154,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 156,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 45 + 80 - 25 = 100\n⊢ False\nfailed"
+     },
+     {
+      "line": 158,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 159,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\ncase h1\na✝ : 45 + 10 * 8 - 5 ^ 2 < 70\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "أثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `45 + 10 * 8 - 5^2 = 70` خاطئ.\nالخطوات التي تحقق Lean 4 من صحتها: 3, 4, 5, 6.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 3,
+   "answer": {
+    "raw": "الجواب النهائي: 70\n\nالتصحيح:\n\nالخطوة 1: 45 + 10 × 8 - 5² (تطبيق أولوية العمليات الحسابية)\nالخطوة 2: 10 × 8 = 80 (ضرب)\nالخطوة 3: 5² = 25 (رفع إلى القوة)\nالخطوة 4: 45 + 80 - 25 (جمع وطرح من اليسار إلى اليمين)\nالخطوة 5: 45 + 80 = 125\nالخطوة 6: 125 - 25 = 100\n\nالخطأ كان في الخطوة 3 حيث لم يتم حساب 5² بشكل صحيح. التصحيح هو:\n\n5² = 25\n\nإذًا، إعادة الحساب الصحيحة:\n\n45 + 80 - 25 = 100\n\nالجواب النهائي: 100\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "التصحيح:"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 1: 45 + 10 × 8 - 5² (تطبيق أولوية العمليات الحسابية)\nالخطوة 2: 10 × 8 = 80 (ضرب)\nالخطوة 3: 5² = 25 (رفع إلى القوة)\nالخطوة 4: 45 + 80 - 25 (جمع وطرح من اليسار إلى اليمين)\nالخطوة 5: 45 + 80 = 125\nالخطوة 6: 125 - 25 = 100"
+     },
+     {
+      "index": 3,
+      "text": "الخطأ كان في الخطوة 3 حيث لم يتم حساب 5² بشكل صحيح. التصحيح هو:"
+     },
+     {
+      "index": 4,
+      "text": "5² = 25"
+     },
+     {
+      "index": 5,
+      "text": "إذًا، إعادة الحساب الصحيحة:"
+     },
+     {
+      "index": 6,
+      "text": "45 + 80 - 25 = 100"
+     }
+    ],
+    "final_answer": "70",
+    "latency_s": 29.811258792877197,
+    "tokens": 242
+   },
+   "formalization": {
+    "problem_prop": "45 + 10 * 8 - 5^2 = 70",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "problem restatement"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "problem restatement"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(10:ℤ) * 8 = 80",
+      "note": "multiplication"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "5^2 = 25",
+      "note": "exponentiation"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "45 + 80 - 25 = 100",
+      "note": "addition and subtraction"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "(45:ℚ) + 80 - 25 = (100:ℚ)",
+      "note": "pregroup: n nʳ n nˡ n nʳ n nˡ n nʳ s nˡ n → s"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"45 + 10 * 8 - 5^2 = 70\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"problem restatement\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"problem restatement\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(10:ℤ) * 8 = 80\", \"note\": \"multiplication\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"5^2 = 25\", \"note\": \"exponentiation\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"45 + 80 - 25 = 100\", \"note\": \"addition and subtraction\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"45 + 80 = 125\", \"note\": \"addition\"},\n    {\"index\": 7, \"kind\": \"arith\", \"lean_prop\": \"125 - 25 = 100\", \"note\": \"subtraction\"}\n  ]\n}\n",
+    "latency_s": 11.279956340789795
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "التصحيح:",
+      "detail": "problem restatement"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "الخطوة 1: 45 + 10 × 8 - 5² (تطبيق أولوية العمليات الحسابية)\nالخطوة 2: 10 × 8 = 80 (ضرب)\nالخطوة 3: 5² = 25 (رفع إلى القوة)\nالخطوة 4: 45 + 80 - 25 (جمع وطرح من اليسار إلى اليمين)\nالخطوة 5: 45 + 80 = 125\nالخطوة 6: 125 - 25 = 100",
+      "detail": "problem restatement"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(10:ℤ) * 8 = 80",
+      "step_text": "الخطأ كان في الخطوة 3 حيث لم يتم حساب 5² بشكل صحيح. التصحيح هو:",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "5^2 = 25",
+      "step_text": "5² = 25",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "45 + 80 - 25 = 100",
+      "step_text": "إذًا، إعادة الحساب الصحيحة:",
+      "detail": ""
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "(45:ℚ) + 80 - 25 = (100:ℚ)",
+      "step_text": "45 + 80 - 25 = 100",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s3_wf : (10:ℤ) * 8 = 80 := by sorry\ntheorem s3_pos : (10:ℤ) * 8 = 80 := by fv_auto\ntheorem s3_neg : ¬ ((10:ℤ) * 8 = 80) := by fv_auto\n\ntheorem s4_wf : 5^2 = 25 := by sorry\ntheorem s4_pos : 5^2 = 25 := by fv_auto\ntheorem s4_neg : ¬ (5^2 = 25) := by fv_auto\n\ntheorem s5_wf : 45 + 80 - 25 = 100 := by sorry\ntheorem s5_pos : 45 + 80 - 25 = 100 := by fv_auto\ntheorem s5_neg : ¬ (45 + 80 - 25 = 100) := by fv_auto\n\ntheorem s6_wf : (45:ℚ) + 80 - 25 = (100:ℚ) := by sorry\ntheorem s6_pos : (45:ℚ) + 80 - 25 = (100:ℚ) := by fv_auto\ntheorem s6_neg : ¬ ((45:ℚ) + 80 - 25 = (100:ℚ)) := by fv_auto\n\ntheorem final_wf : 45 + 10 * 8 - 5^2 = 70 := by sorry\ntheorem final_pos : 45 + 10 * 8 - 5^2 = 70 := by fv_auto\ntheorem final_neg : ¬ (45 + 10 * 8 - 5^2 = 70) := by fv_auto\n",
+    "lean_latency_s": 3.966092348098755,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 10 * 8 = 80\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 5 ^ 2 = 25\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 45 + 80 - 25 = 100\n⊢ False\nfailed"
+     },
+     {
+      "line": 154,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 156,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 45 + 80 - 25 = 100\n⊢ False\nfailed"
+     },
+     {
+      "line": 158,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 159,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\ncase h1\na✝ : 45 + 10 * 8 - 5 ^ 2 < 70\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "70",
+ "status": "max_rounds",
+ "assurance_score": 0.1,
+ "total_latency_s": 105.46
+}

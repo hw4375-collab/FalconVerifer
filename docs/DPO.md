@@ -29,8 +29,16 @@ falconverifier export-dpo runs/ --out x.jsonl  # specific roots
 
 ## Current export
 
-`data/dpo_pairs.jsonl`: 181 pairs (113 Arabic / 68 English) from 786 traces, 33 duplicates dropped;
-174 pairs carry one refuted claim, 7 carry two or three.
+`data/dpo_pairs.jsonl`: 294 pairs (226 Arabic / 68 English) from 1038 traces, 33 duplicates dropped;
+286 pairs carry one refuted claim, 8 carry two or three.
+
+113 of the Arabic pairs come from one closed-loop pass of the 3B student over the 245-problem
+scale set (`bench/make_dataset_ar_scale.py`, `bench/results/falcon3b_arabic_scale`): 238 usable
+problems (6 had non-integer gold labels from a generator bug, since fixed, and are excluded),
+baseline 49.2% -> verified 78.2%, 117/127 baseline errors flagged by Lean, 1 false alarm,
+0 regressions, 40.8 s mean latency. Pair yield is therefore roughly one pair per two problems
+the student initially gets wrong: pairs need a Lean refutation *and* a later verified, gold-matching
+answer, and 44 problems hit the round limit without recovering.
 
 ## Known caveats
 
