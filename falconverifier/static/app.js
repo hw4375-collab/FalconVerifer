@@ -82,6 +82,11 @@ function renderReport(card, rep) {
   if (fr) fr.innerHTML = badge(rep.final_answer_verdict) + (rep.final_answer_detail ? `<div class="muted" style="font-size:11px;margin-top:4px">${esc(rep.final_answer_detail.slice(0, 160))}</div>` : "");
   const h = card.querySelector(".col:last-child h3");
   h.textContent = `2 · Formalized to Lean 4 → 3 · Lean kernel verdict (${rep.lean_latency_s.toFixed(1)}s)`;
+  if (rep.lean_file) {
+    const d = card.querySelector(".leansrc");
+    d.classList.remove("hidden");
+    d.querySelector("pre").textContent = rep.lean_file;
+  }
 }
 
 function renderFeedback(card, fb) {
@@ -98,9 +103,11 @@ function renderResult(t) {
   const exp = t.expected_answer ? `<div class="kpi"><div class="muted">expected</div><div class="v">${esc(t.expected_answer)}</div></div>` : "";
   el.innerHTML = `
     <div class="kpi"><div class="muted">status</div><div class="v ${t.status}">${t.status}</div></div>
-    <div class="kpi"><div class="muted">final answer</div><div class="v">${esc(t.final_answer ?? "—")}</div></div>
+    <div class="kpi"><div class="muted">final answer</div><div class="v" dir="auto">${esc(t.final_answer ?? "—")}</div></div>
     <div class="kpi"><div class="muted">assurance score</div><div class="v">${(t.assurance_score * 100).toFixed(0)}%</div></div>
-    <div class="kpi"><div class="muted">rounds · time</div><div class="v">${t.rounds.length} · ${t.total_latency_s}s</div></div>${exp}`;
+    <div class="kpi"><div class="muted">rounds · time</div><div class="v">${t.rounds.length} · ${t.total_latency_s}s</div></div>${exp}
+    <div class="kpi"><div class="muted">evidence</div><div class="v"><a id="dl" download="assurance_trace.json">download trace</a></div></div>`;
+  $("#dl").href = URL.createObjectURL(new Blob([JSON.stringify(t, null, 1)], { type: "application/json" }));
   el.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 

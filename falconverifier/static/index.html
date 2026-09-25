@@ -21,7 +21,7 @@
 <main>
   <section class="card input">
     <label for="problem">Problem for Falcon</label>
-    <textarea id="problem" rows="3" placeholder="Type a basic math or logic problem…"></textarea>
+    <textarea id="problem" rows="3" dir="auto" placeholder="Type a basic math or logic problem…"></textarea>
     <div class="row">
       <div class="examples" id="examples"></div>
     </div>
@@ -74,6 +74,7 @@
           <thead><tr><th>step</th><th>natural language</th><th>Lean 4 claim</th><th>verdict</th></tr></thead>
           <tbody><tr><td colspan="4" class="muted">formalizing…</td></tr></tbody>
         </table>
+        <details class="leansrc hidden"><summary>Lean 4 source sent to the kernel (audit)</summary><pre dir="ltr"></pre></details>
       </div>
     </div>
     <div class="feedback hidden">
