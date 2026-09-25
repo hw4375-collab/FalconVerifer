@@ -299,6 +299,30 @@ predicates, orderings as integers, facts as propositional letters) passes; a fir
 asked the LLM to back-translate the Lean into Arabic and judge equivalence rejected all of these
 and was discarded.
 
+### 5d. The quantity-narrative fragment (`falconverifier.arabic_word`)
+
+Word problems are where the 3B student fails most often (a 93 × 37 − 391 narrative was answered
+172, 45, 1620 …), and they were the only benchmark family still routed through the 34B
+formalizer. `arabic_word.analyze` reads the narrative as a *left fold over clauses*: each
+recognised clause («اشترى … علبة تحتوي كل منها على …», «ثم أعطى …», «خُفِّض بنسبة …٪», «حصلت على
+الدرجات …», «نضعها في صناديق تتسع كل منها …», «فكّر في عدد، ضربه في … ثم أضاف …») is a regex plus
+an arithmetic action on the running quantity, and the question clause fixes what is asked. The
+fold only commits when *every* sentence is consumed by some clause; a narrative with an
+unrecognised sentence, or no final answer, returns `None` and falls back to the LLM path, so the
+fragment never guesses. The certificate is the clause chain (`clauses boxes → give ⇒ ((93:ℚ) *
+37) - 391`), and the proposition is decided by `fv_auto`:
+
+```lean
+((93:ℚ) * 37) - 391 = 3050                          -- verified
+(800:ℚ) * (1 - 10 / 100) * (1 - 20 / 100) = 576     -- compound discount, verified
+(87:ℕ) / 6 = 14                                     -- whole boxes: ℕ floor division
+((85:ℚ) + (90:ℚ) + (78:ℚ)) / 3 - 84.33 < (1 / 10 ^ 2 : ℚ) ∧ …   -- rounded average
+```
+
+On the 331 Arabic benchmark items the deterministic fragments together now cover 300, of
+which 153 come from this module; the arithmetic fragment also gained `^` (superscript `²`/`³`)
+so «احسب قيمة ٣٦ + ٩ × ٨ − ٣²» stays inside the pregroup grammar.
+
 ## 6. Research directions (not needed for the demo)
 
 - **Feature-indexed types as dependent types.** Bargelli–Lambek's indexed atoms are a

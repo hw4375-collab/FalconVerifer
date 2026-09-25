@@ -17,7 +17,15 @@ from .formalizer import Formalizer, degenerate_inference
 from .lean_runner import LeanRunner
 from .llm import ChatModel, OpenAICompatibleClient
 from .memory import Memory, memory_from_env
-from .schemas import Formalization, Round, Trace, Verdict, VerificationReport
+from .schemas import (
+    Formalization,
+    ReasoningStep,
+    Round,
+    StepResult,
+    Trace,
+    Verdict,
+    VerificationReport,
+)
 from .student import Student, yes_no_polarity
 from .verifier import (
     check_final_grounding,
@@ -47,6 +55,19 @@ def assurance_score(report: VerificationReport | None) -> float:
         Verdict.REFUTED: 0.0,
     }[report.final_answer_verdict]
     return round(0.5 * step_part + 0.5 * final_part, 3)
+
+
+def unverified_report(steps: list[ReasoningStep]) -> VerificationReport:
+    return VerificationReport(
+        steps=[
+            StepResult(index=s.index, verdict=Verdict.SKIPPED, lean_prop=None, step_text=s.text)
+            for s in steps
+        ],
+        final_answer_verdict=Verdict.SKIPPED,
+        final_answer_detail="baseline run: nothing was sent to Lean",
+        lean_file="",
+        lean_latency_s=0.0,
+    )
 
 
 def status_of(report: VerificationReport | None) -> str:
@@ -172,9 +193,15 @@ class VerifyAndTeachAgent:
             self._emit("audit_discard", step="final", reason=report.final_answer_detail)
 
     def run(
-        self, problem: str, expected_answer: str | None = None, max_rounds: int | None = None
+        self,
+        problem: str,
+        expected_answer: str | None = None,
+        max_rounds: int | None = None,
+        check: bool = True,
     ) -> Trace:
-        max_rounds = max_rounds or self.settings.max_rounds
+        """`check=False` is the raw baseline: one Falcon answer, no formalization, no Lean,
+        no feedback — the trace carries an all-`skipped` report and status `unverified`."""
+        max_rounds = 1 if not check else (max_rounds or self.settings.max_rounds)
         t_start = time.time()
         rounds: list[Round] = []
         history: list[dict[str, str]] = [{"role": "user", "content": problem}]
@@ -198,6 +225,21 @@ class VerifyAndTeachAgent:
             history.append({"role": "assistant", "content": answer.raw})
             final_answer = answer.final_answer
             self._emit("student_answer", round=r + 1, answer=answer.model_dump())
+            if not check:
+                form = Formalization(steps=[], raw="baseline: not formalized")
+                report = unverified_report(answer.steps)
+                self._emit("verified", round=r + 1, report=report.model_dump())
+                rounds.append(
+                    Round(
+                        round_index=1,
+                        answer=answer,
+                        formalization=form,
+                        report=report,
+                        feedback=None,
+                    )
+                )
+                last_report = report
+                break
 
             form, fmsgs = self.formalizer.formalize(problem, answer.steps, answer.final_answer)
             mem["formalizer_hits"] += self.formalizer.last_memory_hits
@@ -255,7 +297,7 @@ class VerifyAndTeachAgent:
                     }
                 )
 
-        status = status_of(last_report)
+        status = "unverified" if not check else status_of(last_report)
         if status == "refuted" and len(rounds) == max_rounds:
             status = "max_rounds"
         trace = Trace(

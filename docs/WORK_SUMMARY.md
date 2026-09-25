@@ -66,6 +66,7 @@ Falcon 学生模型   NL → Lean 4 命题       写 .lean 文件 → lake env l
 | `arabic.py` | 阿拉伯语算术片段：东西数字归一、百分比/折扣/运算顺序，pregroup 词典 + 解析器 → Lean 命题 |
 | `arabic_logic.py` | 量词/条件/析取逻辑片段（三段论、逆否、非法换位、排他或），输出一阶命题 |
 | `arabic_graph.py` | 对称二元关系与度数/奇偶片段（握手、朋友），输出 `Regular f k` 类命题 |
+| `arabic_word.py` | 数量叙事应用题片段（装箱后再送出、复合折扣、购买付款、平均数、整除装箱、想一个数），按从句折叠成算术命题；未完全识别则返回 `None` 交给 LLM |
 | `formalizer.py` | 片段路由 → 确定性翻译；片段外调用 LLM 形式化器，附 round-trip 忠实性检查（不一致降 `unknown`） |
 | `lean_runner.py` | 生成 Lean 文件（每步一个 `example`，正反各试），按片段选战术（`norm_num`/`decide`/`omega`/握手引理），解析错误映射回步骤 |
 | `verifier.py` | 组装 `VerificationReport`，判定最终答案是否与命题一致 |

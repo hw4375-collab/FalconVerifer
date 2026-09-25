@@ -103,6 +103,7 @@ class SolveRequest(BaseModel):
     problem: str
     expected: str | None = None
     rounds: int | None = None
+    verify: bool = True  # False = raw Falcon baseline, nothing sent to Lean
     formalizer: str | None = None  # falcon | openai | openrouter
     student_model: str | None = None
 
@@ -151,7 +152,12 @@ def _run_stream(req: SolveRequest) -> Iterator[str]:
                 agent = VerifyAndTeachAgent(
                     settings, on_event=lambda k, p: q.put((k, p)), memory=_memory
                 )
-                trace = agent.run(req.problem, expected_answer=req.expected, max_rounds=req.rounds)
+                trace = agent.run(
+                    req.problem,
+                    expected_answer=req.expected,
+                    max_rounds=req.rounds,
+                    check=req.verify,
+                )
                 path = agent.save_trace(trace)
                 q.put(("saved", {"path": str(path)}))
             finally:
@@ -231,7 +237,12 @@ def solve(req: SolveRequest, request: Request) -> JSONResponse:
     settings = _settings(req)
     with _slots:
         agent = VerifyAndTeachAgent(settings, memory=_memory)
-        trace = agent.run(req.problem, expected_answer=req.expected, max_rounds=req.rounds)
+        trace = agent.run(
+            req.problem,
+            expected_answer=req.expected,
+            max_rounds=req.rounds,
+            check=req.verify,
+        )
         agent.save_trace(trace)
     return JSONResponse(trace.model_dump())
 

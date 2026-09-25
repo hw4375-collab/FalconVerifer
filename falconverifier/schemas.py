@@ -116,7 +116,7 @@ class Trace(BaseModel):
     formalizer_model: str
     rounds: list[Round]
     final_answer: str | None
-    status: str  # verified | refuted | unknown | max_rounds
+    status: str  # verified | refuted | unknown | max_rounds | unverified (baseline run)
     assurance_score: float = Field(ge=0, le=1)
     total_latency_s: float = 0.0
     memory: dict[str, Any] = Field(

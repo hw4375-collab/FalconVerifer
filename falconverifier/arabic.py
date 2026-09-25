@@ -126,6 +126,7 @@ LEXICON: list[Entry] = [
     Entry("مقسوما على", "nʳ n nˡ", "op:/"),
     Entry("مقسوماً على", "nʳ n nˡ", "op:/"),
     Entry("÷", "nʳ n nˡ", "op:/"),
+    Entry("^", "nʳ n nˡ", "op:^"),
     Entry("/", "nʳ n nˡ", "op:/"),
     # percentage «٥٠٪ من ١٥٠»: "% of" — «من» after a percent literal multiplies by /100
     Entry("من", "nʳ n nˡ", "pct"),
@@ -139,6 +140,7 @@ LEXICON: list[Entry] = [
     Entry("المجموع", "n nˡ", "pre:id", {"g": "m", "n": "sg"}),
     Entry("النتيجة", "n nˡ", "pre:id", {"g": "f", "n": "sg"}),
     Entry("القيمة", "n nˡ", "pre:id", {"g": "f", "n": "sg"}),
+    Entry("قيمة", "n nˡ", "pre:id", {"g": "f", "n": "sg"}),
     Entry("حاصل", "n nˡ", "pre:id"),
     Entry("نصف", "n nˡ", "pre:half"),
     Entry("ثلث", "n nˡ", "pre:third"),
@@ -165,6 +167,9 @@ _MAX_WORDS = max(len(s.split()) for s in _BY_SURFACE)
 
 _NUM_RE = re.compile(r"^-?\d+(?:\.\d+)?%?$")
 _NOISE = {
+    "باتباع",  # «باتباع ترتيب العمليات» — "following the order of operations"
+    "ترتيب",
+    "العمليات",
     "إذن",
     "إذا",
     "لذلك",
@@ -193,7 +198,8 @@ class Word:
 
 def tokenize(text: str) -> list[str]:
     text = normalize_digits(text)
-    text = re.sub(r"([=+×*÷/<>≠()−-])", r" \1 ", text)
+    text = re.sub(r"²", " ^ 2 ", text).replace("³", " ^ 3 ")
+    text = re.sub(r"([=+×*÷/<>≠()−^-])", r" \1 ", text)
     text = re.sub(r"(\d)\s*%", r"\1%", text)
     toks = [t for t in text.split() if t]
     # strip trailing Arabic punctuation and definite article on lexical heads
@@ -348,7 +354,7 @@ def _agrees(subject: list[Word], verb: Word) -> bool:
     return not heads or heads[0].entry.feat["g"] == vg
 
 
-_PREC = {"+": 1, "-": 1, "*": 2, "/": 2, "pct": 2}
+_PREC = {"+": 1, "-": 1, "*": 2, "/": 2, "pct": 2, "^": 3}
 
 
 class _ExprParser:

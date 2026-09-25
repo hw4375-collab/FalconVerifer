@@ -5,7 +5,7 @@ import logging
 import re
 from dataclasses import dataclass
 
-from . import arabic, arabic_graph, arabic_logic
+from . import arabic, arabic_graph, arabic_logic, arabic_word
 from .llm import ChatModel, extract_json
 from .memory import Memory
 from .schemas import Formalization, FormalStep, ReasoningStep, Verdict, VerificationReport
@@ -421,6 +421,7 @@ class Formalizer:
                 self.last_memory_hits += 1
         problem_hit = (
             arabic.formalize_problem(problem, final)
+            or arabic_word.formalize_word_problem(problem, final)
             or arabic_logic.formalize_logic_problem(problem)
             or arabic_graph.formalize_graph_problem(problem)
         )

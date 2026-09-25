@@ -107,7 +107,9 @@ function renderReport(card, rep) {
   if (fr && rep.final_answer_verdict === "refuted") fr.closest("tr").style.background = "rgba(255,92,122,.07)";
   if (fr) fr.innerHTML = badge(rep.final_answer_verdict) + (rep.final_answer_detail ? `<div class="muted" style="font-size:11px;margin-top:4px">${esc(rep.final_answer_detail.slice(0, 160))}</div>` : "");
   const h = card.querySelector(".col:last-child h3");
-  h.textContent = `Lean 4 claims · kernel verdict (${rep.lean_latency_s.toFixed(1)}s)` + (rep.cache_hits ? ` · ${rep.cache_hits} from memory` : "");
+  h.textContent = rep.lean_file === "" && rep.final_answer_verdict === "skipped"
+    ? "Lean 4 claims · baseline run, nothing sent to the kernel"
+    : `Lean 4 claims · kernel verdict (${rep.lean_latency_s.toFixed(1)}s)` + (rep.cache_hits ? ` · ${rep.cache_hits} from memory` : "");
   h.title = rep.cache_hits ? "Some propositions were decided by the kernel earlier under the same Lean/Mathlib fingerprint; their verdicts are reused verbatim and not recompiled." : "";
   if (rep.lean_file) {
     const d = card.querySelector(".leansrc");
@@ -167,6 +169,7 @@ async function run(baselineOnly = false) {
     problem,
     expected: $("#expected").value.trim() || null,
     rounds: baselineOnly ? 1 : Number($("#rounds").value),
+    verify: !baselineOnly,
     formalizer: $("#formalizer").value,
     student_model: $("#student").value || null,
   };

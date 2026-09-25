@@ -187,3 +187,28 @@ def test_yes_no_context_supplies_polarity_and_arabic_countermodel():
     assert VerifyAndTeachAgent._yes_no_context("…", llm_form, "42") == {}
     arith = Formalization(steps=[], problem_prop="(17:ℚ) * 23 = 391")
     assert VerifyAndTeachAgent._yes_no_context("…", arith, "yes") == {}
+
+
+def test_baseline_run_sends_nothing_to_lean(settings):
+    student = ScriptedModel([WRONG])
+    formalizer = ScriptedModel([])
+    runner = FakeRunner(TABLE)
+    events: list[str] = []
+    agent = VerifyAndTeachAgent(
+        settings,
+        student_model=student,
+        formalizer_model=formalizer,
+        runner=runner,
+        on_event=lambda k, p: events.append(k),
+    )
+    trace = agent.run(PROBLEM, expected_answer="391", max_rounds=3, check=False)
+
+    assert trace.status == "unverified"
+    assert trace.final_answer == "381"
+    assert trace.n_rounds == 1
+    assert len(student.calls) == 1 and formalizer.calls == []
+    rep = trace.rounds[0].report
+    assert rep.lean_file == "" and rep.final_answer_verdict == Verdict.SKIPPED
+    assert all(s.verdict == Verdict.SKIPPED for s in rep.steps)
+    assert trace.rounds[0].feedback is None
+    assert "formalized" not in events and "feedback" not in events and events[-1] == "done"

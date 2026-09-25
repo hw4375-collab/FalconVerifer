@@ -182,3 +182,34 @@ def test_regular_graph_claims_use_lemmas_not_enumeration(runner: LeanRunner):
     assert v["four_four_lie"] == Verdict.VERIFIED
     assert v["eight_five_possible"] == Verdict.VERIFIED
     assert res.latency_s < 60
+
+
+def test_arabic_word_problems_decided_by_kernel(runner: LeanRunner):
+    """Quantity narratives (multiply-then-subtract, compound discount, whole boxes, average)
+    from the deterministic word fragment: gold answers verified, off-by-one answers refuted."""
+    from falconverifier.arabic_word import formalize_word_problem as f
+
+    boxes = (
+        "اشترى سعيد ٩٣ علبة تحتوي كل منها على ٣٧ صندوقاً، ثم أعطى ٣٩١ صندوقاً من مجموعها "
+        "لأصدقائه. كم صندوقاً بقي لدى سعيد؟"
+    )
+    disc = (
+        "يبلغ سعر هاتف 800 درهماً. خُفِّض بنسبة 10٪ ثم خُفِّض السعر الجديد بنسبة 20٪ أخرى. "
+        "ما هو السعر النهائي بالدرهم؟"
+    )
+    full = "لدينا ٨٧ تفاحة نضعها في صناديق تتسع كل منها ٦ تفاحة. كم صندوقاً ممتلئاً نحصل عليه؟"
+    avg = "حصلت ليلى على الدرجات ٨٥، ٩٠، ٧٨ في ٣ اختبارات. ما هو متوسط درجاتها؟"
+    cases = {
+        "boxes_ok": (boxes, "3050", Verdict.VERIFIED),
+        "boxes_bad": (boxes, "172", Verdict.REFUTED),
+        "disc_ok": (disc, "576", Verdict.VERIFIED),
+        "disc_bad": (disc, "560", Verdict.REFUTED),
+        "full_ok": (full, "14", Verdict.VERIFIED),
+        "full_bad": (full, "15", Verdict.REFUTED),
+        "avg_ok": (avg, "84.33", Verdict.VERIFIED),
+        "avg_bad": (avg, "85", Verdict.REFUTED),
+    }
+    claims = {k: f(p, a)[0] for k, (p, a, _) in cases.items()}  # type: ignore[index]
+    res = runner.check_claims(claims)
+    for k, (_, _, want) in cases.items():
+        assert res.outcomes[k].verdict == want, (k, claims[k], res.outcomes[k].detail)
