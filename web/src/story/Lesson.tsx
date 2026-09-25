@@ -6,7 +6,10 @@ import { Counter } from '../components/Counter'
 import { Lean } from '../components/Lean'
 import { Container, Heading, Lede } from '../components/Section'
 import { VerdictBadge } from '../components/Verdict'
+import { ORG, ORG_URL } from '../components/Mark'
+import { REPO_URL } from '../components/Nav'
 import { useLang } from '../i18n'
+import { BASE } from '../lib/data'
 
 const EASE = [0.23, 1, 0.32, 1] as const
 
@@ -102,6 +105,44 @@ function Arrow({ show, dashed = false }: { show: object; dashed?: boolean }) {
     <motion.div {...show} className={`flex justify-center ${dashed ? 'text-ink-3' : 'text-ink-2'}`}>
       <ArrowRight size={30} weight="regular" className="rotate-90 lg:rotate-0 rtl:lg:rotate-180" aria-hidden />
     </motion.div>
+  )
+}
+
+export function Org() {
+  const { t } = useLang()
+  return (
+    <section className="border-t border-rule bg-panel/60 py-[clamp(64px,10vh,120px)]">
+      <Container className="flex flex-col items-center gap-8 text-center md:flex-row md:text-start">
+        <a href={ORG_URL} target="_blank" rel="noreferrer" className="press shrink-0">
+          <img src={`${BASE}brand/chaosbutterfly-logo.png`} alt={ORG} className="h-[120px] w-auto md:h-[150px]" />
+        </a>
+        <div className="max-w-[60ch]">
+          <p className="text-[13px] uppercase tracking-[0.14em] text-ink-2">
+            {t({ en: 'A ChaosButterfly.org project', ar: 'مشروع من ChaosButterfly.org' })}
+          </p>
+          <h2 className="mt-2 text-[clamp(26px,3.2vw,40px)] font-semibold leading-[1.1] tracking-[-0.03em]">
+            {t({
+              en: 'We build the trust layer for Arabic AI.',
+              ar: 'نبني طبقة الثقة للذكاء الاصطناعي العربي.',
+            })}
+          </h2>
+          <p className="mt-4 text-[17px] leading-[1.55] text-ink-2">
+            {t({
+              en: 'ChaosButterfly puts machine-checked proof between language models and the people who rely on them. NYU Falcon is our first product: a Lean 4 audit layer for Falcon, TII’s Arabic-native model — zero fine-tuning, one kernel process, every verdict auditable.',
+              ar: 'تضع ChaosButterfly البرهان الآلي بين النماذج اللغوية ومن يعتمدون عليها. NYU Falcon أول منتجاتنا: طبقة تدقيق بـ Lean 4 فوق Falcon، نموذج معهد الابتكار التكنولوجي العربي — بلا ضبط دقيق، بعملية نواة واحدة، وكل حكم قابل للتدقيق.',
+            })}
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
+            <a href={ORG_URL} target="_blank" rel="noreferrer" className="press rounded-full border border-ink px-5 py-2.5 text-[15px] font-medium text-ink hover:bg-ink hover:text-paper">
+              chaosbutterfly.org ↗
+            </a>
+            <a href={REPO_URL} target="_blank" rel="noreferrer" className="press rounded-full px-5 py-2.5 text-[15px] font-medium text-ink hover:bg-panel">
+              {t({ en: 'Open source on GitHub', ar: 'مفتوح المصدر على GitHub' })}
+            </a>
+          </div>
+        </div>
+      </Container>
+    </section>
   )
 }
 
