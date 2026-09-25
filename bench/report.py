@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -106,6 +107,40 @@ def svg_chart(rows: list[tuple[str, float, float]]) -> str:
     return "\n".join(parts)
 
 
+def cot_coverage(run_dir: Path) -> list[str]:
+    """Step- and round-level verdict distribution over every trace in a run directory."""
+    steps: Counter[str] = Counter()
+    finals: Counter[str] = Counter()
+    rounds = 0
+    for tp in run_dir.glob("*.json"):
+        if tp.name == "results.json":
+            continue
+        trace = json.loads(tp.read_text())
+        for r in trace.get("rounds", []):
+            rounds += 1
+            steps.update(s["verdict"] for s in r["report"]["steps"])
+            finals[r["report"]["final_answer_verdict"]] += 1
+    n_steps = sum(steps.values())
+    if not rounds or not n_steps:
+        return []
+    order = ("verified", "refuted", "unknown", "ill_formed", "skipped")
+    decided = steps["verified"] + steps["refuted"]
+    decided_final = finals["verified"] + finals["refuted"]
+    return [
+        f"**CoT verifiability** ({rounds} rounds, {n_steps} reasoning steps): Lean decided "
+        f"{decided / n_steps:.1%} of steps and {decided_final / rounds:.1%} of final answers.",
+        "",
+        "| verdict | steps | final answers |",
+        "|---|---|---|",
+        *(
+            f"| {v} | {steps[v]} ({steps[v] / n_steps:.1%}) | {finals[v]} ({finals[v] / rounds:.1%}) |"
+            for v in order
+            if steps[v] or finals[v]
+        ),
+        "",
+    ]
+
+
 def main(paths: list[str]) -> None:
     runs = [Path(p) for p in paths] if paths else latest_runs()
     DOCS.mkdir(exist_ok=True)
@@ -139,6 +174,7 @@ def main(paths: list[str]) -> None:
                 f"| {label} | " + " | ".join(fmt(k, d["summary"][s].get(k)) for s in slices) + " |"
             )
         md.append("")
+        md += cot_coverage(rp.parent)
         for s in ("math", "logic"):
             if s in d["summary"]:
                 sm = d["summary"][s]

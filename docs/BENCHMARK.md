@@ -27,6 +27,15 @@ student `falcon-h1-arabic-3b-instruct` · formalizer `falcon-h1-arabic-34b-instr
 | mean rounds | 1.69 | 1.87 | 1.41 | 1.67 | 1.62 | 1.81 |
 | mean latency (s) | 39.4 | 46.8 | 28.1 | 39.4 | 22.7 | 42.5 |
 
+**CoT verifiability** (145 rounds, 395 reasoning steps): Lean decided 53.2% of steps and 95.9% of final answers.
+
+| verdict | steps | final answers |
+|---|---|---|
+| verified | 197 (49.9%) | 79 (54.5%) |
+| refuted | 13 (3.3%) | 60 (41.4%) |
+| unknown | 18 (4.6%) | 6 (4.1%) |
+| skipped | 167 (42.3%) | 0 (0.0%) |
+
 <details><summary>Problems Falcon got wrong at baseline</summary>
 
 | id | expected | baseline | final | Lean flagged r1 | status |
@@ -93,6 +102,16 @@ student `falcon-h1-arabic-3b-instruct` · formalizer `falcon-h1-arabic-34b-instr
 | mean rounds | 1.61 | 1.82 | 1.32 |
 | mean latency (s) | 39.4 | 36.0 | 43.8 |
 
+**CoT verifiability** (143 rounds, 498 reasoning steps): Lean decided 41.0% of steps and 90.2% of final answers.
+
+| verdict | steps | final answers |
+|---|---|---|
+| verified | 183 (36.7%) | 76 (53.1%) |
+| refuted | 21 (4.2%) | 53 (37.1%) |
+| unknown | 25 (5.0%) | 12 (8.4%) |
+| ill_formed | 17 (3.4%) | 2 (1.4%) |
+| skipped | 252 (50.6%) | 0 (0.0%) |
+
 <details><summary>Problems Falcon got wrong at baseline</summary>
 
 | id | expected | baseline | final | Lean flagged r1 | status |
@@ -156,6 +175,16 @@ student `falcon-h1-arabic-3b-instruct` · formalizer `falcon-h1-arabic-34b-instr
 | assured ∧ correct | 21 | 12 | 9 |
 | mean rounds | 1.36 | 1.71 | 1.02 |
 | mean latency (s) | 37.8 | 42.5 | 33.3 |
+
+**CoT verifiability** (106 rounds, 387 reasoning steps): Lean decided 31.8% of steps and 62.3% of final answers.
+
+| verdict | steps | final answers |
+|---|---|---|
+| verified | 111 (28.7%) | 36 (34.0%) |
+| refuted | 12 (3.1%) | 30 (28.3%) |
+| unknown | 47 (12.1%) | 38 (35.8%) |
+| ill_formed | 4 (1.0%) | 2 (1.9%) |
+| skipped | 213 (55.0%) | 0 (0.0%) |
 
 <details><summary>Problems Falcon got wrong at baseline</summary>
 
@@ -234,6 +263,16 @@ student `falcon-h1-arabic-3b-instruct` · formalizer `falcon-h1-arabic-34b-instr
 | mean rounds | 1.82 | 1.82 |
 | mean latency (s) | 39.3 | 39.3 |
 
+**CoT verifiability** (93 rounds, 303 reasoning steps): Lean decided 52.1% of steps and 96.8% of final answers.
+
+| verdict | steps | final answers |
+|---|---|---|
+| verified | 158 (52.1%) | 47 (50.5%) |
+| refuted | 0 (0.0%) | 43 (46.2%) |
+| unknown | 3 (1.0%) | 2 (2.2%) |
+| ill_formed | 0 (0.0%) | 1 (1.1%) |
+| skipped | 142 (46.9%) | 0 (0.0%) |
+
 <details><summary>Problems Falcon got wrong at baseline</summary>
 
 | id | expected | baseline | final | Lean flagged r1 | status |
@@ -289,6 +328,16 @@ student `falcon-h1-7b-instruct` · formalizer `falcon-h1-arabic-34b-instruct` ·
 | mean rounds | 1.04 | 1.0 | 1.12 | 1.0 | 1.0 | 1.0 |
 | mean latency (s) | 22.9 | 18.3 | 33.0 | 23.1 | 16.0 | 18.9 |
 
+**CoT verifiability** (79 rounds, 283 reasoning steps): Lean decided 61.5% of steps and 88.6% of final answers.
+
+| verdict | steps | final answers |
+|---|---|---|
+| verified | 169 (59.7%) | 66 (83.5%) |
+| refuted | 5 (1.8%) | 4 (5.1%) |
+| unknown | 8 (2.8%) | 5 (6.3%) |
+| ill_formed | 7 (2.5%) | 4 (5.1%) |
+| skipped | 94 (33.2%) | 0 (0.0%) |
+
 <details><summary>Problems Falcon got wrong at baseline</summary>
 
 | id | expected | baseline | final | Lean flagged r1 | status |
@@ -320,6 +369,16 @@ student `falcon-h1-7b-instruct` · formalizer `falcon-h1-arabic-34b-instruct` ·
 | assured ∧ correct | 75 | 44 | 31 |
 | mean rounds | 1.09 | 1.14 | 1.03 |
 | mean latency (s) | 27.6 | 25.6 | 30.3 |
+
+**CoT verifiability** (97 rounds, 428 reasoning steps): Lean decided 50.7% of steps and 82.5% of final answers.
+
+| verdict | steps | final answers |
+|---|---|---|
+| verified | 202 (47.2%) | 79 (81.4%) |
+| refuted | 15 (3.5%) | 1 (1.0%) |
+| unknown | 28 (6.5%) | 17 (17.5%) |
+| ill_formed | 4 (0.9%) | 0 (0.0%) |
+| skipped | 179 (41.8%) | 0 (0.0%) |
 
 <details><summary>Problems Falcon got wrong at baseline</summary>
 
@@ -353,6 +412,16 @@ student `falcon-h1-7b-instruct` · formalizer `falcon-h1-arabic-34b-instruct` ·
 | assured ∧ correct | 55 | 33 | 22 |
 | mean rounds | 1.06 | 1.13 | 1.0 |
 | mean latency (s) | 33.0 | 28.9 | 37.0 |
+
+**CoT verifiability** (83 rounds, 421 reasoning steps): Lean decided 48.2% of steps and 73.5% of final answers.
+
+| verdict | steps | final answers |
+|---|---|---|
+| verified | 196 (46.6%) | 60 (72.3%) |
+| refuted | 7 (1.7%) | 1 (1.2%) |
+| unknown | 48 (11.4%) | 16 (19.3%) |
+| ill_formed | 54 (12.8%) | 6 (7.2%) |
+| skipped | 116 (27.6%) | 0 (0.0%) |
 
 <details><summary>Problems Falcon got wrong at baseline</summary>
 

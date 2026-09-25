@@ -88,8 +88,11 @@ def gen_math(n_per: int) -> list[dict]:
         )
     for i in range(n_per):
         e = i % 2 == 0
-        price = rng.choice([80, 120, 150, 200, 240, 360, 400, 500, 600])
-        pct = rng.choice([10, 15, 20, 25, 30, 40])
+        while True:
+            price = rng.choice([80, 120, 150, 200, 240, 360, 400, 500, 600])
+            pct = rng.choice([10, 15, 20, 25, 30, 40])
+            if price * pct % 100 == 0:
+                break
         add(
             f"يبلغ سعر {rng.choice(PRODUCTS)} {ar(price, e)} درهماً. خُفِّض سعره بنسبة {ar(pct, e)}٪. "
             f"ما هو السعر الجديد بالدرهم؟",
@@ -140,8 +143,11 @@ def gen_math(n_per: int) -> list[dict]:
         )
     for i in range(n_per):
         e = i % 2 == 0
-        price = rng.choice([800, 1200, 1500, 2400, 3000, 4000])
-        p1, p2 = rng.choice([10, 20, 25, 50]), rng.choice([10, 20, 25])
+        while True:
+            price = rng.choice([800, 1200, 1500, 2400, 3000, 4000])
+            p1, p2 = rng.choice([10, 20, 25, 50]), rng.choice([10, 20, 25])
+            if price * (100 - p1) * (100 - p2) % 10000 == 0:
+                break
         add(
             f"يبلغ سعر {rng.choice(PRODUCTS)} {ar(price, e)} درهماً. خُفِّض بنسبة {ar(p1, e)}٪ ثم خُفِّض "
             f"السعر الجديد بنسبة {ar(p2, e)}٪ أخرى. ما هو السعر النهائي بالدرهم؟",
