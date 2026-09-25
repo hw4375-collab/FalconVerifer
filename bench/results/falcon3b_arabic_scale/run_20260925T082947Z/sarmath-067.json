@@ -1,0 +1,382 @@
+{
+ "problem": "اشترى خالد ٥٠ علبة تحتوي كل منها على ٢٣ صندوقاً، ثم أعطى ١٩٤ صندوقاً من مجموعها لأصدقائه. كم صندوقاً بقي لدى خالد؟",
+ "expected_answer": "956",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 426 صندوقاً.\n\nهنا هو التفكيك:\n\n1. الخطوة 1: احسب العدد الكلي للصناديق التي اشتراها خالد.\n   - خالد اشترى 50 علبة، وكل علبة تحتوي على 23 صندوقاً.\n   - العدد الكلي للصناديق = 50 × 23 = 1150 صندوقاً.\n\n2. الخطوة 2: احسب عدد الصناديق التي بقيت لدى خالد بعد إعطاء 194 صندوقاً لأصدقائه.\n   - الصناديق المتبقية = 1150 - 194 = 956 صندوقاً.\n\n3. الخطوة 3: الجواب النهائي: 426 صندوقاً.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "هنا هو التفكيك:"
+     },
+     {
+      "index": 2,
+      "text": "1. الخطوة 1: احسب العدد الكلي للصناديق التي اشتراها خالد.\n   - خالد اشترى 50 علبة، وكل علبة تحتوي على 23 صندوقاً.\n   - العدد الكلي للصناديق = 50 × 23 = 1150 صندوقاً."
+     },
+     {
+      "index": 3,
+      "text": "2. الخطوة 2: احسب عدد الصناديق التي بقيت لدى خالد بعد إعطاء 194 صندوقاً لأصدقائه.\n   - الصناديق المتبقية = 1150 - 194 = 956 صندوقاً."
+     }
+    ],
+    "final_answer": "426 صندوقاً",
+    "latency_s": 7.946354627609253,
+    "tokens": 180
+   },
+   "formalization": {
+    "problem_prop": "(50:ℕ) * 23 - 194 = 956",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduction"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(50:ℕ) * 23 = 1150",
+      "note": "total boxes bought"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "1150 - 194 = 956",
+      "note": "remaining boxes"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(50:ℕ) * 23 - 194 = 956\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduction\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(50:ℕ) * 23 = 1150\", \"note\": \"total boxes bought\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"1150 - 194 = 956\", \"note\": \"remaining boxes\"}\n  ]\n}\n",
+    "latency_s": 10.101510524749756
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "هنا هو التفكيك:",
+      "detail": "introduction"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(50:ℕ) * 23 = 1150",
+      "step_text": "1. الخطوة 1: احسب العدد الكلي للصناديق التي اشتراها خالد.\n   - خالد اشترى 50 علبة، وكل علبة تحتوي على 23 صندوقاً.\n   - العدد الكلي للصناديق = 50 × 23 = 1150 صندوقاً.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "1150 - 194 = 956",
+      "step_text": "2. الخطوة 2: احسب عدد الصناديق التي بقيت لدى خالد بعد إعطاء 194 صندوقاً لأصدقائه.\n   - الصناديق المتبقية = 1150 - 194 = 956 صندوقاً.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `(50:ℕ) * 23 - 194 = 956`, which does not contain the stated FINAL ANSWER '426 صندوقاً'",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (50:ℕ) * 23 = 1150 := by sorry\ntheorem s2_pos : (50:ℕ) * 23 = 1150 := by fv_auto\ntheorem s2_neg : ¬ ((50:ℕ) * 23 = 1150) := by fv_auto\n\ntheorem s3_wf : 1150 - 194 = 956 := by sorry\ntheorem s3_pos : 1150 - 194 = 956 := by fv_auto\ntheorem s3_neg : ¬ (1150 - 194 = 956) := by fv_auto\n\ntheorem final_wf : (50:ℕ) * 23 - 194 = 956 := by sorry\ntheorem final_pos : (50:ℕ) * 23 - 194 = 956 := by fv_auto\ntheorem final_neg : ¬ ((50:ℕ) * 23 - 194 = 956) := by fv_auto\n",
+    "lean_latency_s": 4.22020697593689,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 50 * 23 = 1150\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 1150 - 194 = 956\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 50 * 23 - 194 = 956\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "الجواب النهائي لا يطابق ما تستنتجه خطواتك. تحقق Lean 4 من `(50:ℕ) * 23 - 194 = 956`؛ يجب أن يكون الرقم بعد «الجواب النهائي» هو نتيجة هذا الحساب، فأعد قراءة خطواتك واذكر القيمة التي تنتجها فعلاً.\nالخطوات التي تحقق Lean 4 من صحتها: 2, 3.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 426 صندوقاً.\n\nلإيجاد عدد الصناديق المتبقية، نبدأ بحساب العدد الكلي للصناديق التي اشتراها خالد:\n\n1. الخطوة 1: احسب العدد الكلي للصناديق التي اشتراها خالد.\n   - خالد اشترى 50 علبة، وكل علبة تحتوي على 23 صندوقاً.\n   - العدد الكلي للصناديق = 50 × 23 = 1150 صندوقاً.\n\n2. الخطوة 2: احسب عدد الصناديق التي بقيت لدى خالد بعد إعطاء 194 صندوقاً لأصدقائه.\n   - الصناديق المتبقية = 1150 - 194 = 956 صندوقاً.\n\n3. الخطوة 3: الجواب النهائي: 426 صندوقاً.\n\nتصحيح: الخطأ كان في الخطوة 3 حيث تم ذكر \"426\" كجواب نهائي، بينما الجواب الصحيح هو 956. الجواب الصحيح هو 956 صندوقاً.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "لإيجاد عدد الصناديق المتبقية، نبدأ بحساب العدد الكلي للصناديق التي اشتراها خالد:"
+     },
+     {
+      "index": 2,
+      "text": "1. الخطوة 1: احسب العدد الكلي للصناديق التي اشتراها خالد.\n   - خالد اشترى 50 علبة، وكل علبة تحتوي على 23 صندوقاً.\n   - العدد الكلي للصناديق = 50 × 23 = 1150 صندوقاً."
+     },
+     {
+      "index": 3,
+      "text": "2. الخطوة 2: احسب عدد الصناديق التي بقيت لدى خالد بعد إعطاء 194 صندوقاً لأصدقائه.\n   - الصناديق المتبقية = 1150 - 194 = 956 صندوقاً."
+     },
+     {
+      "index": 4,
+      "text": "تصحيح: الخطأ كان في الخطوة 3 حيث تم ذكر \"426\" كجواب نهائي، بينما الجواب الصحيح هو 956. الجواب الصحيح هو 956 صندوقاً."
+     }
+    ],
+    "final_answer": "426 صندوقاً",
+    "latency_s": 56.55004405975342,
+    "tokens": 251
+   },
+   "formalization": {
+    "problem_prop": "(50:ℕ) * 23 - 194 = 956",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduction"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(50:ℕ) * 23 = 1150",
+      "note": "total boxes bought"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "1150 - 194 = 956",
+      "note": "remaining boxes"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(50:ℕ) * 23 - 194 = 956\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduction\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(50:ℕ) * 23 = 1150\", \"note\": \"total boxes bought\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"1150 - 194 = 956\", \"note\": \"remaining boxes\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction\"}\n  ]\n}\n",
+    "latency_s": 8.054378032684326
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "لإيجاد عدد الصناديق المتبقية، نبدأ بحساب العدد الكلي للصناديق التي اشتراها خالد:",
+      "detail": "introduction"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(50:ℕ) * 23 = 1150",
+      "step_text": "1. الخطوة 1: احسب العدد الكلي للصناديق التي اشتراها خالد.\n   - خالد اشترى 50 علبة، وكل علبة تحتوي على 23 صندوقاً.\n   - العدد الكلي للصناديق = 50 × 23 = 1150 صندوقاً.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "1150 - 194 = 956",
+      "step_text": "2. الخطوة 2: احسب عدد الصناديق التي بقيت لدى خالد بعد إعطاء 194 صندوقاً لأصدقائه.\n   - الصناديق المتبقية = 1150 - 194 = 956 صندوقاً.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "تصحيح: الخطأ كان في الخطوة 3 حيث تم ذكر \"426\" كجواب نهائي، بينما الجواب الصحيح هو 956. الجواب الصحيح هو 956 صندوقاً.",
+      "detail": "correction"
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `(50:ℕ) * 23 - 194 = 956`, which does not contain the stated FINAL ANSWER '426 صندوقاً'",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (50:ℕ) * 23 = 1150 := by sorry\ntheorem s2_pos : (50:ℕ) * 23 = 1150 := by fv_auto\ntheorem s2_neg : ¬ ((50:ℕ) * 23 = 1150) := by fv_auto\n\ntheorem s3_wf : 1150 - 194 = 956 := by sorry\ntheorem s3_pos : 1150 - 194 = 956 := by fv_auto\ntheorem s3_neg : ¬ (1150 - 194 = 956) := by fv_auto\n\ntheorem final_wf : (50:ℕ) * 23 - 194 = 956 := by sorry\ntheorem final_pos : (50:ℕ) * 23 - 194 = 956 := by fv_auto\ntheorem final_neg : ¬ ((50:ℕ) * 23 - 194 = 956) := by fv_auto\n",
+    "lean_latency_s": 4.0181567668914795,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 50 * 23 = 1150\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 1150 - 194 = 956\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 50 * 23 - 194 = 956\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "الجواب النهائي لا يطابق ما تستنتجه خطواتك. تحقق Lean 4 من `(50:ℕ) * 23 - 194 = 956`؛ يجب أن يكون الرقم بعد «الجواب النهائي» هو نتيجة هذا الحساب، فأعد قراءة خطواتك واذكر القيمة التي تنتجها فعلاً.\nالخطوات التي تحقق Lean 4 من صحتها: 2, 3.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 3,
+   "answer": {
+    "raw": "الجواب النهائي: 956 صندوقاً.\n\nلإيجاد عدد الصناديق المتبقية، نبدأ بحساب العدد الكلي للصناديق التي اشتراها خالد:\n\n1. الخطوة 1: احسب العدد الكلي للصناديق التي اشتراها خالد.\n   - خالد اشترى 50 علبة، وكل علبة تحتوي على 23 صندوقاً.\n   - العدد الكلي للصناديق = 50 × 23 = 1150 صندوقاً.\n\n2. الخطوة 2: احسب عدد الصناديق التي بقيت لدى خالد بعد إعطاء 194 صندوقاً لأصدقائه.\n   - الصناديق المتبقية = 1150 - 194 = 956 صندوقاً.\n\n3. الخطوة 3: الجواب النهائي: 956 صندوقاً.\n\nتم تصحيح الخطأ في الخطوة 3، حيث كان الجواب الصحيح هو 956 صندوقاً.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "لإيجاد عدد الصناديق المتبقية، نبدأ بحساب العدد الكلي للصناديق التي اشتراها خالد:"
+     },
+     {
+      "index": 2,
+      "text": "1. الخطوة 1: احسب العدد الكلي للصناديق التي اشتراها خالد.\n   - خالد اشترى 50 علبة، وكل علبة تحتوي على 23 صندوقاً.\n   - العدد الكلي للصناديق = 50 × 23 = 1150 صندوقاً."
+     },
+     {
+      "index": 3,
+      "text": "2. الخطوة 2: احسب عدد الصناديق التي بقيت لدى خالد بعد إعطاء 194 صندوقاً لأصدقائه.\n   - الصناديق المتبقية = 1150 - 194 = 956 صندوقاً."
+     },
+     {
+      "index": 4,
+      "text": "تم تصحيح الخطأ في الخطوة 3، حيث كان الجواب الصحيح هو 956 صندوقاً."
+     }
+    ],
+    "final_answer": "956 صندوقاً",
+    "latency_s": 9.736451625823975,
+    "tokens": 228
+   },
+   "formalization": {
+    "problem_prop": "(50:ℕ) * 23 - 194 = 956",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduces the problem"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(50:ℕ) * 23 = 1150",
+      "note": "total boxes bought"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "1150 - 194 = 956",
+      "note": "remaining boxes"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction note"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(50:ℕ) * 23 - 194 = 956\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduces the problem\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(50:ℕ) * 23 = 1150\", \"note\": \"total boxes bought\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"1150 - 194 = 956\", \"note\": \"remaining boxes\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction note\"}\n  ]\n}\n",
+    "latency_s": 9.054438591003418
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "لإيجاد عدد الصناديق المتبقية، نبدأ بحساب العدد الكلي للصناديق التي اشتراها خالد:",
+      "detail": "introduces the problem"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(50:ℕ) * 23 = 1150",
+      "step_text": "1. الخطوة 1: احسب العدد الكلي للصناديق التي اشتراها خالد.\n   - خالد اشترى 50 علبة، وكل علبة تحتوي على 23 صندوقاً.\n   - العدد الكلي للصناديق = 50 × 23 = 1150 صندوقاً.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "1150 - 194 = 956",
+      "step_text": "2. الخطوة 2: احسب عدد الصناديق التي بقيت لدى خالد بعد إعطاء 194 صندوقاً لأصدقائه.\n   - الصناديق المتبقية = 1150 - 194 = 956 صندوقاً.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "تم تصحيح الخطأ في الخطوة 3، حيث كان الجواب الصحيح هو 956 صندوقاً.",
+      "detail": "correction note"
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (50:ℕ) * 23 = 1150 := by sorry\ntheorem s2_pos : (50:ℕ) * 23 = 1150 := by fv_auto\ntheorem s2_neg : ¬ ((50:ℕ) * 23 = 1150) := by fv_auto\n\ntheorem s3_wf : 1150 - 194 = 956 := by sorry\ntheorem s3_pos : 1150 - 194 = 956 := by fv_auto\ntheorem s3_neg : ¬ (1150 - 194 = 956) := by fv_auto\n\ntheorem final_wf : (50:ℕ) * 23 - 194 = 956 := by sorry\ntheorem final_pos : (50:ℕ) * 23 - 194 = 956 := by fv_auto\ntheorem final_neg : ¬ ((50:ℕ) * 23 - 194 = 956) := by fv_auto\n",
+    "lean_latency_s": 4.033144474029541,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 50 * 23 = 1150\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 1150 - 194 = 956\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 50 * 23 - 194 = 956\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "956 صندوقاً",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 113.72
+}

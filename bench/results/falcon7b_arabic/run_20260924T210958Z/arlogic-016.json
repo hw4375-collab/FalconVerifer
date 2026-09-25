@@ -1,0 +1,113 @@
+{
+ "problem": "عمر أطول من يوسف، ويوسف أطول من خالد. هل يلزم أن عمر أطول من خالد؟ أجب بنعم أو لا.",
+ "expected_answer": "نعم",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الخطوة 1: عمر أطول من يوسف (عمر > يوسف).\nالخطوة 2: يوسف أطول من خالد (يوسف > خالد).\nالخطوة 3: من الجمع بين المسألتين السابقتين، نصل إلى أن عمر أطول من خالد (عمر > خالد).\n\nالجواب النهائي: نعم",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "عمر أطول من يوسف (عمر > يوسف)."
+     },
+     {
+      "index": 2,
+      "text": "يوسف أطول من خالد (يوسف > خالد)."
+     },
+     {
+      "index": 3,
+      "text": "من الجمع بين المسألتين السابقتين، نصل إلى أن عمر أطول من خالد (عمر > خالد)."
+     }
+    ],
+    "final_answer": "نعم",
+    "latency_s": 4.282027006149292,
+    "tokens": 75
+   },
+   "formalization": {
+    "problem_prop": "∀ (u y k : ℤ), u > y → y > k → u > k",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates premise"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates premise"
+     },
+     {
+      "index": 3,
+      "kind": "logic",
+      "lean_prop": "∀ (u y k : ℤ), u > y → y > k → u > k",
+      "note": "transitivity of >"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"∀ (u y k : ℤ), u > y → y > k → u > k\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates premise\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates premise\"},\n    {\"index\": 3, \"kind\": \"logic\", \"lean_prop\": \"∀ (u y k : ℤ), u > y → y > k → u > k\", \"note\": \"transitivity of >\"}\n  ]\n}\n",
+    "latency_s": 7.968359708786011
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "عمر أطول من يوسف (عمر > يوسف).",
+      "detail": "restates premise"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "يوسف أطول من خالد (يوسف > خالد).",
+      "detail": "restates premise"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "∀ (u y k : ℤ), u > y → y > k → u > k",
+      "step_text": "من الجمع بين المسألتين السابقتين، نصل إلى أن عمر أطول من خالد (عمر > خالد).",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s3_wf : ∀ (u y k : ℤ), u > y → y > k → u > k := by sorry\ntheorem s3_pos : ∀ (u y k : ℤ), u > y → y > k → u > k := by fv_auto\ntheorem s3_neg : ¬ (∀ (u y k : ℤ), u > y → y > k → u > k) := by fv_auto\n\ntheorem final_wf : ∀ (u y k : ℤ), u > y → y > k → u > k := by sorry\ntheorem final_pos : ∀ (u y k : ℤ), u > y → y > k → u > k := by fv_auto\ntheorem final_neg : ¬ (∀ (u y k : ℤ), u > y → y > k → u > k) := by fv_auto\n",
+    "lean_latency_s": 6.292749881744385,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : ∀ (u y k : ℤ), u > y → y > k → u > k\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : ∀ (u y k : ℤ), u > y → y > k → u > k\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "نعم",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 18.54
+}

@@ -1,0 +1,111 @@
+{
+ "problem": "A phone costs 3200 dirhams. It is discounted by 25%, and then the reduced price is discounted by a further 20%. What is the final price in dirhams?",
+ "expected_answer": "1920",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the price after the first discount of 25%.  \nThe original price is 3200 dirhams.  \nDiscount = 25% of 3200 = 0.25 * 3200 = 800 dirhams.  \nReduced price = 3200 - 800 = 2400 dirhams.\n\nStep 2: Calculate the price after the second discount of 20% on the reduced price.  \nDiscount = 20% of 2400 = 0.20 * 2400 = 480 dirhams.  \nFinal price = 2400 - 480 = 1920 dirhams.\n\nFINAL ANSWER: 1920",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the price after the first discount of 25%. The original price is 3200 dirhams. Discount = 25% of 3200 = 0.25 * 3200 = 800 dirhams. Reduced price = 3200 - 800 = 2400 dirhams."
+     },
+     {
+      "index": 2,
+      "text": "Calculate the price after the second discount of 20% on the reduced price. Discount = 20% of 2400 = 0.20 * 2400 = 480 dirhams. Final price = 2400 - 480 = 1920 dirhams."
+     }
+    ],
+    "final_answer": "1920",
+    "latency_s": 7.78505277633667,
+    "tokens": 194
+   },
+   "formalization": {
+    "problem_prop": "3200 * (1 - 0.25) * (1 - 0.20) = 1920",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "3200 * (1 - 0.25) = 2400",
+      "note": "first discount"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "2400 * (1 - 0.20) = 1920",
+      "note": "second discount"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"3200 * (1 - 0.25) * (1 - 0.20) = 1920\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"3200 * (1 - 0.25) = 2400\", \"note\": \"first discount\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"2400 * (1 - 0.20) = 1920\", \"note\": \"second discount\"}\n  ]\n}\n",
+    "latency_s": 8.138263940811157
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "3200 * (1 - 0.25) = 2400",
+      "step_text": "Calculate the price after the first discount of 25%. The original price is 3200 dirhams. Discount = 25% of 3200 = 0.25 * 3200 = 800 dirhams. Reduced price = 3200 - 800 = 2400 dirhams.",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "2400 * (1 - 0.20) = 1920",
+      "step_text": "Calculate the price after the second discount of 20% on the reduced price. Discount = 20% of 2400 = 0.20 * 2400 = 480 dirhams. Final price = 2400 - 480 = 1920 dirhams.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : 3200 * (1 - 0.25) = 2400 := by sorry\ntheorem s1_pos : 3200 * (1 - 0.25) = 2400 := by fv_auto\ntheorem s1_neg : ¬ (3200 * (1 - 0.25) = 2400) := by fv_auto\n\ntheorem s2_wf : 2400 * (1 - 0.20) = 1920 := by sorry\ntheorem s2_pos : 2400 * (1 - 0.20) = 1920 := by fv_auto\ntheorem s2_neg : ¬ (2400 * (1 - 0.20) = 1920) := by fv_auto\n\ntheorem final_wf : 3200 * (1 - 0.25) * (1 - 0.20) = 1920 := by sorry\ntheorem final_pos : 3200 * (1 - 0.25) * (1 - 0.20) = 1920 := by fv_auto\ntheorem final_neg : ¬ (3200 * (1 - 0.25) * (1 - 0.20) = 1920) := by fv_auto\n",
+    "lean_latency_s": 25.18819499015808,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\na : 3200 * (1 - 0.25) = 2400\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "(deterministic) timeout at `whnf`, maximum number of heartbeats (400000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_option diagnostics true` command."
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "(deterministic) timeout at `isDefEq`, maximum number of heartbeats (400000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_option diagnostics true` command."
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "1920",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 41.11
+}

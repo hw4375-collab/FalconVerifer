@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 
+from .arabic import is_arabic, normalize_digits
 from .llm import ChatModel
 from .schemas import ReasoningStep, StudentAnswer
 
@@ -23,14 +24,52 @@ Here is the verification feedback:
 Fix ONLY what is wrong. Re-solve the problem from scratch following the same format
 (numbered `Step k:` lines, one claim each, then `FINAL ANSWER: <answer>`)."""
 
-STEP_RE = re.compile(r"^\s*(?:\*\*)?Step\s*(\d+)\s*[:.)\-]\s*(?:\*\*)?\s*(.*)$", re.I)
+SYSTEM_PROMPT_AR = """أنت معلّم رياضيات ومنطق دقيق تحل المسائل لطالب. أجب باللغة العربية فقط.
+
+القواعد:
+1. فكّر خطوة بخطوة. رقّم كل خطوة في سطر مستقل بالصيغة `الخطوة 1:`، `الخطوة 2:`، ...
+2. كل خطوة تذكر ادعاءًا واحداً محدداً قابلاً للفحص (مساواة حسابية، حقيقة جبرية، أو استنتاج
+   منطقي) — مثل `الخطوة 2: 17 × 20 = 340`. استخدم الأرقام الغربية (0-9) والرموز + − × ÷ =.
+3. اختم بسطر واحد فقط بالصيغة `الجواب النهائي: <الجواب>` حيث <الجواب> رقم أو تعبير قصير، أو
+   `نعم`/`لا` لأسئلة نعم/لا. لا تكتب شيئاً بعد ذلك السطر."""
+
+REVISION_PROMPT_AR = """تم فحص حلك السابق بمساعد برهان صوري (Lean 4). هذه نتيجة التحقق:
+
+{feedback}
+
+صحّح الخطأ فقط. أعد حل المسألة من البداية بنفس الصيغة (أسطر `الخطوة k:` مرقمة، ادعاء واحد في كل
+سطر، ثم `الجواب النهائي: <الجواب>`)."""
+
+STEP_RE = re.compile(
+    r"^\s*(?:\*\*)?(?:Step|الخطوة|خطوة)\s*([\d٠-٩]+)\s*[:.)\-：]\s*(?:\*\*)?\s*(.*)$", re.I
+)
 FINAL_RE = re.compile(
-    r"FINAL\s*ANSWER\s*(?:\*\*)?\s*(?:[:：]|(?:is|=))\s*\**\s*(.+?)\s*\**\s*$", re.I | re.M
+    r"(?:FINAL\s*ANSWER|الجواب النهائي|الإجابة النهائية|الاجابة النهائية)\s*(?:\*\*)?\s*(?:[:：]|(?:is|=|هو|هي))"
+    r"\s*\**\s*(.+?)\s*\**\s*$",
+    re.I | re.M,
 )
 
 
+YES_WORDS = {"yes", "true", "valid", "نعم", "صحيح", "صح"}
+NO_WORDS = {"no", "false", "invalid", "لا", "خطأ", "خاطئ"}
+
+
+def yes_no_polarity(answer: str | None) -> bool | None:
+    """True for an affirmative yes/no answer, False for a negative one, None if the leading
+    words are not a yes/no answer (or are contradictory). Arabic and English."""
+    if answer is None:
+        return None
+    p = normalize_digits(answer).strip().lower()
+    p = re.sub(r"(?:غير|ليس)\s+صحيح\w*", "خطأ", p)
+    words = re.sub(r"[^a-z\u0621-\u064a]", " ", p).split()[:3]
+    yes, no = any(w in YES_WORDS for w in words), any(w in NO_WORDS for w in words)
+    if yes == no:
+        return None
+    return yes
+
+
 def _clean_final(raw: str) -> str | None:
-    val = raw.strip().strip("*` .").rstrip(".")
+    val = normalize_digits(raw).strip().strip("*` .ـ").rstrip(".؛،")
     return val or None
 
 
@@ -48,7 +87,7 @@ def parse_answer(text: str) -> tuple[list[ReasoningStep], str | None]:
         if m:
             if current is not None:
                 steps.append(ReasoningStep(index=current_idx, text=" ".join(current).strip()))
-            current_idx = int(m.group(1))
+            current_idx = int(normalize_digits(m.group(1)))
             current = [m.group(2).strip()]
         elif current is not None and line.strip():
             current.append(line.strip())
@@ -75,7 +114,8 @@ class Student:
         self.max_tokens = max_tokens
 
     def solve(self, problem: str, history: list[dict[str, str]] | None = None) -> StudentAnswer:
-        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        system = SYSTEM_PROMPT_AR if is_arabic(problem) else SYSTEM_PROMPT
+        messages = [{"role": "system", "content": system}]
         messages += history or []
         if not history:
             messages.append({"role": "user", "content": problem})
@@ -91,5 +131,6 @@ class Student:
         )
 
     @staticmethod
-    def revision_message(feedback: str) -> str:
-        return REVISION_PROMPT.format(feedback=feedback)
+    def revision_message(feedback: str, arabic: bool = False) -> str:
+        tmpl = REVISION_PROMPT_AR if arabic else REVISION_PROMPT
+        return tmpl.format(feedback=feedback)

@@ -1,0 +1,297 @@
+{
+ "problem": "يبلغ سعر ساعة ٨٠٠ درهماً. خُفِّض بنسبة ٢٠٪ ثم خُفِّض السعر الجديد بنسبة ٢٥٪ أخرى. ما هو السعر النهائي بالدرهم؟",
+ "expected_answer": "480",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 588 درهماً.\n\nهنا هي الخطوات:\n\n1. الخطوة 1: حساب السعر بعد التخفيض الأول.\n   - السعر الأصلي = 800 درهماً.\n   - التخفيض بنسبة 20% يعني خصم 20% من 800.\n   - التخفيض = 800 × 20 / 100 = 160 درهماً.\n   - السعر الجديد بعد التخفيض الأول = 800 - 160 = 640 درهماً.\n\n2. الخطوة 2: حساب السعر بعد التخفيض الثاني.\n   - السعر الجديد بعد التخفيض الأول = 640 درهماً.\n   - التخفيض بنسبة 25% يعني خصم 25% من 640.\n   - التخفيض = 640 × 25 / 100 = 160 درهماً.\n   - السعر النهائي بعد التخفيض الثاني = 640 - 160 = 480 درهماً.\n\nإذًا، السعر النهائي بعد التخفيضين المتتاليين هو 480 درهماً.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "هنا هي الخطوات:"
+     },
+     {
+      "index": 2,
+      "text": "1. الخطوة 1: حساب السعر بعد التخفيض الأول.\n   - السعر الأصلي = 800 درهماً.\n   - التخفيض بنسبة 20% يعني خصم 20% من 800.\n   - التخفيض = 800 × 20 / 100 = 160 درهماً.\n   - السعر الجديد بعد التخفيض الأول = 800 - 160 = 640 درهماً."
+     },
+     {
+      "index": 3,
+      "text": "2. الخطوة 2: حساب السعر بعد التخفيض الثاني.\n   - السعر الجديد بعد التخفيض الأول = 640 درهماً.\n   - التخفيض بنسبة 25% يعني خصم 25% من 640.\n   - التخفيض = 640 × 25 / 100 = 160 درهماً.\n   - السعر النهائي بعد التخفيض الثاني = 640 - 160 = 480 درهماً."
+     },
+     {
+      "index": 4,
+      "text": "إذًا، السعر النهائي بعد التخفيضين المتتاليين هو 480 درهماً."
+     }
+    ],
+    "final_answer": "588 درهماً",
+    "latency_s": 4.813631296157837,
+    "tokens": 285
+   },
+   "formalization": {
+    "problem_prop": "((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduction"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(800:ℝ) * (1 - 20 / 100) = 640",
+      "note": "first discount"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(640:ℝ) * (1 - 25 / 100) = 480",
+      "note": "second discount"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "conclusion"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduction\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(800:ℝ) * (1 - 20 / 100) = 640\", \"note\": \"first discount\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(640:ℝ) * (1 - 25 / 100) = 480\", \"note\": \"second discount\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"conclusion\"}\n  ]\n}\n",
+    "latency_s": 9.494795799255371
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "هنا هي الخطوات:",
+      "detail": "introduction"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(800:ℝ) * (1 - 20 / 100) = 640",
+      "step_text": "1. الخطوة 1: حساب السعر بعد التخفيض الأول.\n   - السعر الأصلي = 800 درهماً.\n   - التخفيض بنسبة 20% يعني خصم 20% من 800.\n   - التخفيض = 800 × 20 / 100 = 160 درهماً.\n   - السعر الجديد بعد التخفيض الأول = 800 - 160 = 640 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(640:ℝ) * (1 - 25 / 100) = 480",
+      "step_text": "2. الخطوة 2: حساب السعر بعد التخفيض الثاني.\n   - السعر الجديد بعد التخفيض الأول = 640 درهماً.\n   - التخفيض بنسبة 25% يعني خصم 25% من 640.\n   - التخفيض = 640 × 25 / 100 = 160 درهماً.\n   - السعر النهائي بعد التخفيض الثاني = 640 - 160 = 480 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "إذًا، السعر النهائي بعد التخفيضين المتتاليين هو 480 درهماً.",
+      "detail": "conclusion"
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480`, which does not contain the stated FINAL ANSWER '588 درهماً'",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (800:ℝ) * (1 - 20 / 100) = 640 := by sorry\ntheorem s2_pos : (800:ℝ) * (1 - 20 / 100) = 640 := by fv_auto\ntheorem s2_neg : ¬ ((800:ℝ) * (1 - 20 / 100) = 640) := by fv_auto\n\ntheorem s3_wf : (640:ℝ) * (1 - 25 / 100) = 480 := by sorry\ntheorem s3_pos : (640:ℝ) * (1 - 25 / 100) = 480 := by fv_auto\ntheorem s3_neg : ¬ ((640:ℝ) * (1 - 25 / 100) = 480) := by fv_auto\n\ntheorem final_wf : ((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480 := by sorry\ntheorem final_pos : ((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480 := by fv_auto\ntheorem final_neg : ¬ (((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480) := by fv_auto\n",
+    "lean_latency_s": 4.22200083732605,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 800 * (1 - 20 / 100) = 640\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 640 * (1 - 25 / 100) = 480\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 800 * (1 - 20 / 100) * (1 - 25 / 100) = 480\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "الجواب النهائي لا يطابق ما تستنتجه خطواتك. تحقق Lean 4 من `((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480`؛ يجب أن يكون الرقم بعد «الجواب النهائي» هو نتيجة هذا الحساب، فأعد قراءة خطواتك واذكر القيمة التي تنتجها فعلاً.\nالخطوات التي تحقق Lean 4 من صحتها: 2, 3.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 480 درهماً.\n\nالتصحيح:\n\n1. الخطوة 1: حساب السعر بعد التخفيض الأول.\n   - السعر الأصلي = 800 درهماً.\n   - التخفيض بنسبة 20% يعني خصم 20% من 800.\n   - التخفيض = 800 × 20 / 100 = 160 درهماً.\n   - السعر الجديد بعد التخفيض الأول = 800 - 160 = 640 درهماً.\n\n2. الخطوة 2: حساب السعر بعد التخفيض الثاني.\n   - السعر الجديد بعد التخفيض الأول = 640 درهماً.\n   - التخفيض بنسبة 25% يعني خصم 25% من 640.\n   - التخفيض = 640 × 25 / 100 = 160 درهماً.\n   - السعر النهائي بعد التخفيض الثاني = 640 - 160 = 480 درهماً.\n\nإذًا، السعر النهائي بعد التخفيضين المتتاليين هو 480 درهماً.\n\nLean 4 يحسب بشكل صحيح: ((800 * (1 - 20/100)) * (1 - 25/100)) = 480، وهو ما يتطابق مع النتيجة التي حصلنا عليها.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "التصحيح:"
+     },
+     {
+      "index": 2,
+      "text": "1. الخطوة 1: حساب السعر بعد التخفيض الأول.\n   - السعر الأصلي = 800 درهماً.\n   - التخفيض بنسبة 20% يعني خصم 20% من 800.\n   - التخفيض = 800 × 20 / 100 = 160 درهماً.\n   - السعر الجديد بعد التخفيض الأول = 800 - 160 = 640 درهماً."
+     },
+     {
+      "index": 3,
+      "text": "2. الخطوة 2: حساب السعر بعد التخفيض الثاني.\n   - السعر الجديد بعد التخفيض الأول = 640 درهماً.\n   - التخفيض بنسبة 25% يعني خصم 25% من 640.\n   - التخفيض = 640 × 25 / 100 = 160 درهماً.\n   - السعر النهائي بعد التخفيض الثاني = 640 - 160 = 480 درهماً."
+     },
+     {
+      "index": 4,
+      "text": "إذًا، السعر النهائي بعد التخفيضين المتتاليين هو 480 درهماً."
+     },
+     {
+      "index": 5,
+      "text": "Lean 4 يحسب بشكل صحيح: ((800 * (1 - 20/100)) * (1 - 25/100)) = 480، وهو ما يتطابق مع النتيجة التي حصلنا عليها."
+     }
+    ],
+    "final_answer": "480 درهماً",
+    "latency_s": 7.860306739807129,
+    "tokens": 350
+   },
+   "formalization": {
+    "problem_prop": "((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "step correction"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(800:ℝ) * (1 - 20 / 100) = 640",
+      "note": "first discount"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(640:ℝ) * (1 - 25 / 100) = 480",
+      "note": "second discount"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "conclusion"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480",
+      "note": "verification"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"step correction\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(800:ℝ) * (1 - 20 / 100) = 640\", \"note\": \"first discount\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(640:ℝ) * (1 - 25 / 100) = 480\", \"note\": \"second discount\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"conclusion\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480\", \"note\": \"verification\"}\n  ]\n}\n",
+    "latency_s": 12.37405014038086
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "التصحيح:",
+      "detail": "step correction"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(800:ℝ) * (1 - 20 / 100) = 640",
+      "step_text": "1. الخطوة 1: حساب السعر بعد التخفيض الأول.\n   - السعر الأصلي = 800 درهماً.\n   - التخفيض بنسبة 20% يعني خصم 20% من 800.\n   - التخفيض = 800 × 20 / 100 = 160 درهماً.\n   - السعر الجديد بعد التخفيض الأول = 800 - 160 = 640 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(640:ℝ) * (1 - 25 / 100) = 480",
+      "step_text": "2. الخطوة 2: حساب السعر بعد التخفيض الثاني.\n   - السعر الجديد بعد التخفيض الأول = 640 درهماً.\n   - التخفيض بنسبة 25% يعني خصم 25% من 640.\n   - التخفيض = 640 × 25 / 100 = 160 درهماً.\n   - السعر النهائي بعد التخفيض الثاني = 640 - 160 = 480 درهماً.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "إذًا، السعر النهائي بعد التخفيضين المتتاليين هو 480 درهماً.",
+      "detail": "conclusion"
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480",
+      "step_text": "Lean 4 يحسب بشكل صحيح: ((800 * (1 - 20/100)) * (1 - 25/100)) = 480، وهو ما يتطابق مع النتيجة التي حصلنا عليها.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (800:ℝ) * (1 - 20 / 100) = 640 := by sorry\ntheorem s2_pos : (800:ℝ) * (1 - 20 / 100) = 640 := by fv_auto\ntheorem s2_neg : ¬ ((800:ℝ) * (1 - 20 / 100) = 640) := by fv_auto\n\ntheorem s3_wf : (640:ℝ) * (1 - 25 / 100) = 480 := by sorry\ntheorem s3_pos : (640:ℝ) * (1 - 25 / 100) = 480 := by fv_auto\ntheorem s3_neg : ¬ ((640:ℝ) * (1 - 25 / 100) = 480) := by fv_auto\n\ntheorem s5_wf : ((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480 := by sorry\ntheorem s5_pos : ((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480 := by fv_auto\ntheorem s5_neg : ¬ (((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480) := by fv_auto\n\ntheorem final_wf : ((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480 := by sorry\ntheorem final_pos : ((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480 := by fv_auto\ntheorem final_neg : ¬ (((800:ℝ) * (1 - 20 / 100)) * (1 - 25 / 100) = 480) := by fv_auto\n",
+    "lean_latency_s": 4.291578531265259,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 800 * (1 - 20 / 100) = 640\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 640 * (1 - 25 / 100) = 480\n⊢ False\nfailed"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 800 * (1 - 20 / 100) * (1 - 25 / 100) = 480\n⊢ False\nfailed"
+     },
+     {
+      "line": 154,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 156,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 800 * (1 - 20 / 100) * (1 - 25 / 100) = 480\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "480 درهماً",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 43.06
+}

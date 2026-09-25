@@ -50,7 +50,7 @@ class Settings:
     runs_dir: Path = field(default_factory=lambda: REPO_ROOT / "runs")
 
     @classmethod
-    def from_env(cls) -> Settings:
+    def from_env(cls, provider: str | None = None) -> Settings:
         falcon_url = os.getenv("FALCON_BASE_URL", "https://chat.falconllm.tii.ae/api").rstrip("/")
         falcon_key = os.getenv("FALCON_API_KEY", "")
         student = LLMEndpoint(
@@ -58,7 +58,7 @@ class Settings:
             api_key=falcon_key,
             model=os.getenv("FALCON_STUDENT_MODEL", "falcon-h1-7b-instruct"),
         )
-        provider = os.getenv("FORMALIZER_PROVIDER", "falcon").lower()
+        provider = (provider or os.getenv("FORMALIZER_PROVIDER", "falcon")).lower()
         preset = PROVIDER_PRESETS.get(provider, PROVIDER_PRESETS["falcon"])
         default_url = falcon_url if provider == "falcon" else preset["base_url"]
         default_key = falcon_key if provider == "falcon" else os.getenv(preset["key_env"], "")

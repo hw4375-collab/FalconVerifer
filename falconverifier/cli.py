@@ -23,6 +23,7 @@ VERDICT_STYLE = {
     Verdict.UNKNOWN: "yellow",
     Verdict.ILL_FORMED: "magenta",
     Verdict.SKIPPED: "dim",
+    Verdict.UNVERIFIED_PREMISE: "cyan",
 }
 
 
@@ -136,6 +137,39 @@ def bench(
         workers=workers,
         tag=tag,
         settings=_settings(formalizer),
+    )
+
+
+@app.command("bench-regrade")
+def bench_regrade(
+    run_dir: list[Path] = typer.Argument(..., help="bench/results/<arm>/run_* directories"),
+) -> None:
+    """Re-grade stored benchmark runs with the current answer matcher (no model calls)."""
+    from .bench import print_summary, regrade_run
+
+    for d in run_dir:
+        print_summary(regrade_run(d)["summary"])
+
+
+@app.command("export-dpo")
+def export_dpo(
+    roots: list[Path] = typer.Argument(
+        None, help="Trace files or directories (default: bench/results and runs)"
+    ),
+    out: Path = typer.Option(Path("data/dpo_pairs.jsonl"), help="Output JSONL"),
+    allow_unlabeled: bool = typer.Option(
+        False, help="Also use traces without a gold answer (chosen = Lean-verified only)"
+    ),
+) -> None:
+    """Export Lean-refuted -> Lean-verified answer pairs as DPO preference data."""
+    from .dpo_export import export
+
+    stats = export(
+        roots or [Path("bench/results"), Path("runs")], out, require_expected=not allow_unlabeled
+    )
+    console.print(
+        f"[green]{stats['pairs']} pairs[/] ({stats['ar']} ar / {stats['en']} en) from "
+        f"{stats['traces']} traces, {stats['duplicates']} duplicates dropped -> {out}"
     )
 
 

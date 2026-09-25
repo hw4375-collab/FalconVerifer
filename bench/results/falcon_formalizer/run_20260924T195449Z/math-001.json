@@ -1,0 +1,155 @@
+{
+ "problem": "Layla buys 24 packs of coins with 46 in each pack, then gives away 373 of them. How many coins does Layla have left?",
+ "expected_answer": "731",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the total number of coins Layla buys.\n\\[ \\text{Total coins} = 24 \\times 46 \\]\n\nStep 2: Perform the multiplication to find the total number of coins.\n\\[ 24 \\times 46 = 1104 \\]\n\nStep 3: Subtract the number of coins Layla gives away from the total number of coins.\n\\[ \\text{Coins left} = 1104 - 373 \\]\n\nStep 4: Perform the subtraction to find the number of coins Layla has left.\n\\[ 1104 - 373 = 731 \\]\n\nFINAL ANSWER: 731",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the total number of coins Layla buys. \\[ \\text{Total coins} = 24 \\times 46 \\]"
+     },
+     {
+      "index": 2,
+      "text": "Perform the multiplication to find the total number of coins. \\[ 24 \\times 46 = 1104 \\]"
+     },
+     {
+      "index": 3,
+      "text": "Subtract the number of coins Layla gives away from the total number of coins. \\[ \\text{Coins left} = 1104 - 373 \\]"
+     },
+     {
+      "index": 4,
+      "text": "Perform the subtraction to find the number of coins Layla has left. \\[ 1104 - 373 = 731 \\]"
+     }
+    ],
+    "final_answer": "731",
+    "latency_s": 8.457892656326294,
+    "tokens": 166
+   },
+   "formalization": {
+    "problem_prop": "(24:ℕ) * 46 - 373 = 731",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(24:ℕ) * 46 = 1104",
+      "note": "total coins bought"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "1104 - 373 = 731",
+      "note": "coins left after giving away"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": ""
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": ""
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(24:ℕ) * 46 - 373 = 731\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(24:ℕ) * 46 = 1104\", \"note\": \"total coins bought\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"1104 - 373 = 731\", \"note\": \"coins left after giving away\"}\n  ]\n}\n",
+    "latency_s": 8.144840002059937
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(24:ℕ) * 46 = 1104",
+      "step_text": "Calculate the total number of coins Layla buys. \\[ \\text{Total coins} = 24 \\times 46 \\]",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "1104 - 373 = 731",
+      "step_text": "Perform the multiplication to find the total number of coins. \\[ 24 \\times 46 = 1104 \\]",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Subtract the number of coins Layla gives away from the total number of coins. \\[ \\text{Coins left} = 1104 - 373 \\]",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Perform the subtraction to find the number of coins Layla has left. \\[ 1104 - 373 = 731 \\]",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (24:ℕ) * 46 = 1104 := by sorry\ntheorem s1_pos : (24:ℕ) * 46 = 1104 := by fv_auto\ntheorem s1_neg : ¬ ((24:ℕ) * 46 = 1104) := by fv_auto\n\ntheorem s2_wf : 1104 - 373 = 731 := by sorry\ntheorem s2_pos : 1104 - 373 = 731 := by fv_auto\ntheorem s2_neg : ¬ (1104 - 373 = 731) := by fv_auto\n\ntheorem final_wf : (24:ℕ) * 46 - 373 = 731 := by sorry\ntheorem final_pos : (24:ℕ) * 46 - 373 = 731 := by fv_auto\ntheorem final_neg : ¬ ((24:ℕ) * 46 - 373 = 731) := by fv_auto\n",
+    "lean_latency_s": 3.8722002506256104,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "731",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 20.48
+}

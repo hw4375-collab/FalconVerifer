@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FalconVerifier by ChaosButterfly — Lean 4 assurance for Falcon</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/static/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <img class="logo" src="/static/mark.png" alt="ChaosButterfly">
+    <div>
+      <h1>FalconVerifier <span class="by">by ChaosButterfly</span></h1>
+      <p>Falcon answers · Lean 4 proves · Falcon learns</p>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="/" class="active">Verifier</a>
+    <a href="/why">Why</a>
+    <a href="/benchmark">Benchmark</a>
+    <a href="/about">Method</a>
+    <a href="https://github.com/hw4375-collab/FalconVerifer" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="tagline">Every step Falcon says, proved or refuted by the Lean 4 kernel.</p>
+    <ol class="flow">
+      <li title="Falcon (3B/7B) answers in Arabic or English with its reasoning">Falcon answers</li>
+      <li title="Each reasoning step becomes a Lean 4 proposition — deterministic Arabic pregroup grammar first, Falcon 34B as fallback">steps → Lean 4</li>
+      <li title="The Lean kernel proves each claim or its negation; undecided claims stay unknown">kernel decides</li>
+      <li title="Refuted claims are explained back to Falcon in its own language; it revises">Falcon is taught</li>
+      <li title="Full trace: answers, Lean claims, verdicts, feedback, kernel source">assurance trace</li>
+    </ol>
+  </section>
+
+  <section class="card input">
+    <textarea id="problem" rows="3" dir="auto" placeholder="Ask Falcon a math or logic question in Arabic or English…"></textarea>
+    <div class="translation muted" id="translation"></div>
+    <div class="examples" id="examples" title="Arabic examples use the weak Falcon 3B student · red badge = how often 3B got it wrong in round 1 on our benchmark"></div>
+    <div class="actions">
+      <button id="run">Verify with Lean 4</button>
+      <button id="baseline" class="ghost" title="Raw Falcon: one answer, nothing sent to Lean">Baseline only</button>
+      <button id="stop" class="ghost hidden">Stop</button>
+      <details class="settings" id="settings">
+        <summary><span id="cfg">settings</span></summary>
+        <div class="row controls">
+          <label>Student
+            <select id="student">
+              <option value="">Falcon 7B (default)</option>
+              <option value="falcon-h1-arabic-3b-instruct">Falcon 3B Arabic (weak student)</option>
+              <option value="falcon-h1r-7b">Falcon H1R 7B (reasoning)</option>
+            </select>
+          </label>
+          <label>Formalizer
+            <select id="formalizer">
+              <option value="falcon">Falcon 34B (Falcon verifies Falcon)</option>
+              <option value="openai">GPT-4.1-mini</option>
+              <option value="openrouter">OpenRouter (free)</option>
+            </select>
+          </label>
+          <label>Rounds <input id="rounds" type="number" min="1" max="5" value="3"></label>
+          <label>Expected answer <input id="expected" type="text" placeholder="optional"></label>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section id="status" class="status hidden"></section>
+  <section id="memnote" class="memnote hidden"></section>
+
+  <section id="roundlist" class="rounds"></section>
+
+  <section id="result" class="card result hidden"></section>
+
+  <section class="strip" id="benchstrip"></section>
+
+  <details class="card fold" id="replays">
+    <summary>Replay a recorded correction <small>benchmark traces · no model calls</small></summary>
+    <div id="replaylist" class="replaylist muted">loading…</div>
+  </details>
+
+  <details class="card fold">
+    <summary>Benchmark detail <small><a href="/benchmark">charts, per-problem evidence →</a></small></summary>
+    <div id="bench">no benchmark results yet — run <code>falconverifier bench</code></div>
+  </details>
+
+  <details class="card fold">
+    <summary>How to read the verdicts</summary>
+    <div class="legend verdicts">
+      <span class="badge verified">verified</span> Lean proved it
+      <span class="badge refuted">refuted</span> Lean proved the negation
+      <span class="badge unknown">unknown</span> neither side proved
+      <span class="badge unverified_premise">unverified_premise</span> world-knowledge premise, not for Lean
+      <span class="badge skipped">skipped</span> not a checkable claim
+    </div>
+    <p class="muted small">Lean certifies the formalized proposition, not that every nuance of the sentence was captured; anything it cannot decide is reported as unknown, never guessed. Assurance score = ½ verified share of checkable steps + ½ final-answer verdict, last round.</p>
+  </details>
+</main>
+
+<footer>
+  <img src="/static/chaosbutterfly_logo.png" alt="ChaosButterfly — Structure for a more open tomorrow.">
+</footer>
+
+<template id="round-tpl">
+  <article class="card round">
+    <h2>Round <span class="n"></span></h2>
+    <div class="cols">
+      <div class="col">
+        <h3>Falcon says</h3>
+        <pre class="answer">…</pre>
+        <details class="cot hidden"><summary>hidden chain-of-thought</summary><pre></pre></details>
+      </div>
+      <div class="col">
+        <h3>Lean 4 claims · kernel verdict</h3>
+        <div class="cotbar hidden"><div class="seg"></div><div class="sum muted"></div></div>
+        <table class="lean">
+          <thead><tr><th>step</th><th>natural language</th><th>Lean 4 claim</th><th>verdict</th></tr></thead>
+          <tbody><tr><td colspan="4" class="muted">formalizing…</td></tr></tbody>
+        </table>
+        <details class="leansrc hidden"><summary>Lean 4 source sent to the kernel (audit)</summary><pre dir="ltr"></pre></details>
+      </div>
+    </div>
+    <div class="feedback hidden">
+      <h3>Teaching Falcon</h3>
+      <pre></pre>
+    </div>
+  </article>
+</template>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

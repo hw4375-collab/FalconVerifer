@@ -1,0 +1,160 @@
+{
+ "problem": "ما هو ناتج 78 × 19؟",
+ "expected_answer": "1482",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الخطوة 1: 78 × 19 = (78 × 10) + (78 × 9)\n\nالخطوة 2: 78 × 10 = 780\n\nالخطوة 3: 78 × 9 = 702\n\nالخطوة 4: 780 + 702 = 1482\n\nالجواب النهائي: 1482",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "78 × 19 = (78 × 10) + (78 × 9)"
+     },
+     {
+      "index": 2,
+      "text": "78 × 10 = 780"
+     },
+     {
+      "index": 3,
+      "text": "78 × 9 = 702"
+     },
+     {
+      "index": 4,
+      "text": "780 + 702 = 1482"
+     }
+    ],
+    "final_answer": "1482",
+    "latency_s": 5.952995777130127,
+    "tokens": 108
+   },
+   "formalization": {
+    "problem_prop": "(78:ℚ) * 19 = 1482",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(78:ℚ) * 19 = ((78:ℚ) * 10) + (78 * 9)",
+      "note": "pregroup: n nʳ n nˡ n nʳ s nˡ n nˡ n nʳ n nˡ n nʳ n nʳ n nˡ n nˡ n nʳ n nˡ n nʳ n → s"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(78:ℚ) * 10 = (780:ℚ)",
+      "note": "pregroup: n nʳ n nˡ n nʳ s nˡ n → s"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(78:ℚ) * 9 = (702:ℚ)",
+      "note": "pregroup: n nʳ n nˡ n nʳ s nˡ n → s"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(780:ℚ) + 702 = (1482:ℚ)",
+      "note": "pregroup: n nʳ n nˡ n nʳ s nˡ n → s"
+     }
+    ],
+    "raw": "pregroup",
+    "latency_s": 0.0
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(78:ℚ) * 19 = ((78:ℚ) * 10) + (78 * 9)",
+      "step_text": "78 × 19 = (78 × 10) + (78 × 9)",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(78:ℚ) * 10 = (780:ℚ)",
+      "step_text": "78 × 10 = 780",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(78:ℚ) * 9 = (702:ℚ)",
+      "step_text": "78 × 9 = 702",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(780:ℚ) + 702 = (1482:ℚ)",
+      "step_text": "780 + 702 = 1482",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s1_wf : (78:ℚ) * 19 = ((78:ℚ) * 10) + (78 * 9) := by sorry\ntheorem s1_pos : (78:ℚ) * 19 = ((78:ℚ) * 10) + (78 * 9) := by fv_auto\ntheorem s1_neg : ¬ ((78:ℚ) * 19 = ((78:ℚ) * 10) + (78 * 9)) := by fv_auto\n\ntheorem s2_wf : (78:ℚ) * 10 = (780:ℚ) := by sorry\ntheorem s2_pos : (78:ℚ) * 10 = (780:ℚ) := by fv_auto\ntheorem s2_neg : ¬ ((78:ℚ) * 10 = (780:ℚ)) := by fv_auto\n\ntheorem s3_wf : (78:ℚ) * 9 = (702:ℚ) := by sorry\ntheorem s3_pos : (78:ℚ) * 9 = (702:ℚ) := by fv_auto\ntheorem s3_neg : ¬ ((78:ℚ) * 9 = (702:ℚ)) := by fv_auto\n\ntheorem s4_wf : (780:ℚ) + 702 = (1482:ℚ) := by sorry\ntheorem s4_pos : (780:ℚ) + 702 = (1482:ℚ) := by fv_auto\ntheorem s4_neg : ¬ ((780:ℚ) + 702 = (1482:ℚ)) := by fv_auto\n\ntheorem final_wf : (78:ℚ) * 19 = 1482 := by sorry\ntheorem final_pos : (78:ℚ) * 19 = 1482 := by fv_auto\ntheorem final_neg : ¬ ((78:ℚ) * 19 = 1482) := by fv_auto\n",
+    "lean_latency_s": 3.6948184967041016,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 78 * 19 = 78 * 10 + 78 * 9\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 78 * 10 = 780\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 78 * 9 = 702\n⊢ False"
+     },
+     {
+      "line": 53,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 55,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 780 + 702 = 1482\n⊢ False"
+     },
+     {
+      "line": 57,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 59,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 78 * 19 = 1482\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "1482",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 9.65
+}

@@ -1,0 +1,219 @@
+{
+ "problem": "Sara thinks of a number, multiplies it by 3, and adds 43. The result is 85. What was the original number?",
+ "expected_answer": "14",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Let the original number be \\( x \\).\nStep 2: According to the problem, Sara multiplies the number by 3 and adds 43, resulting in 85. This can be written as: \\( 3x + 43 = 85 \\).\nStep 3: Subtract 43 from both sides of the equation to isolate the term with \\( x \\): \\( 3x = 85 - 43 \\).\nStep 4: Calculate the right side: \\( 3x = 42 \\).\nStep 5: Divide both sides by 3 to solve for \\( x \\): \\( x = \\frac{42}{3} \\).\nStep 6: Calculate the division: \\( x = 14 \\).\n\nFINAL ANSWER: 14",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Let the original number be \\( x \\)."
+     },
+     {
+      "index": 2,
+      "text": "According to the problem, Sara multiplies the number by 3 and adds 43, resulting in 85. This can be written as: \\( 3x + 43 = 85 \\)."
+     },
+     {
+      "index": 3,
+      "text": "Subtract 43 from both sides of the equation to isolate the term with \\( x \\): \\( 3x = 85 - 43 \\)."
+     },
+     {
+      "index": 4,
+      "text": "Calculate the right side: \\( 3x = 42 \\)."
+     },
+     {
+      "index": 5,
+      "text": "Divide both sides by 3 to solve for \\( x \\): \\( x = \\frac{42}{3} \\)."
+     },
+     {
+      "index": 6,
+      "text": "Calculate the division: \\( x = 14 \\)."
+     }
+    ],
+    "final_answer": "14",
+    "latency_s": 4.612453460693359,
+    "tokens": 193
+   },
+   "formalization": {
+    "problem_prop": "3 * 14 + 43 = 85",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduces variable"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 3,
+      "kind": "algebra",
+      "lean_prop": "3 * 14 = 85 - 43",
+      "note": "isolates term with x"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "85 - 43 = 42",
+      "note": "calculates right side"
+     },
+     {
+      "index": 5,
+      "kind": "algebra",
+      "lean_prop": "42 / 3 = 14",
+      "note": "solves for x"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "42 / 3 = 14",
+      "note": "calculates division"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"3 * 14 + 43 = 85\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduces variable\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 3, \"kind\": \"algebra\", \"lean_prop\": \"3 * 14 = 85 - 43\", \"note\": \"isolates term with x\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"85 - 43 = 42\", \"note\": \"calculates right side\"},\n    {\"index\": 5, \"kind\": \"algebra\", \"lean_prop\": \"42 / 3 = 14\", \"note\": \"solves for x\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"42 / 3 = 14\", \"note\": \"calculates division\"}\n  ]\n}\n",
+    "latency_s": 11.368405103683472
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Let the original number be \\( x \\).",
+      "detail": "introduces variable"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "According to the problem, Sara multiplies the number by 3 and adds 43, resulting in 85. This can be written as: \\( 3x + 43 = 85 \\).",
+      "detail": "restates problem"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "3 * 14 = 85 - 43",
+      "step_text": "Subtract 43 from both sides of the equation to isolate the term with \\( x \\): \\( 3x = 85 - 43 \\).",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "85 - 43 = 42",
+      "step_text": "Calculate the right side: \\( 3x = 42 \\).",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "42 / 3 = 14",
+      "step_text": "Divide both sides by 3 to solve for \\( x \\): \\( x = \\frac{42}{3} \\).",
+      "detail": ""
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "42 / 3 = 14",
+      "step_text": "Calculate the division: \\( x = 14 \\).",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s3_wf : 3 * 14 = 85 - 43 := by sorry\ntheorem s3_pos : 3 * 14 = 85 - 43 := by fv_auto\ntheorem s3_neg : ¬ (3 * 14 = 85 - 43) := by fv_auto\n\ntheorem s4_wf : 85 - 43 = 42 := by sorry\ntheorem s4_pos : 85 - 43 = 42 := by fv_auto\ntheorem s4_neg : ¬ (85 - 43 = 42) := by fv_auto\n\ntheorem s5_wf : 42 / 3 = 14 := by sorry\ntheorem s5_pos : 42 / 3 = 14 := by fv_auto\ntheorem s5_neg : ¬ (42 / 3 = 14) := by fv_auto\n\ntheorem s6_wf : 42 / 3 = 14 := by sorry\ntheorem s6_pos : 42 / 3 = 14 := by fv_auto\ntheorem s6_neg : ¬ (42 / 3 = 14) := by fv_auto\n\ntheorem final_wf : 3 * 14 + 43 = 85 := by sorry\ntheorem final_pos : 3 * 14 + 43 = 85 := by fv_auto\ntheorem final_neg : ¬ (3 * 14 + 43 = 85) := by fv_auto\n",
+    "lean_latency_s": 4.334772825241089,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "14",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 20.32
+}

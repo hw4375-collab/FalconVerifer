@@ -14,8 +14,10 @@ from rich.console import Console
 from rich.table import Table
 
 from .agent import VerifyAndTeachAgent
+from .arabic import normalize_digits
 from .config import Settings
 from .schemas import Trace, Verdict
+from .student import NO_WORDS, YES_WORDS, yes_no_polarity
 
 log = logging.getLogger(__name__)
 console = Console()
@@ -44,19 +46,21 @@ def _to_number(s: str) -> Fraction | None:
 def answers_match(pred: str | None, expected: str) -> bool:
     if pred is None:
         return False
-    p, e = pred.strip().lower(), expected.strip().lower()
-    if e in {"yes", "no", "true", "false", "valid", "invalid"}:
-        p_word = re.sub(r"[^a-z]", " ", p).split()
-        syn = {"yes": {"yes", "true", "valid"}, "no": {"no", "false", "invalid"}}
-        key = "yes" if e in syn["yes"] else "no"
-        other = "no" if key == "yes" else "yes"
-        return any(w in syn[key] for w in p_word[:3]) and not any(
-            w in syn[other] for w in p_word[:3]
-        )
+    p, e = normalize_digits(pred).strip().lower(), normalize_digits(expected).strip().lower()
+    e_pol = yes_no_polarity(e)
+    if e_pol is not None and e in YES_WORDS | NO_WORDS:
+        return yes_no_polarity(p) == e_pol
+    if "=" in p:  # "(a+b)/2 = 51" -> grade the stated result, not the expression
+        p = p.rsplit("=", 1)[1]
     pn, en = _to_number(p), _to_number(e)
     if pn is not None and en is not None:
         return pn == en
-    return re.sub(r"[^a-z0-9]", "", p) == re.sub(r"[^a-z0-9]", "", e)
+    p_key, e_key = (re.sub(r"[^a-z0-9\u0621-\u064a]", "", x) for x in (p, e))
+    if not e_key:
+        return False
+    # "الجمعة" ⊂ "يوم الجمعة", "12:15" ⊂ "12:15 ظهراً": accept a contained answer when it is
+    # long enough not to be a stray particle
+    return p_key == e_key or (len(e_key) >= 4 and e_key in p_key)
 
 
 # --- benchmark -----------------------------------------------------------------------
@@ -84,7 +88,15 @@ def evaluate_trace(trace: Trace, expected: str) -> dict[str, Any]:
     r1_flagged = bool(r1_report and r1_report.has_errors)
     r1_refuted_steps = len(r1_report.refuted) if r1_report else 0
     r1_checkable = (
-        len([s for s in r1_report.steps if s.verdict != Verdict.SKIPPED]) if r1_report else 0
+        len(
+            [
+                s
+                for s in r1_report.steps
+                if s.verdict not in (Verdict.SKIPPED, Verdict.UNVERIFIED_PREMISE)
+            ]
+        )
+        if r1_report
+        else 0
     )
     r1_verified = len(r1_report.verified) if r1_report else 0
     return {
@@ -198,17 +210,14 @@ def run_benchmark(
                 f"(rounds={ev['rounds']}, status={ev['status']}, {ev['latency_s']:.0f}s)"
             )
 
-    ok_rows = [r for r in rows if "error" not in r]
-    summary = {"all": summarize(ok_rows)}
-    for t in sorted({t for r in ok_rows for t in r["tags"]}):
-        summary[t] = summarize([r for r in ok_rows if t in r["tags"]])
+    summary = summarize_by_tag(rows)
     result = {
         "dataset": str(dataset),
         "student_model": settings.student.model,
         "formalizer_model": settings.formalizer.model,
         "max_rounds": max_rounds or settings.max_rounds,
         "wall_time_s": round(time.time() - t0, 1),
-        "errors": len(rows) - len(ok_rows),
+        "errors": sum(1 for r in rows if "error" in r),
         "summary": summary,
         "rows": rows,
     }
@@ -216,6 +225,29 @@ def run_benchmark(
     (out_dir / "latest.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
     print_summary(summary)
     console.print(f"results written to {run_dir}")
+    return result
+
+
+def summarize_by_tag(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    ok_rows = [r for r in rows if "error" not in r]
+    summary = {"all": summarize(ok_rows)}
+    for t in sorted({t for r in ok_rows for t in r["tags"]}):
+        summary[t] = summarize([r for r in ok_rows if t in r["tags"]])
+    return summary
+
+
+def regrade_run(run_dir: Path) -> dict[str, Any]:
+    """Re-apply `answers_match` to a stored run (grader fixes) and rewrite its summary."""
+    path = run_dir / "results.json"
+    result = json.loads(path.read_text())
+    for r in result["rows"]:
+        if "error" in r:
+            continue
+        r["baseline_correct"] = answers_match(r["baseline_answer"], r["expected"])
+        r["final_correct"] = answers_match(r["final_answer"], r["expected"])
+    result["summary"] = summarize_by_tag(result["rows"])
+    path.write_text(json.dumps(result, ensure_ascii=False, indent=2))
+    (run_dir.parent / "latest.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
     return result
 
 

@@ -1,0 +1,185 @@
+{
+ "problem": "The average of 5 numbers 46, 85, 98, 67, 99 is computed. Then the number 46 is replaced by 31. What is the new average?",
+ "expected_answer": "76",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the sum of the original 5 numbers.  \nSum = 46 + 85 + 98 + 67 + 99 = 395\n\nStep 2: Calculate the original average.  \nOriginal Average = Sum / 5 = 395 / 5 = 79\n\nStep 3: Replace the number 46 with 31 and calculate the new sum.  \nNew Sum = 395 - 46 + 31 = 380\n\nStep 4: Calculate the new average.  \nNew Average = New Sum / 5 = 380 / 5 = 76\n\nFINAL ANSWER: 76",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the sum of the original 5 numbers. Sum = 46 + 85 + 98 + 67 + 99 = 395"
+     },
+     {
+      "index": 2,
+      "text": "Calculate the original average. Original Average = Sum / 5 = 395 / 5 = 79"
+     },
+     {
+      "index": 3,
+      "text": "Replace the number 46 with 31 and calculate the new sum. New Sum = 395 - 46 + 31 = 380"
+     },
+     {
+      "index": 4,
+      "text": "Calculate the new average. New Average = New Sum / 5 = 380 / 5 = 76"
+     }
+    ],
+    "final_answer": "76",
+    "latency_s": 7.862594127655029,
+    "tokens": 173
+   },
+   "formalization": {
+    "problem_prop": "(395:ℚ) - 46 + 31 = 380 ∧ (380:ℚ) / 5 = 76",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(46:ℚ) + 85 + 98 + 67 + 99 = 395",
+      "note": "sum of original numbers"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(395:ℚ) / 5 = 79",
+      "note": "original average"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(395:ℚ) - 46 + 31 = 380",
+      "note": "new sum"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(380:ℚ) / 5 = 76",
+      "note": "new average"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(395:ℚ) - 46 + 31 = 380 ∧ (380:ℚ) / 5 = 76\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(46:ℚ) + 85 + 98 + 67 + 99 = 395\", \"note\": \"sum of original numbers\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(395:ℚ) / 5 = 79\", \"note\": \"original average\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(395:ℚ) - 46 + 31 = 380\", \"note\": \"new sum\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(380:ℚ) / 5 = 76\", \"note\": \"new average\"}\n  ]\n}\n",
+    "latency_s": 10.038993835449219
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(46:ℚ) + 85 + 98 + 67 + 99 = 395",
+      "step_text": "Calculate the sum of the original 5 numbers. Sum = 46 + 85 + 98 + 67 + 99 = 395",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(395:ℚ) / 5 = 79",
+      "step_text": "Calculate the original average. Original Average = Sum / 5 = 395 / 5 = 79",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(395:ℚ) - 46 + 31 = 380",
+      "step_text": "Replace the number 46 with 31 and calculate the new sum. New Sum = 395 - 46 + 31 = 380",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(380:ℚ) / 5 = 76",
+      "step_text": "Calculate the new average. New Average = New Sum / 5 = 380 / 5 = 76",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (46:ℚ) + 85 + 98 + 67 + 99 = 395 := by sorry\ntheorem s1_pos : (46:ℚ) + 85 + 98 + 67 + 99 = 395 := by fv_auto\ntheorem s1_neg : ¬ ((46:ℚ) + 85 + 98 + 67 + 99 = 395) := by fv_auto\n\ntheorem s2_wf : (395:ℚ) / 5 = 79 := by sorry\ntheorem s2_pos : (395:ℚ) / 5 = 79 := by fv_auto\ntheorem s2_neg : ¬ ((395:ℚ) / 5 = 79) := by fv_auto\n\ntheorem s3_wf : (395:ℚ) - 46 + 31 = 380 := by sorry\ntheorem s3_pos : (395:ℚ) - 46 + 31 = 380 := by fv_auto\ntheorem s3_neg : ¬ ((395:ℚ) - 46 + 31 = 380) := by fv_auto\n\ntheorem s4_wf : (380:ℚ) / 5 = 76 := by sorry\ntheorem s4_pos : (380:ℚ) / 5 = 76 := by fv_auto\ntheorem s4_neg : ¬ ((380:ℚ) / 5 = 76) := by fv_auto\n\ntheorem final_wf : (395:ℚ) - 46 + 31 = 380 ∧ (380:ℚ) / 5 = 76 := by sorry\ntheorem final_pos : (395:ℚ) - 46 + 31 = 380 ∧ (380:ℚ) / 5 = 76 := by fv_auto\ntheorem final_neg : ¬ ((395:ℚ) - 46 + 31 = 380 ∧ (380:ℚ) / 5 = 76) := by fv_auto\n",
+    "lean_latency_s": 3.8850653171539307,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\na : 46 + 85 + 98 + 67 + 99 = 395\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\na : 395 / 5 = 79\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\na : 395 - 46 + 31 = 380\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\na : 380 / 5 = 76\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n_ : 395 - 46 + 31 = 380\na : 380 / 5 = 76\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "76",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 21.79
+}

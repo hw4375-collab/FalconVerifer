@@ -13,6 +13,7 @@ from pathlib import Path
 
 rng = random.Random(20260924)
 OUT = Path(__file__).parent / "problems.jsonl"
+OUT_HARD = Path(__file__).parent / "problems_hard.jsonl"
 
 NAMES = ["Aisha", "Omar", "Layla", "Yousef", "Fatima", "Hamdan", "Noor", "Khalid", "Sara", "Zayed"]
 ITEMS = [
@@ -377,6 +378,284 @@ def gen_logic() -> list[dict]:
     return L
 
 
+def gen_hard_math() -> list[dict]:
+    """Harder tier: long carries, 3x3-digit products, compound percentages, order of operations."""
+    out: list[dict] = []
+
+    def add(problem: str, answer, tags: list[str]) -> None:
+        out.append({"problem": problem, "answer": str(answer), "tags": ["math", "hard", *tags]})
+
+    for _ in range(6):
+        a, b = rng.randint(203, 987), rng.randint(112, 689)
+        add(f"Compute {a} × {b}.", a * b, ["arith", "multiply3"])
+    for _ in range(4):
+        a, b, c = rng.randint(1203, 9876), rng.randint(2004, 8765), rng.randint(105, 998)
+        add(f"Compute {a} + {b} - {c}.", a + b - c, ["arith", "carry"])
+    for _ in range(4):
+        a, b, c, d = (
+            rng.randint(12, 49),
+            rng.randint(13, 47),
+            rng.randint(11, 39),
+            rng.randint(2, 9),
+        )
+        add(
+            f"Evaluate {a} + {b} × {c} - {d}² using the standard order of operations.",
+            a + b * c - d * d,
+            ["arith", "order-of-operations"],
+        )
+    for _ in range(4):
+        price = rng.choice([800, 1200, 1500, 2400, 3200])
+        p1, p2 = rng.choice([10, 20, 25]), rng.choice([10, 15, 20])
+        ans = price * (100 - p1) * (100 - p2) / 10000
+        add(
+            f"A phone costs {price} dirhams. It is discounted by {p1}%, and then the reduced price is "
+            f"discounted by a further {p2}%. What is the final price in dirhams?",
+            int(ans) if ans == int(ans) else ans,
+            ["arith", "compound-percent"],
+        )
+    for _ in range(4):
+        k = rng.randint(5, 8)
+        vals = [rng.randint(40, 99) for _ in range(k)]
+        vals[-1] += (-sum(vals)) % k
+        old = vals[0]
+        new = old + rng.choice([-k * 3, k * 2, k * 4])
+        add(
+            f"The average of {k} numbers {', '.join(map(str, vals))} is computed. Then the number "
+            f"{old} is replaced by {new}. What is the new average?",
+            (sum(vals) - old + new) // k,
+            ["arith", "average-change"],
+        )
+    for _ in range(4):
+        n, m = rng.randint(1000, 9999), rng.randint(13, 47)
+        add(f"What is the remainder when {n} is divided by {m}?", n % m, ["arith", "remainder"])
+    for _ in range(3):
+        x = rng.randint(11, 60)
+        add(
+            f"The sum of three consecutive integers is {3 * x + 3}. What is the largest of them?",
+            x + 2,
+            ["algebra", "consecutive"],
+        )
+    for a, b in rng.sample([(6, 12), (4, 12), (10, 15), (12, 24), (3, 6), (20, 30)], 3):
+        add(
+            f"Pipe A fills a tank in {a} hours and pipe B fills it in {b} hours. Working together, "
+            f"how many hours do they take?",
+            (a * b) // (a + b),
+            ["algebra", "work-rate"],
+        )
+    for _ in range(3):
+        a, d = rng.randint(3, 15), rng.randint(2, 9)
+        n = rng.randint(15, 40)
+        add(
+            f"An arithmetic sequence starts at {a} and increases by {d} each term. "
+            f"What is the {n}th term?",
+            a + (n - 1) * d,
+            ["algebra", "sequence"],
+        )
+    for _ in range(3):
+        s, cp = rng.randint(4, 9) * 10, rng.choice([2, 3, 4, 5])
+        add(
+            f"A rectangle has perimeter {2 * (s + s * cp)} and its length is {cp} times its width. "
+            f"What is its area?",
+            s * s * cp,
+            ["algebra", "geometry"],
+        )
+    return out
+
+
+def gen_hard_logic() -> list[dict]:
+    L: list[dict] = []
+
+    def add(problem: str, answer: str, tags: list[str]) -> None:
+        L.append({"problem": problem, "answer": answer, "tags": ["logic", "hard", *tags]})
+
+    q = " Does the conclusion necessarily follow from the premises? Answer Yes or No."
+    items: list[tuple[str, str, list[str]]] = [
+        (
+            "Only members may enter. Rania entered. Conclusion: Rania is a member.",
+            "Yes",
+            ["only-if", "valid"],
+        ),
+        (
+            "Only members may enter. Rania is a member. Conclusion: Rania entered.",
+            "No",
+            ["only-if", "invalid"],
+        ),
+        (
+            "Unless it rains, the match is played. The match was not played. Conclusion: it rained.",
+            "Yes",
+            ["unless", "valid"],
+        ),
+        (
+            "Unless it rains, the match is played. It rained. Conclusion: the match was not played.",
+            "No",
+            ["unless", "invalid"],
+        ),
+        (
+            "If x is a multiple of 4 then x is even. x is even. Conclusion: x is a multiple of 4.",
+            "No",
+            ["number", "affirming-consequent"],
+        ),
+        (
+            "Every multiple of 12 is a multiple of 4. Every multiple of 4 is even. 84 is a multiple of 12. Conclusion: 84 is even.",
+            "Yes",
+            ["number", "chain"],
+        ),
+        (
+            "No prime greater than 2 is even. 91 is odd. Conclusion: 91 is prime.",
+            "No",
+            ["number", "invalid"],
+        ),
+        (
+            "All squares of integers are non-negative. n² = -4 for some integer n. Conclusion: 0 = 1.",
+            "Yes",
+            ["number", "explosion"],
+        ),
+        (
+            "Some students study Lean. All who study Lean study logic. Some who study logic study Python. Conclusion: some students study Python.",
+            "No",
+            ["syllogism", "invalid"],
+        ),
+        (
+            "All A are B. No B are C. Some D are C. Conclusion: some D are not A.",
+            "Yes",
+            ["syllogism", "valid"],
+        ),
+        (
+            "All A are B. No B are C. Some D are not C. Conclusion: some D are A.",
+            "No",
+            ["syllogism", "invalid"],
+        ),
+        (
+            "Some A are B. Some B are C. Some C are D. Conclusion: some A are D.",
+            "No",
+            ["syllogism", "invalid"],
+        ),
+        (
+            "No A are B. All C are A. Some D are C. Conclusion: some D are not B.",
+            "Yes",
+            ["syllogism", "valid"],
+        ),
+        (
+            "Exactly one of P and Q is true. P is true. Conclusion: Q is false.",
+            "Yes",
+            ["xor", "valid"],
+        ),
+        (
+            "At least one of P and Q is true. P is true. Conclusion: Q is false.",
+            "No",
+            ["or", "invalid"],
+        ),
+        (
+            "If P then Q. If not P then R. Conclusion: Q or R.",
+            "Yes",
+            ["propositional", "case-split"],
+        ),
+        (
+            "If P then Q. If P then R. Q and R are true. Conclusion: P is true.",
+            "No",
+            ["propositional", "invalid"],
+        ),
+        (
+            "P if and only if Q. Q if and only if R. Not R. Conclusion: not P.",
+            "Yes",
+            ["iff", "valid"],
+        ),
+        ("If P then (Q or R). Not Q. P. Conclusion: R.", "Yes", ["propositional", "valid"]),
+        (
+            "If P then (Q and R). Not Q. Conclusion: not P.",
+            "Yes",
+            ["propositional", "modus-tollens"],
+        ),
+        ("If (P and Q) then R. Not R. P. Conclusion: not Q.", "Yes", ["propositional", "valid"]),
+        (
+            "If (P or Q) then R. Not R. Conclusion: not P and not Q.",
+            "Yes",
+            ["propositional", "valid"],
+        ),
+        ("If (P and Q) then R. Not R. Conclusion: not P.", "No", ["propositional", "invalid"]),
+        (
+            "Ahmed is older than Bilal. Bilal is older than Carla. Dina is younger than Carla. Ehab is older than Ahmed. Conclusion: Dina is the youngest of the five.",
+            "Yes",
+            ["ordering", "valid"],
+        ),
+        (
+            "Ahmed is older than Bilal. Carla is older than Bilal. Dina is younger than Ahmed. Conclusion: Carla is older than Dina.",
+            "No",
+            ["ordering", "invalid"],
+        ),
+        (
+            "Five runners: Amal finished before Basim. Basim finished before Chan. Dalia finished after Chan. Emad finished before Amal. Conclusion: Emad finished first.",
+            "Yes",
+            ["ordering", "valid"],
+        ),
+        (
+            "Five runners: Amal finished before Basim. Chan finished before Basim. Dalia finished after Basim. Conclusion: Amal finished before Chan.",
+            "No",
+            ["ordering", "invalid"],
+        ),
+        (
+            "x and y are positive integers with x > y. Conclusion: x² > y².",
+            "Yes",
+            ["number", "valid"],
+        ),
+        (
+            "x and y are real numbers with x > y. Conclusion: 1/x < 1/y.",
+            "No",
+            ["number", "invalid"],
+        ),
+        (
+            "x and y are integers and x·y is even. Conclusion: x is even.",
+            "No",
+            ["number", "invalid"],
+        ),
+        ("x and y are integers and x·y is odd. Conclusion: x is odd.", "Yes", ["number", "valid"]),
+        (
+            "n is an integer and n² is divisible by 4. Conclusion: n is divisible by 4.",
+            "No",
+            ["number", "invalid"],
+        ),
+        (
+            "n is an integer and n is divisible by both 4 and 6. Conclusion: n is divisible by 24.",
+            "No",
+            ["number", "invalid"],
+        ),
+        (
+            "n is an integer and n is divisible by both 3 and 8. Conclusion: n is divisible by 24.",
+            "Yes",
+            ["number", "valid"],
+        ),
+        (
+            "Every employee who is late is fined. Nobody was fined today. Conclusion: nobody was late today.",
+            "Yes",
+            ["quantifier", "modus-tollens"],
+        ),
+        (
+            "Every employee who is late is fined. Sami was fined today. Conclusion: Sami was late today.",
+            "No",
+            ["quantifier", "affirming-consequent"],
+        ),
+        (
+            "Some cities have a metro. Every city with a metro has over a million residents. Conclusion: every city has over a million residents.",
+            "No",
+            ["quantifier", "invalid"],
+        ),
+        (
+            "There is a student who passed every exam. Conclusion: every exam was passed by at least one student.",
+            "Yes",
+            ["quantifier", "valid"],
+        ),
+        (
+            "Every exam was passed by at least one student. Conclusion: there is a student who passed every exam.",
+            "No",
+            ["quantifier", "swap"],
+        ),
+        ("Not all birds can fly. Conclusion: no birds can fly.", "No", ["quantifier", "invalid"]),
+    ]
+    for p, a, t in items:
+        add(p + q, a, t)
+    return L
+
+
 def main() -> None:
     math_items = gen_math()
     logic_items = gen_logic()
@@ -386,6 +665,14 @@ def main() -> None:
         for i, item in enumerate(logic_items, 1):
             f.write(json.dumps({"id": f"logic-{i:03d}", **item}, ensure_ascii=False) + "\n")
     print(f"wrote {len(math_items)} math + {len(logic_items)} logic problems to {OUT}")
+
+    hm, hl = gen_hard_math(), gen_hard_logic()
+    with OUT_HARD.open("w") as f:
+        for i, item in enumerate(hm, 1):
+            f.write(json.dumps({"id": f"hmath-{i:03d}", **item}, ensure_ascii=False) + "\n")
+        for i, item in enumerate(hl, 1):
+            f.write(json.dumps({"id": f"hlogic-{i:03d}", **item}, ensure_ascii=False) + "\n")
+    print(f"wrote {len(hm)} hard math + {len(hl)} hard logic problems to {OUT_HARD}")
 
 
 if __name__ == "__main__":

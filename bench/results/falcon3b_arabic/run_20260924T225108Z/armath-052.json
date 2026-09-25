@@ -1,0 +1,307 @@
+{
+ "problem": "احسب قيمة ٢٦ + ٧ × ٥ − ٢² باتباع ترتيب العمليات.",
+ "expected_answer": "57",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 73\n\nالخطوة 1: حسب ترتيب العمليات الحسابية (الأولويات)، نبدأ بحساب الأسس:\n2² = 4\n\nالخطوة 2: نحسب عملية الضرب:\n7 × 5 = 35\n\nالخطوة 3: نعوّض النتائج في التعبير الأصلي:\n26 + 35 - 4\n\nالخطوة 4: نحسب الجمع والطرح من اليسار إلى اليمين:\n26 + 35 = 61\n61 - 4 = 57\n\nالجواب النهائي: 57\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "الخطوة 1: حسب ترتيب العمليات الحسابية (الأولويات)، نبدأ بحساب الأسس:\n2² = 4"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 2: نحسب عملية الضرب:\n7 × 5 = 35"
+     },
+     {
+      "index": 3,
+      "text": "الخطوة 3: نعوّض النتائج في التعبير الأصلي:\n26 + 35 - 4"
+     },
+     {
+      "index": 4,
+      "text": "الخطوة 4: نحسب الجمع والطرح من اليسار إلى اليمين:\n26 + 35 = 61\n61 - 4 = 57"
+     }
+    ],
+    "final_answer": "73",
+    "latency_s": 4.839568853378296,
+    "tokens": 150
+   },
+   "formalization": {
+    "problem_prop": "(26:ℤ) + 7 * 5 - 2^2 = 57",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "2^2 = 4",
+      "note": "calculate exponent"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "7 * 5 = 35",
+      "note": "calculate multiplication"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "substitution step"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(26:ℤ) + 35 - 4 = 57",
+      "note": "left-to-right calculation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(26:ℤ) + 7 * 5 - 2^2 = 57\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"2^2 = 4\", \"note\": \"calculate exponent\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"7 * 5 = 35\", \"note\": \"calculate multiplication\"},\n    {\"index\": 3, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"substitution step\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(26:ℤ) + 35 - 4 = 57\", \"note\": \"left-to-right calculation\"}\n  ]\n}\n",
+    "latency_s": 8.993545055389404
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "2^2 = 4",
+      "step_text": "الخطوة 1: حسب ترتيب العمليات الحسابية (الأولويات)، نبدأ بحساب الأسس:\n2² = 4",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "7 * 5 = 35",
+      "step_text": "الخطوة 2: نحسب عملية الضرب:\n7 × 5 = 35",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "الخطوة 3: نعوّض النتائج في التعبير الأصلي:\n26 + 35 - 4",
+      "detail": "substitution step"
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(26:ℤ) + 35 - 4 = 57",
+      "step_text": "الخطوة 4: نحسب الجمع والطرح من اليسار إلى اليمين:\n26 + 35 = 61\n61 - 4 = 57",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `(26:ℤ) + 7 * 5 - 2^2 = 57`, which does not contain the stated FINAL ANSWER '73'",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\n\n\ntheorem s1_wf : 2^2 = 4 := by sorry\ntheorem s1_pos : 2^2 = 4 := by fv_auto\ntheorem s1_neg : ¬ (2^2 = 4) := by fv_auto\n\ntheorem s2_wf : 7 * 5 = 35 := by sorry\ntheorem s2_pos : 7 * 5 = 35 := by fv_auto\ntheorem s2_neg : ¬ (7 * 5 = 35) := by fv_auto\n\ntheorem s4_wf : (26:ℤ) + 35 - 4 = 57 := by sorry\ntheorem s4_pos : (26:ℤ) + 35 - 4 = 57 := by fv_auto\ntheorem s4_neg : ¬ ((26:ℤ) + 35 - 4 = 57) := by fv_auto\n\ntheorem final_wf : (26:ℤ) + 7 * 5 - 2^2 = 57 := by sorry\ntheorem final_pos : (26:ℤ) + 7 * 5 - 2^2 = 57 := by fv_auto\ntheorem final_neg : ¬ ((26:ℤ) + 7 * 5 - 2^2 = 57) := by fv_auto\n",
+    "lean_latency_s": 3.732365369796753,
+    "diagnostics": [
+     {
+      "line": 114,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 116,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 2 ^ 2 = 4\n⊢ False\nfailed"
+     },
+     {
+      "line": 118,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 120,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 7 * 5 = 35\n⊢ False\nfailed"
+     },
+     {
+      "line": 122,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 124,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 26 + 35 - 4 = 57\n⊢ False\nfailed"
+     },
+     {
+      "line": 126,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 128,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 26 + 7 * 5 - 2 ^ 2 = 57\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": "الجواب النهائي لا يطابق ما تستنتجه خطواتك. تحقق Lean 4 من `(26:ℤ) + 7 * 5 - 2^2 = 57`؛ يجب أن يكون الرقم بعد «الجواب النهائي» هو نتيجة هذا الحساب، فأعد قراءة خطواتك واذكر القيمة التي تنتجها فعلاً.\nالخطوات التي تحقق Lean 4 من صحتها: 1, 2, 4.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 57\n\nالخطوة 1: حسب ترتيب العمليات الحسابية (الأولويات)، نبدأ بحساب الأسس:\n2² = 4\n\nالخطوة 2: نحسب عملية الضرب:\n7 × 5 = 35\n\nالخطوة 3: نعوّض النتائج في التعبير الأصلي:\n26 + 35 - 4\n\nالخطوة 4: نحسب الجمع والطرح من اليسار إلى اليمين:\n26 + 35 = 61\n61 - 4 = 57\n\nالجواب النهائي: 57\n\nلا يوجد خطأ في الخطوات المذكورة. Lean 4 يتحقق من صحة الخطوات الحسابية كما هي، والنتيجة النهائية 57 صحيحة.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "الخطوة 1: حسب ترتيب العمليات الحسابية (الأولويات)، نبدأ بحساب الأسس:\n2² = 4"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 2: نحسب عملية الضرب:\n7 × 5 = 35"
+     },
+     {
+      "index": 3,
+      "text": "الخطوة 3: نعوّض النتائج في التعبير الأصلي:\n26 + 35 - 4"
+     },
+     {
+      "index": 4,
+      "text": "الخطوة 4: نحسب الجمع والطرح من اليسار إلى اليمين:\n26 + 35 = 61\n61 - 4 = 57"
+     },
+     {
+      "index": 5,
+      "text": "لا يوجد خطأ في الخطوات المذكورة. Lean 4 يتحقق من صحة الخطوات الحسابية كما هي، والنتيجة النهائية 57 صحيحة."
+     }
+    ],
+    "final_answer": "57",
+    "latency_s": 5.020524024963379,
+    "tokens": 186
+   },
+   "formalization": {
+    "problem_prop": "(26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57",
+    "problem_note": "",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(2:ℤ) ^ 2 = 4",
+      "note": "calculating exponent"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(7:ℤ) * (5:ℤ) = 35",
+      "note": "calculating multiplication"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "substitution"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "(26:ℤ) + 35 - 4 = 57",
+      "note": "left-to-right calculation"
+     },
+     {
+      "index": 5,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "no error"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(2:ℤ) ^ 2 = 4\", \"note\": \"calculating exponent\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(7:ℤ) * (5:ℤ) = 35\", \"note\": \"calculating multiplication\"},\n    {\"index\": 3, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"substitution\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"(26:ℤ) + 35 - 4 = 57\", \"note\": \"left-to-right calculation\"},\n    {\"index\": 5, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"no error\"}\n  ]\n}\n",
+    "latency_s": 10.48344349861145
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(2:ℤ) ^ 2 = 4",
+      "step_text": "الخطوة 1: حسب ترتيب العمليات الحسابية (الأولويات)، نبدأ بحساب الأسس:\n2² = 4",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(7:ℤ) * (5:ℤ) = 35",
+      "step_text": "الخطوة 2: نحسب عملية الضرب:\n7 × 5 = 35",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "الخطوة 3: نعوّض النتائج في التعبير الأصلي:\n26 + 35 - 4",
+      "detail": "substitution"
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "(26:ℤ) + 35 - 4 = 57",
+      "step_text": "الخطوة 4: نحسب الجمع والطرح من اليسار إلى اليمين:\n26 + 35 = 61\n61 - 4 = 57",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "لا يوجد خطأ في الخطوات المذكورة. Lean 4 يتحقق من صحة الخطوات الحسابية كما هي، والنتيجة النهائية 57 صحيحة.",
+      "detail": "no error"
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\n\n\ntheorem s1_wf : (2:ℤ) ^ 2 = 4 := by sorry\ntheorem s1_pos : (2:ℤ) ^ 2 = 4 := by fv_auto\ntheorem s1_neg : ¬ ((2:ℤ) ^ 2 = 4) := by fv_auto\n\ntheorem s2_wf : (7:ℤ) * (5:ℤ) = 35 := by sorry\ntheorem s2_pos : (7:ℤ) * (5:ℤ) = 35 := by fv_auto\ntheorem s2_neg : ¬ ((7:ℤ) * (5:ℤ) = 35) := by fv_auto\n\ntheorem s4_wf : (26:ℤ) + 35 - 4 = 57 := by sorry\ntheorem s4_pos : (26:ℤ) + 35 - 4 = 57 := by fv_auto\ntheorem s4_neg : ¬ ((26:ℤ) + 35 - 4 = 57) := by fv_auto\n\ntheorem final_wf : (26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57 := by sorry\ntheorem final_pos : (26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57 := by fv_auto\ntheorem final_neg : ¬ ((26:ℤ) + (7:ℤ) * (5:ℤ) - (2:ℤ) ^ 2 = 57) := by fv_auto\n",
+    "lean_latency_s": 3.685647964477539,
+    "diagnostics": [
+     {
+      "line": 114,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 116,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 2 ^ 2 = 4\n⊢ False\nfailed"
+     },
+     {
+      "line": 118,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 120,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 7 * 5 = 35\n⊢ False\nfailed"
+     },
+     {
+      "line": 122,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 124,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 26 + 35 - 4 = 57\n⊢ False\nfailed"
+     },
+     {
+      "line": 126,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 128,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 26 + 7 * 5 - 2 ^ 2 = 57\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "57",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 36.76
+}

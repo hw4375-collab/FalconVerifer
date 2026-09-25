@@ -1,0 +1,155 @@
+{
+ "problem": "Hamdan buys 79 packs of boxes with 46 in each pack, then gives away 220 of them. How many boxes does Hamdan have left?",
+ "expected_answer": "3414",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Calculate the total number of boxes Hamdan initially buys.\n\\[ \\text{Total boxes} = 79 \\times 46 \\]\n\nStep 2: Perform the multiplication to find the total number of boxes.\n\\[ 79 \\times 46 = 3634 \\]\n\nStep 3: Subtract the number of boxes Hamdan gives away from the total number of boxes.\n\\[ \\text{Boxes left} = 3634 - 220 \\]\n\nStep 4: Perform the subtraction to find the number of boxes left.\n\\[ 3634 - 220 = 3414 \\]\n\nFINAL ANSWER: 3414",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Calculate the total number of boxes Hamdan initially buys. \\[ \\text{Total boxes} = 79 \\times 46 \\]"
+     },
+     {
+      "index": 2,
+      "text": "Perform the multiplication to find the total number of boxes. \\[ 79 \\times 46 = 3634 \\]"
+     },
+     {
+      "index": 3,
+      "text": "Subtract the number of boxes Hamdan gives away from the total number of boxes. \\[ \\text{Boxes left} = 3634 - 220 \\]"
+     },
+     {
+      "index": 4,
+      "text": "Perform the subtraction to find the number of boxes left. \\[ 3634 - 220 = 3414 \\]"
+     }
+    ],
+    "final_answer": "3414",
+    "latency_s": 7.156590700149536,
+    "tokens": 166
+   },
+   "formalization": {
+    "problem_prop": "(79:ℕ) * 46 - 220 = 3414",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(79:ℕ) * 46 = 3634",
+      "note": "total boxes bought"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "calculation step"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "3634 - 220 = 3414",
+      "note": "boxes left after giving away"
+     },
+     {
+      "index": 4,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "calculation step"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(79:ℕ) * 46 - 220 = 3414\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(79:ℕ) * 46 = 3634\", \"note\": \"total boxes bought\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"calculation step\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"3634 - 220 = 3414\", \"note\": \"boxes left after giving away\"},\n    {\"index\": 4, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"calculation step\"}\n  ]\n}\n",
+    "latency_s": 10.192145824432373
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(79:ℕ) * 46 = 3634",
+      "step_text": "Calculate the total number of boxes Hamdan initially buys. \\[ \\text{Total boxes} = 79 \\times 46 \\]",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Perform the multiplication to find the total number of boxes. \\[ 79 \\times 46 = 3634 \\]",
+      "detail": "calculation step"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "3634 - 220 = 3414",
+      "step_text": "Subtract the number of boxes Hamdan gives away from the total number of boxes. \\[ \\text{Boxes left} = 3634 - 220 \\]",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Perform the subtraction to find the number of boxes left. \\[ 3634 - 220 = 3414 \\]",
+      "detail": "calculation step"
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (79:ℕ) * 46 = 3634 := by sorry\ntheorem s1_pos : (79:ℕ) * 46 = 3634 := by fv_auto\ntheorem s1_neg : ¬ ((79:ℕ) * 46 = 3634) := by fv_auto\n\ntheorem s3_wf : 3634 - 220 = 3414 := by sorry\ntheorem s3_pos : 3634 - 220 = 3414 := by fv_auto\ntheorem s3_neg : ¬ (3634 - 220 = 3414) := by fv_auto\n\ntheorem final_wf : (79:ℕ) * 46 - 220 = 3414 := by sorry\ntheorem final_pos : (79:ℕ) * 46 - 220 = 3414 := by fv_auto\ntheorem final_neg : ¬ ((79:ℕ) * 46 - 220 = 3414) := by fv_auto\n",
+    "lean_latency_s": 4.170904159545898,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "3414",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 21.52
+}

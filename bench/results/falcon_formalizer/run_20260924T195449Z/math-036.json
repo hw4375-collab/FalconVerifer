@@ -1,0 +1,219 @@
+{
+ "problem": "Fatima thinks of a number, multiplies it by 4, and adds 42. The result is 86. What was the original number?",
+ "expected_answer": "11",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Let the original number be \\( x \\).\nStep 2: According to the problem, Fatima multiplies the number by 4 and adds 42, resulting in 86. This can be written as: \\( 4x + 42 = 86 \\).\nStep 3: Subtract 42 from both sides of the equation to isolate the term with \\( x \\): \\( 4x = 86 - 42 \\).\nStep 4: Calculate the right side: \\( 4x = 44 \\).\nStep 5: Divide both sides by 4 to solve for \\( x \\): \\( x = \\frac{44}{4} \\).\nStep 6: Calculate the division: \\( x = 11 \\).\n\nFINAL ANSWER: 11",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Let the original number be \\( x \\)."
+     },
+     {
+      "index": 2,
+      "text": "According to the problem, Fatima multiplies the number by 4 and adds 42, resulting in 86. This can be written as: \\( 4x + 42 = 86 \\)."
+     },
+     {
+      "index": 3,
+      "text": "Subtract 42 from both sides of the equation to isolate the term with \\( x \\): \\( 4x = 86 - 42 \\)."
+     },
+     {
+      "index": 4,
+      "text": "Calculate the right side: \\( 4x = 44 \\)."
+     },
+     {
+      "index": 5,
+      "text": "Divide both sides by 4 to solve for \\( x \\): \\( x = \\frac{44}{4} \\)."
+     },
+     {
+      "index": 6,
+      "text": "Calculate the division: \\( x = 11 \\)."
+     }
+    ],
+    "final_answer": "11",
+    "latency_s": 5.232255935668945,
+    "tokens": 194
+   },
+   "formalization": {
+    "problem_prop": "∀ x : ℝ, 4 * x + 42 = 86 → x = 11",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "introduce variable"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates problem"
+     },
+     {
+      "index": 3,
+      "kind": "algebra",
+      "lean_prop": "4 * 11 + 42 = 86",
+      "note": "isolate term with x"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "86 - 42 = 44",
+      "note": "calculate right side"
+     },
+     {
+      "index": 5,
+      "kind": "algebra",
+      "lean_prop": "4 * 11 = 44",
+      "note": "solve for x"
+     },
+     {
+      "index": 6,
+      "kind": "arith",
+      "lean_prop": "44 / 4 = 11",
+      "note": "calculate division"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"∀ x : ℝ, 4 * x + 42 = 86 → x = 11\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"introduce variable\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates problem\"},\n    {\"index\": 3, \"kind\": \"algebra\", \"lean_prop\": \"4 * 11 + 42 = 86\", \"note\": \"isolate term with x\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"86 - 42 = 44\", \"note\": \"calculate right side\"},\n    {\"index\": 5, \"kind\": \"algebra\", \"lean_prop\": \"4 * 11 = 44\", \"note\": \"solve for x\"},\n    {\"index\": 6, \"kind\": \"arith\", \"lean_prop\": \"44 / 4 = 11\", \"note\": \"calculate division\"}\n  ]\n}\n",
+    "latency_s": 10.39761757850647
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Let the original number be \\( x \\).",
+      "detail": "introduce variable"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "According to the problem, Fatima multiplies the number by 4 and adds 42, resulting in 86. This can be written as: \\( 4x + 42 = 86 \\).",
+      "detail": "restates problem"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "4 * 11 + 42 = 86",
+      "step_text": "Subtract 42 from both sides of the equation to isolate the term with \\( x \\): \\( 4x = 86 - 42 \\).",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "86 - 42 = 44",
+      "step_text": "Calculate the right side: \\( 4x = 44 \\).",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "4 * 11 = 44",
+      "step_text": "Divide both sides by 4 to solve for \\( x \\): \\( x = \\frac{44}{4} \\).",
+      "detail": ""
+     },
+     {
+      "index": 6,
+      "verdict": "verified",
+      "lean_prop": "44 / 4 = 11",
+      "step_text": "Calculate the division: \\( x = 11 \\).",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s3_wf : 4 * 11 + 42 = 86 := by sorry\ntheorem s3_pos : 4 * 11 + 42 = 86 := by fv_auto\ntheorem s3_neg : ¬ (4 * 11 + 42 = 86) := by fv_auto\n\ntheorem s4_wf : 86 - 42 = 44 := by sorry\ntheorem s4_pos : 86 - 42 = 44 := by fv_auto\ntheorem s4_neg : ¬ (86 - 42 = 44) := by fv_auto\n\ntheorem s5_wf : 4 * 11 = 44 := by sorry\ntheorem s5_pos : 4 * 11 = 44 := by fv_auto\ntheorem s5_neg : ¬ (4 * 11 = 44) := by fv_auto\n\ntheorem s6_wf : 44 / 4 = 11 := by sorry\ntheorem s6_pos : 44 / 4 = 11 := by fv_auto\ntheorem s6_neg : ¬ (44 / 4 = 11) := by fv_auto\n\ntheorem final_wf : ∀ x : ℝ, 4 * x + 42 = 86 → x = 11 := by sorry\ntheorem final_pos : ∀ x : ℝ, 4 * x + 42 = 86 → x = 11 := by fv_auto\ntheorem final_neg : ¬ (∀ x : ℝ, 4 * x + 42 = 86 → x = 11) := by fv_auto\n",
+    "lean_latency_s": 4.960238456726074,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ ∃ x, 4 * x + 42 = 86 ∧ ¬x = 11"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "11",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 20.59
+}

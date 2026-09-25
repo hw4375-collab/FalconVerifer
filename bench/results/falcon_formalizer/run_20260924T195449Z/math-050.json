@@ -1,0 +1,202 @@
+{
+ "problem": "A tank holds 390 litres when full. It is currently 5/10 full. How many litres must be added to fill it?",
+ "expected_answer": "195",
+ "student_model": "falcon-h1-7b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "Step 1: Determine the current amount of litres in the tank. Since the tank is 5/10 full, we calculate \\( \\frac{5}{10} \\times 390 \\).\n\nStep 2: Simplify the fraction \\( \\frac{5}{10} \\) to \\( \\frac{1}{2} \\).\n\nStep 3: Calculate \\( \\frac{1}{2} \\times 390 = 195 \\) litres.\n\nStep 4: Determine how many litres are needed to fill the tank. Subtract the current amount from the full capacity: \\( 390 - 195 \\).\n\nStep 5: Calculate \\( 390 - 195 = 195 \\) litres.\n\nFINAL ANSWER: 195",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Determine the current amount of litres in the tank. Since the tank is 5/10 full, we calculate \\( \\frac{5}{10} \\times 390 \\)."
+     },
+     {
+      "index": 2,
+      "text": "Simplify the fraction \\( \\frac{5}{10} \\) to \\( \\frac{1}{2} \\)."
+     },
+     {
+      "index": 3,
+      "text": "Calculate \\( \\frac{1}{2} \\times 390 = 195 \\) litres."
+     },
+     {
+      "index": 4,
+      "text": "Determine how many litres are needed to fill the tank. Subtract the current amount from the full capacity: \\( 390 - 195 \\)."
+     },
+     {
+      "index": 5,
+      "text": "Calculate \\( 390 - 195 = 195 \\) litres."
+     }
+    ],
+    "final_answer": "195",
+    "latency_s": 9.38405156135559,
+    "tokens": 185
+   },
+   "formalization": {
+    "problem_prop": "390 - (5/10:ℚ) * 390 = 195",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(5/10:ℚ) * 390 = 195",
+      "note": "current amount"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "simplification"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(1/2:ℚ) * 390 = 195",
+      "note": "current amount"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "390 - 195 = 195",
+      "note": "litres needed"
+     },
+     {
+      "index": 5,
+      "kind": "arith",
+      "lean_prop": "390 - 195 = 195",
+      "note": "final calculation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"390 - (5/10:ℚ) * 390 = 195\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(5/10:ℚ) * 390 = 195\", \"note\": \"current amount\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"simplification\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(1/2:ℚ) * 390 = 195\", \"note\": \"current amount\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"390 - 195 = 195\", \"note\": \"litres needed\"},\n    {\"index\": 5, \"kind\": \"arith\", \"lean_prop\": \"390 - 195 = 195\", \"note\": \"final calculation\"}\n  ]\n}\n",
+    "latency_s": 11.229654550552368
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "verified",
+      "lean_prop": "(5/10:ℚ) * 390 = 195",
+      "step_text": "Determine the current amount of litres in the tank. Since the tank is 5/10 full, we calculate \\( \\frac{5}{10} \\times 390 \\).",
+      "detail": ""
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Simplify the fraction \\( \\frac{5}{10} \\) to \\( \\frac{1}{2} \\).",
+      "detail": "simplification"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(1/2:ℚ) * 390 = 195",
+      "step_text": "Calculate \\( \\frac{1}{2} \\times 390 = 195 \\) litres.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "390 - 195 = 195",
+      "step_text": "Determine how many litres are needed to fill the tank. Subtract the current amount from the full capacity: \\( 390 - 195 \\).",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "verified",
+      "lean_prop": "390 - 195 = 195",
+      "step_text": "Calculate \\( 390 - 195 = 195 \\) litres.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done))\n\n\ntheorem s1_wf : (5/10:ℚ) * 390 = 195 := by sorry\ntheorem s1_pos : (5/10:ℚ) * 390 = 195 := by fv_auto\ntheorem s1_neg : ¬ ((5/10:ℚ) * 390 = 195) := by fv_auto\n\ntheorem s3_wf : (1/2:ℚ) * 390 = 195 := by sorry\ntheorem s3_pos : (1/2:ℚ) * 390 = 195 := by fv_auto\ntheorem s3_neg : ¬ ((1/2:ℚ) * 390 = 195) := by fv_auto\n\ntheorem s4_wf : 390 - 195 = 195 := by sorry\ntheorem s4_pos : 390 - 195 = 195 := by fv_auto\ntheorem s4_neg : ¬ (390 - 195 = 195) := by fv_auto\n\ntheorem s5_wf : 390 - 195 = 195 := by sorry\ntheorem s5_pos : 390 - 195 = 195 := by fv_auto\ntheorem s5_neg : ¬ (390 - 195 = 195) := by fv_auto\n\ntheorem final_wf : 390 - (5/10:ℚ) * 390 = 195 := by sorry\ntheorem final_pos : 390 - (5/10:ℚ) * 390 = 195 := by fv_auto\ntheorem final_neg : ¬ (390 - (5/10:ℚ) * 390 = 195) := by fv_auto\n",
+    "lean_latency_s": 4.142338752746582,
+    "diagnostics": [
+     {
+      "line": 38,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 40,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 40,
+      "severity": "error",
+      "message": "unsolved goals\na : 5 / 10 * 390 = 195\n⊢ False"
+     },
+     {
+      "line": 42,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 44,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 44,
+      "severity": "error",
+      "message": "unsolved goals\na : 2⁻¹ * 390 = 195\n⊢ False"
+     },
+     {
+      "line": 46,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 48,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 48,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 50,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 52,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 52,
+      "severity": "error",
+      "message": "unsolved goals\n⊢ False"
+     },
+     {
+      "line": 54,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 56,
+      "severity": "warning",
+      "message": "aesop: failed to prove the goal after exhaustive search."
+     },
+     {
+      "line": 56,
+      "severity": "error",
+      "message": "unsolved goals\na : 390 - 5 / 10 * 390 = 195\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "195",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 24.76
+}

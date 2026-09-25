@@ -1,0 +1,141 @@
+{
+ "problem": "أحمد يجلس على يمين خالد مباشرة، وخالد على يمين عمر مباشرة. هل يلزم أن عمر على يسار أحمد؟ أجب بنعم أو لا.",
+ "expected_answer": "نعم",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "نعم، يلزم أن يكون عمر على يسار أحمد.\n\nالخطوة 1: أحمد يجلس على يمين خالد مباشرة.\nالخطوة 2: خالد يجلس على يمين عمر مباشرة.\nالخطوة 3: إذا كان أحمد على يمين خالد، وعمر على يمين خالد أيضًا، فهذا يعني أن أحمد، خالد، وعمر جميعهم على نفس الجانب من بعضهم البعض.\nالخطوة 4: بما أن أحمد على يمين خالد، وخالد على يمين عمر، فإن عمر يجب أن يكون على يسار أحمد.\n\nالجواب النهائي: نعم.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "أحمد يجلس على يمين خالد مباشرة."
+     },
+     {
+      "index": 2,
+      "text": "خالد يجلس على يمين عمر مباشرة."
+     },
+     {
+      "index": 3,
+      "text": "إذا كان أحمد على يمين خالد، وعمر على يمين خالد أيضًا، فهذا يعني أن أحمد، خالد، وعمر جميعهم على نفس الجانب من بعضهم البعض."
+     },
+     {
+      "index": 4,
+      "text": "بما أن أحمد على يمين خالد، وخالد على يمين عمر، فإن عمر يجب أن يكون على يسار أحمد."
+     }
+    ],
+    "final_answer": "نعم",
+    "latency_s": 3.467627763748169,
+    "tokens": 131
+   },
+   "formalization": {
+    "problem_prop": "∀ (v0 v1 v2 : Fin 4), v0 > v1 → v1 > v2 → v0 > v2",
+    "problem_note": "pregroup: finite model Fin 3; cmp⟦أحمد يجلس على يمين خالد⟧; cmp⟦خالد على يمين عمر⟧; cmp⟦عمر على يسار أحمد⟧",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates premise"
+     },
+     {
+      "index": 2,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "restates premise"
+     },
+     {
+      "index": 3,
+      "kind": "logic",
+      "lean_prop": "∀ (a k o : ℤ), a > k ∧ k > o → a > o",
+      "note": "transitivity of ordering"
+     },
+     {
+      "index": 4,
+      "kind": "logic",
+      "lean_prop": "∀ (a k o : ℤ), a > k ∧ k > o → a > o",
+      "note": "conclusion"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"∀ (a k o : ℤ), a > k ∧ k > o → a > o\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates premise\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates premise\"},\n    {\"index\": 3, \"kind\": \"logic\", \"lean_prop\": \"∀ (a k o : ℤ), a > k ∧ k > o → a > o\", \"note\": \"transitivity of ordering\"},\n    {\"index\": 4, \"kind\": \"logic\", \"lean_prop\": \"∀ (a k o : ℤ), a > k ∧ k > o → a > o\", \"note\": \"conclusion\"}\n  ]\n}\n",
+    "latency_s": 8.919128894805908
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "أحمد يجلس على يمين خالد مباشرة.",
+      "detail": "restates premise"
+     },
+     {
+      "index": 2,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "خالد يجلس على يمين عمر مباشرة.",
+      "detail": "restates premise"
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "∀ (a k o : ℤ), a > k ∧ k > o → a > o",
+      "step_text": "إذا كان أحمد على يمين خالد، وعمر على يمين خالد أيضًا، فهذا يعني أن أحمد، خالد، وعمر جميعهم على نفس الجانب من بعضهم البعض.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "∀ (a k o : ℤ), a > k ∧ k > o → a > o",
+      "step_text": "بما أن أحمد على يمين خالد، وخالد على يمين عمر، فإن عمر يجب أن يكون على يسار أحمد.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\n\n\ntheorem s3_wf : ∀ (a k o : ℤ), a > k ∧ k > o → a > o := by sorry\ntheorem s3_pos : ∀ (a k o : ℤ), a > k ∧ k > o → a > o := by fv_auto\ntheorem s3_neg : ¬ (∀ (a k o : ℤ), a > k ∧ k > o → a > o) := by fv_auto\n\ntheorem s4_wf : ∀ (a k o : ℤ), a > k ∧ k > o → a > o := by sorry\ntheorem s4_pos : ∀ (a k o : ℤ), a > k ∧ k > o → a > o := by fv_auto\ntheorem s4_neg : ¬ (∀ (a k o : ℤ), a > k ∧ k > o → a > o) := by fv_auto\n\ntheorem final_wf : ∀ (v0 v1 v2 : Fin 4), v0 > v1 → v1 > v2 → v0 > v2 := by sorry\ntheorem final_pos : ∀ (v0 v1 v2 : Fin 4), v0 > v1 → v1 > v2 → v0 > v2 := by fv_auto\ntheorem final_neg : ¬ (∀ (v0 v1 v2 : Fin 4), v0 > v1 → v1 > v2 → v0 > v2) := by fv_auto\n",
+    "lean_latency_s": 6.867187976837158,
+    "diagnostics": [
+     {
+      "line": 114,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 116,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     },
+     {
+      "line": 118,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 120,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     },
+     {
+      "line": 122,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 124,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "نعم",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 19.25
+}

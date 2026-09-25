@@ -1,0 +1,298 @@
+{
+ "problem": "العميل: ١ دولار = ٠٫٣١ دينار. كم ديناراً يساوي ٢٥٠ دولاراً؟",
+ "expected_answer": "77.5",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: 77.41 دينار.\n\nالخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٤١. إذًا، ٢٥٠ دولار يساوي ٧٧.٤١ دينار.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "الخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٤١. إذًا، ٢٥٠ دولار يساوي ٧٧.٤١ دينار."
+     }
+    ],
+    "final_answer": "77.41 دينار",
+    "latency_s": 3.646439552307129,
+    "tokens": 115
+   },
+   "formalization": {
+    "problem_prop": "(250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ)",
+    "problem_note": "pregroup: convert: 1 دولار = 0.31 دينار ⇒ (250:ℚ) * 0.31",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "arith",
+      "lean_prop": "(250:ℝ) * 0.31 = 77.41",
+      "note": "conversion calculation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(250:ℝ) * 0.31 = 77.41\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"arith\", \"lean_prop\": \"(250:ℝ) * 0.31 = 77.41\", \"note\": \"conversion calculation\"},\n    {\"index\": 2, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"restates calculation\"}\n  ]\n}\n",
+    "latency_s": 7.660550594329834
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "refuted",
+      "lean_prop": "(250:ℝ) * 0.31 = 77.41",
+      "step_text": "الخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٤١. إذًا، ٢٥٠ دولار يساوي ٧٧.٤١ دينار.",
+      "detail": "Lean proved the negation of this claim.",
+      "cached": false
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (intros; aesop; done)\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intros; gcongr; done)\n  | (push Not; intros; gcongr; done)\n  | (intro h; exact absurd (h True) (by decide); done)\n  | (intro h; exact absurd (h False) (by decide); done)\n  | (intro h; exact absurd (h True True) (by decide); done)\n  | (intro h; exact absurd (h True False) (by decide); done)\n  | (intro h; exact absurd (h False True) (by decide); done)\n  | (intro h; exact absurd (h False False) (by decide); done)\n  | (intro h; exact absurd (h True True True) (by decide); done)\n  | (intro h; exact absurd (h True True False) (by decide); done)\n  | (intro h; exact absurd (h True False True) (by decide); done)\n  | (intro h; exact absurd (h True False False) (by decide); done)\n  | (intro h; exact absurd (h False True True) (by decide); done)\n  | (intro h; exact absurd (h False True False) (by decide); done)\n  | (intro h; exact absurd (h False False True) (by decide); done)\n  | (intro h; exact absurd (h False False False) (by decide); done)\n  | (intro h; exact absurd (h True True True True) (by decide); done)\n  | (intro h; exact absurd (h True True True False) (by decide); done)\n  | (intro h; exact absurd (h True True False True) (by decide); done)\n  | (intro h; exact absurd (h True True False False) (by decide); done)\n  | (intro h; exact absurd (h True False True True) (by decide); done)\n  | (intro h; exact absurd (h True False True False) (by decide); done)\n  | (intro h; exact absurd (h True False False True) (by decide); done)\n  | (intro h; exact absurd (h True False False False) (by decide); done)\n  | (intro h; exact absurd (h False True True True) (by decide); done)\n  | (intro h; exact absurd (h False True True False) (by decide); done)\n  | (intro h; exact absurd (h False True False True) (by decide); done)\n  | (intro h; exact absurd (h False True False False) (by decide); done)\n  | (intro h; exact absurd (h False False True True) (by decide); done)\n  | (intro h; exact absurd (h False False True False) (by decide); done)\n  | (intro h; exact absurd (h False False False True) (by decide); done)\n  | (intro h; exact absurd (h False False False False) (by decide); done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (refine ⟨0, ?_⟩; norm_num; done)\n  | (refine ⟨0, ?_⟩; omega; done)\n  | (refine ⟨0, ?_⟩; decide; done)\n  | (refine ⟨1, ?_⟩; norm_num; done)\n  | (refine ⟨1, ?_⟩; omega; done)\n  | (refine ⟨1, ?_⟩; decide; done)\n  | (refine ⟨2, ?_⟩; norm_num; done)\n  | (refine ⟨2, ?_⟩; omega; done)\n  | (refine ⟨2, ?_⟩; decide; done)\n  | (refine ⟨3, ?_⟩; norm_num; done)\n  | (refine ⟨3, ?_⟩; omega; done)\n  | (refine ⟨3, ?_⟩; decide; done)\n  | (refine ⟨4, ?_⟩; norm_num; done)\n  | (refine ⟨4, ?_⟩; omega; done)\n  | (refine ⟨4, ?_⟩; decide; done)\n  | (refine ⟨5, ?_⟩; norm_num; done)\n  | (refine ⟨5, ?_⟩; omega; done)\n  | (refine ⟨5, ?_⟩; decide; done)\n  | (refine ⟨6, ?_⟩; norm_num; done)\n  | (refine ⟨6, ?_⟩; omega; done)\n  | (refine ⟨6, ?_⟩; decide; done)\n  | (refine ⟨7, ?_⟩; norm_num; done)\n  | (refine ⟨7, ?_⟩; omega; done)\n  | (refine ⟨7, ?_⟩; decide; done)\n  | (refine ⟨8, ?_⟩; norm_num; done)\n  | (refine ⟨8, ?_⟩; omega; done)\n  | (refine ⟨8, ?_⟩; decide; done)\n  | (refine ⟨9, ?_⟩; norm_num; done)\n  | (refine ⟨9, ?_⟩; omega; done)\n  | (refine ⟨9, ?_⟩; decide; done)\n  | (refine ⟨10, ?_⟩; norm_num; done)\n  | (refine ⟨10, ?_⟩; omega; done)\n  | (refine ⟨10, ?_⟩; decide; done)\n  | (refine ⟨12, ?_⟩; norm_num; done)\n  | (refine ⟨12, ?_⟩; omega; done)\n  | (refine ⟨12, ?_⟩; decide; done)\n  | (refine ⟨15, ?_⟩; norm_num; done)\n  | (refine ⟨15, ?_⟩; omega; done)\n  | (refine ⟨15, ?_⟩; decide; done)\n  | (refine ⟨21, ?_⟩; norm_num; done)\n  | (refine ⟨21, ?_⟩; omega; done)\n  | (refine ⟨21, ?_⟩; decide; done)\n  | (refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (refine ⟨0, 0, ?_⟩; omega; done)\n  | (refine ⟨0, 0, ?_⟩; decide; done)\n  | (refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (refine ⟨0, 1, ?_⟩; omega; done)\n  | (refine ⟨0, 1, ?_⟩; decide; done)\n  | (refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (refine ⟨1, 0, ?_⟩; omega; done)\n  | (refine ⟨1, 0, ?_⟩; decide; done)\n  | (refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (refine ⟨1, 2, ?_⟩; omega; done)\n  | (refine ⟨1, 2, ?_⟩; decide; done)\n  | (refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (refine ⟨2, 1, ?_⟩; omega; done)\n  | (refine ⟨2, 1, ?_⟩; decide; done)\n  | (refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (refine ⟨2, 3, ?_⟩; omega; done)\n  | (refine ⟨2, 3, ?_⟩; decide; done)\n  | (refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (refine ⟨3, 2, ?_⟩; omega; done)\n  | (refine ⟨3, 2, ?_⟩; decide; done)\n  | (refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (refine ⟨2, 15, ?_⟩; omega; done)\n  | (refine ⟨2, 15, ?_⟩; decide; done)\n  | (refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (refine ⟨3, 10, ?_⟩; omega; done)\n  | (refine ⟨3, 10, ?_⟩; decide; done)\n  | (refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (refine ⟨5, 6, ?_⟩; omega; done)\n  | (refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (push Not; intros; nlinarith; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s1_wf : (250:ℝ) * 0.31 = 77.41 := by sorry\ntheorem s1_pos : (250:ℝ) * 0.31 = 77.41 := by fv_auto\ntheorem s1_neg : ¬ ((250:ℝ) * 0.31 = 77.41) := by fv_auto\n\ntheorem final_wf : (250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ) := by sorry\ntheorem final_pos : (250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ) := by fv_auto\ntheorem final_neg : ¬ ((250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ)) := by fv_auto\n",
+    "lean_latency_s": 4.501904726028442,
+    "diagnostics": [
+     {
+      "line": 247,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 248,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\ncase h2\na✝ : 77.41 < 250 * 0.31\n⊢ False\nfailed"
+     },
+     {
+      "line": 251,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 252,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     }
+    ],
+    "cache_hits": 0
+   },
+   "feedback": "أثبت مساعد البرهان (Lean 4) أن الخطوات التالية خاطئة:\n  - الخطوة 1: «الخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٤١. إذًا، ٢٥٠ دولار يساوي ٧٧.٤١ دينار.»\n      الادعاء الصوري الذي تم فحصه: (250:ℝ) * 0.31 = 77.41\n      حكم Lean 4: نفي هذا الادعاء مبرهنة.\nأثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `(250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ)` خاطئ.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "الجواب النهائي: 77.41 دينار.\n\nالتصحيح:\n\nالخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٥. إذًا، ٢٥٠ دولار يساوي ٧٧.٥ دينار.\n\nتم تصحيح الخطأ في الخطوة 2 حيث تم تعديل الناتج إلى ٧٧.٥ دينار بدلاً من ٧٧.٤١ دينار.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "التصحيح:"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٥. إذًا، ٢٥٠ دولار يساوي ٧٧.٥ دينار."
+     },
+     {
+      "index": 3,
+      "text": "تم تصحيح الخطأ في الخطوة 2 حيث تم تعديل الناتج إلى ٧٧.٥ دينار بدلاً من ٧٧.٤١ دينار."
+     }
+    ],
+    "final_answer": "77.41 دينار",
+    "latency_s": 4.746746063232422,
+    "tokens": 157
+   },
+   "formalization": {
+    "problem_prop": "(250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ)",
+    "problem_note": "pregroup: convert: 1 دولار = 0.31 دينار ⇒ (250:ℚ) * 0.31",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction step"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(250:ℝ) * 0.31 = 77.5",
+      "note": "conversion calculation"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction of arithmetic"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(250:ℝ) * 0.31 = 77.5\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction step\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(250:ℝ) * 0.31 = 77.5\", \"note\": \"conversion calculation\"},\n    {\"index\": 3, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction of arithmetic\"}\n  ]\n}\n",
+    "latency_s": 7.469408988952637
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "التصحيح:",
+      "detail": "correction step",
+      "cached": false
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(250:ℝ) * 0.31 = 77.5",
+      "step_text": "الخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٥. إذًا، ٢٥٠ دولار يساوي ٧٧.٥ دينار.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "تم تصحيح الخطأ في الخطوة 2 حيث تم تعديل الناتج إلى ٧٧.٥ دينار بدلاً من ٧٧.٤١ دينار.",
+      "detail": "correction of arithmetic",
+      "cached": false
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (intros; aesop; done)\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intros; gcongr; done)\n  | (push Not; intros; gcongr; done)\n  | (intro h; exact absurd (h True) (by decide); done)\n  | (intro h; exact absurd (h False) (by decide); done)\n  | (intro h; exact absurd (h True True) (by decide); done)\n  | (intro h; exact absurd (h True False) (by decide); done)\n  | (intro h; exact absurd (h False True) (by decide); done)\n  | (intro h; exact absurd (h False False) (by decide); done)\n  | (intro h; exact absurd (h True True True) (by decide); done)\n  | (intro h; exact absurd (h True True False) (by decide); done)\n  | (intro h; exact absurd (h True False True) (by decide); done)\n  | (intro h; exact absurd (h True False False) (by decide); done)\n  | (intro h; exact absurd (h False True True) (by decide); done)\n  | (intro h; exact absurd (h False True False) (by decide); done)\n  | (intro h; exact absurd (h False False True) (by decide); done)\n  | (intro h; exact absurd (h False False False) (by decide); done)\n  | (intro h; exact absurd (h True True True True) (by decide); done)\n  | (intro h; exact absurd (h True True True False) (by decide); done)\n  | (intro h; exact absurd (h True True False True) (by decide); done)\n  | (intro h; exact absurd (h True True False False) (by decide); done)\n  | (intro h; exact absurd (h True False True True) (by decide); done)\n  | (intro h; exact absurd (h True False True False) (by decide); done)\n  | (intro h; exact absurd (h True False False True) (by decide); done)\n  | (intro h; exact absurd (h True False False False) (by decide); done)\n  | (intro h; exact absurd (h False True True True) (by decide); done)\n  | (intro h; exact absurd (h False True True False) (by decide); done)\n  | (intro h; exact absurd (h False True False True) (by decide); done)\n  | (intro h; exact absurd (h False True False False) (by decide); done)\n  | (intro h; exact absurd (h False False True True) (by decide); done)\n  | (intro h; exact absurd (h False False True False) (by decide); done)\n  | (intro h; exact absurd (h False False False True) (by decide); done)\n  | (intro h; exact absurd (h False False False False) (by decide); done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (refine ⟨0, ?_⟩; norm_num; done)\n  | (refine ⟨0, ?_⟩; omega; done)\n  | (refine ⟨0, ?_⟩; decide; done)\n  | (refine ⟨1, ?_⟩; norm_num; done)\n  | (refine ⟨1, ?_⟩; omega; done)\n  | (refine ⟨1, ?_⟩; decide; done)\n  | (refine ⟨2, ?_⟩; norm_num; done)\n  | (refine ⟨2, ?_⟩; omega; done)\n  | (refine ⟨2, ?_⟩; decide; done)\n  | (refine ⟨3, ?_⟩; norm_num; done)\n  | (refine ⟨3, ?_⟩; omega; done)\n  | (refine ⟨3, ?_⟩; decide; done)\n  | (refine ⟨4, ?_⟩; norm_num; done)\n  | (refine ⟨4, ?_⟩; omega; done)\n  | (refine ⟨4, ?_⟩; decide; done)\n  | (refine ⟨5, ?_⟩; norm_num; done)\n  | (refine ⟨5, ?_⟩; omega; done)\n  | (refine ⟨5, ?_⟩; decide; done)\n  | (refine ⟨6, ?_⟩; norm_num; done)\n  | (refine ⟨6, ?_⟩; omega; done)\n  | (refine ⟨6, ?_⟩; decide; done)\n  | (refine ⟨7, ?_⟩; norm_num; done)\n  | (refine ⟨7, ?_⟩; omega; done)\n  | (refine ⟨7, ?_⟩; decide; done)\n  | (refine ⟨8, ?_⟩; norm_num; done)\n  | (refine ⟨8, ?_⟩; omega; done)\n  | (refine ⟨8, ?_⟩; decide; done)\n  | (refine ⟨9, ?_⟩; norm_num; done)\n  | (refine ⟨9, ?_⟩; omega; done)\n  | (refine ⟨9, ?_⟩; decide; done)\n  | (refine ⟨10, ?_⟩; norm_num; done)\n  | (refine ⟨10, ?_⟩; omega; done)\n  | (refine ⟨10, ?_⟩; decide; done)\n  | (refine ⟨12, ?_⟩; norm_num; done)\n  | (refine ⟨12, ?_⟩; omega; done)\n  | (refine ⟨12, ?_⟩; decide; done)\n  | (refine ⟨15, ?_⟩; norm_num; done)\n  | (refine ⟨15, ?_⟩; omega; done)\n  | (refine ⟨15, ?_⟩; decide; done)\n  | (refine ⟨21, ?_⟩; norm_num; done)\n  | (refine ⟨21, ?_⟩; omega; done)\n  | (refine ⟨21, ?_⟩; decide; done)\n  | (refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (refine ⟨0, 0, ?_⟩; omega; done)\n  | (refine ⟨0, 0, ?_⟩; decide; done)\n  | (refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (refine ⟨0, 1, ?_⟩; omega; done)\n  | (refine ⟨0, 1, ?_⟩; decide; done)\n  | (refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (refine ⟨1, 0, ?_⟩; omega; done)\n  | (refine ⟨1, 0, ?_⟩; decide; done)\n  | (refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (refine ⟨1, 2, ?_⟩; omega; done)\n  | (refine ⟨1, 2, ?_⟩; decide; done)\n  | (refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (refine ⟨2, 1, ?_⟩; omega; done)\n  | (refine ⟨2, 1, ?_⟩; decide; done)\n  | (refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (refine ⟨2, 3, ?_⟩; omega; done)\n  | (refine ⟨2, 3, ?_⟩; decide; done)\n  | (refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (refine ⟨3, 2, ?_⟩; omega; done)\n  | (refine ⟨3, 2, ?_⟩; decide; done)\n  | (refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (refine ⟨2, 15, ?_⟩; omega; done)\n  | (refine ⟨2, 15, ?_⟩; decide; done)\n  | (refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (refine ⟨3, 10, ?_⟩; omega; done)\n  | (refine ⟨3, 10, ?_⟩; decide; done)\n  | (refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (refine ⟨5, 6, ?_⟩; omega; done)\n  | (refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (push Not; intros; nlinarith; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (250:ℝ) * 0.31 = 77.5 := by sorry\ntheorem s2_pos : (250:ℝ) * 0.31 = 77.5 := by fv_auto\ntheorem s2_neg : ¬ ((250:ℝ) * 0.31 = 77.5) := by fv_auto\n\ntheorem final_wf : (250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ) := by sorry\ntheorem final_pos : (250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ) := by fv_auto\ntheorem final_neg : ¬ ((250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ)) := by fv_auto\n",
+    "lean_latency_s": 4.5841898918151855,
+    "diagnostics": [
+     {
+      "line": 247,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 249,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 250 * 0.31 = 77.5\n⊢ False\nfailed"
+     },
+     {
+      "line": 251,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 252,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     }
+    ],
+    "cache_hits": 0
+   },
+   "feedback": "أثبت مساعد البرهان أن جوابك النهائي غير متوافق مع بيانات المسألة. الفحص الصوري: `(250:ℚ) * 0.31 - 77.41 < (1 / 10 ^ 2 : ℚ) ∧ 77.41 - ((250:ℚ) * 0.31) < (1 / 10 ^ 2 : ℚ)` خاطئ.\nالخطوات التي تحقق Lean 4 من صحتها: 2.\nأعد حساب الخطوات المرفوضة بعناية (احسب رقماً رقماً، أو أعد استنتاج العلاقة المنطقية من المقدمات) وقدّم حلاً مصححاً."
+  },
+  {
+   "round_index": 3,
+   "answer": {
+    "raw": "الجواب النهائي: 77.5 دينار.\n\nالتصحيح:\n\nالخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٥. إذًا، ٢٥٠ دولار يساوي ٧٧.٥ دينار.\n\nتم تصحيح الخطأ في الخطوة 2 حيث تم تعديل الناتج إلى ٧٧.٥ دينار بدلاً من ٧٧.٤١ دينار.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "التصحيح:"
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٥. إذًا، ٢٥٠ دولار يساوي ٧٧.٥ دينار."
+     },
+     {
+      "index": 3,
+      "text": "تم تصحيح الخطأ في الخطوة 2 حيث تم تعديل الناتج إلى ٧٧.٥ دينار بدلاً من ٧٧.٤١ دينار."
+     }
+    ],
+    "final_answer": "77.5 دينار",
+    "latency_s": 6.36271333694458,
+    "tokens": 156
+   },
+   "formalization": {
+    "problem_prop": "(250:ℚ) * 0.31 - 77.5 < (1 / 10 ^ 1 : ℚ) ∧ 77.5 - ((250:ℚ) * 0.31) < (1 / 10 ^ 1 : ℚ)",
+    "problem_note": "pregroup: convert: 1 دولار = 0.31 دينار ⇒ (250:ℚ) * 0.31",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction step"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(250:ℝ) * 0.31 = 77.5",
+      "note": "conversion calculation"
+     },
+     {
+      "index": 3,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "correction confirmation"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(250:ℝ) * 0.31 = 77.5\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction step\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(250:ℝ) * 0.31 = 77.5\", \"note\": \"conversion calculation\"},\n    {\"index\": 3, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"correction confirmation\"}\n  ]\n}\n",
+    "latency_s": 8.352631092071533
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "التصحيح:",
+      "detail": "correction step",
+      "cached": false
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(250:ℝ) * 0.31 = 77.5",
+      "step_text": "الخطوة 1: نبدأ بتحويل عدد الدولارات إلى الدينار باستخدام المعادلة المعطاة: ٢٥٠ دولار × ٠٫٣١ دينار/دولار.\nالخطوة 2: نقوم بإجراء الضرب: ٢٥٠ × ٠٫٣١ = ٧٧.٥. إذًا، ٢٥٠ دولار يساوي ٧٧.٥ دينار.",
+      "detail": "",
+      "cached": false
+     },
+     {
+      "index": 3,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "تم تصحيح الخطأ في الخطوة 2 حيث تم تعديل الناتج إلى ٧٧.٥ دينار بدلاً من ٧٧.٤١ دينار.",
+      "detail": "correction confirmation",
+      "cached": false
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (intros; aesop; done)\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intros; gcongr; done)\n  | (push Not; intros; gcongr; done)\n  | (intro h; exact absurd (h True) (by decide); done)\n  | (intro h; exact absurd (h False) (by decide); done)\n  | (intro h; exact absurd (h True True) (by decide); done)\n  | (intro h; exact absurd (h True False) (by decide); done)\n  | (intro h; exact absurd (h False True) (by decide); done)\n  | (intro h; exact absurd (h False False) (by decide); done)\n  | (intro h; exact absurd (h True True True) (by decide); done)\n  | (intro h; exact absurd (h True True False) (by decide); done)\n  | (intro h; exact absurd (h True False True) (by decide); done)\n  | (intro h; exact absurd (h True False False) (by decide); done)\n  | (intro h; exact absurd (h False True True) (by decide); done)\n  | (intro h; exact absurd (h False True False) (by decide); done)\n  | (intro h; exact absurd (h False False True) (by decide); done)\n  | (intro h; exact absurd (h False False False) (by decide); done)\n  | (intro h; exact absurd (h True True True True) (by decide); done)\n  | (intro h; exact absurd (h True True True False) (by decide); done)\n  | (intro h; exact absurd (h True True False True) (by decide); done)\n  | (intro h; exact absurd (h True True False False) (by decide); done)\n  | (intro h; exact absurd (h True False True True) (by decide); done)\n  | (intro h; exact absurd (h True False True False) (by decide); done)\n  | (intro h; exact absurd (h True False False True) (by decide); done)\n  | (intro h; exact absurd (h True False False False) (by decide); done)\n  | (intro h; exact absurd (h False True True True) (by decide); done)\n  | (intro h; exact absurd (h False True True False) (by decide); done)\n  | (intro h; exact absurd (h False True False True) (by decide); done)\n  | (intro h; exact absurd (h False True False False) (by decide); done)\n  | (intro h; exact absurd (h False False True True) (by decide); done)\n  | (intro h; exact absurd (h False False True False) (by decide); done)\n  | (intro h; exact absurd (h False False False True) (by decide); done)\n  | (intro h; exact absurd (h False False False False) (by decide); done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (refine ⟨0, ?_⟩; norm_num; done)\n  | (refine ⟨0, ?_⟩; omega; done)\n  | (refine ⟨0, ?_⟩; decide; done)\n  | (refine ⟨1, ?_⟩; norm_num; done)\n  | (refine ⟨1, ?_⟩; omega; done)\n  | (refine ⟨1, ?_⟩; decide; done)\n  | (refine ⟨2, ?_⟩; norm_num; done)\n  | (refine ⟨2, ?_⟩; omega; done)\n  | (refine ⟨2, ?_⟩; decide; done)\n  | (refine ⟨3, ?_⟩; norm_num; done)\n  | (refine ⟨3, ?_⟩; omega; done)\n  | (refine ⟨3, ?_⟩; decide; done)\n  | (refine ⟨4, ?_⟩; norm_num; done)\n  | (refine ⟨4, ?_⟩; omega; done)\n  | (refine ⟨4, ?_⟩; decide; done)\n  | (refine ⟨5, ?_⟩; norm_num; done)\n  | (refine ⟨5, ?_⟩; omega; done)\n  | (refine ⟨5, ?_⟩; decide; done)\n  | (refine ⟨6, ?_⟩; norm_num; done)\n  | (refine ⟨6, ?_⟩; omega; done)\n  | (refine ⟨6, ?_⟩; decide; done)\n  | (refine ⟨7, ?_⟩; norm_num; done)\n  | (refine ⟨7, ?_⟩; omega; done)\n  | (refine ⟨7, ?_⟩; decide; done)\n  | (refine ⟨8, ?_⟩; norm_num; done)\n  | (refine ⟨8, ?_⟩; omega; done)\n  | (refine ⟨8, ?_⟩; decide; done)\n  | (refine ⟨9, ?_⟩; norm_num; done)\n  | (refine ⟨9, ?_⟩; omega; done)\n  | (refine ⟨9, ?_⟩; decide; done)\n  | (refine ⟨10, ?_⟩; norm_num; done)\n  | (refine ⟨10, ?_⟩; omega; done)\n  | (refine ⟨10, ?_⟩; decide; done)\n  | (refine ⟨12, ?_⟩; norm_num; done)\n  | (refine ⟨12, ?_⟩; omega; done)\n  | (refine ⟨12, ?_⟩; decide; done)\n  | (refine ⟨15, ?_⟩; norm_num; done)\n  | (refine ⟨15, ?_⟩; omega; done)\n  | (refine ⟨15, ?_⟩; decide; done)\n  | (refine ⟨21, ?_⟩; norm_num; done)\n  | (refine ⟨21, ?_⟩; omega; done)\n  | (refine ⟨21, ?_⟩; decide; done)\n  | (refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (refine ⟨0, 0, ?_⟩; omega; done)\n  | (refine ⟨0, 0, ?_⟩; decide; done)\n  | (refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (refine ⟨0, 1, ?_⟩; omega; done)\n  | (refine ⟨0, 1, ?_⟩; decide; done)\n  | (refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (refine ⟨1, 0, ?_⟩; omega; done)\n  | (refine ⟨1, 0, ?_⟩; decide; done)\n  | (refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (refine ⟨1, 2, ?_⟩; omega; done)\n  | (refine ⟨1, 2, ?_⟩; decide; done)\n  | (refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (refine ⟨2, 1, ?_⟩; omega; done)\n  | (refine ⟨2, 1, ?_⟩; decide; done)\n  | (refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (refine ⟨2, 3, ?_⟩; omega; done)\n  | (refine ⟨2, 3, ?_⟩; decide; done)\n  | (refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (refine ⟨3, 2, ?_⟩; omega; done)\n  | (refine ⟨3, 2, ?_⟩; decide; done)\n  | (refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (refine ⟨2, 15, ?_⟩; omega; done)\n  | (refine ⟨2, 15, ?_⟩; decide; done)\n  | (refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (refine ⟨3, 10, ?_⟩; omega; done)\n  | (refine ⟨3, 10, ?_⟩; decide; done)\n  | (refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (refine ⟨5, 6, ?_⟩; omega; done)\n  | (refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (push Not; intros; nlinarith; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (250:ℝ) * 0.31 = 77.5 := by sorry\ntheorem s2_pos : (250:ℝ) * 0.31 = 77.5 := by fv_auto\ntheorem s2_neg : ¬ ((250:ℝ) * 0.31 = 77.5) := by fv_auto\n\ntheorem final_wf : (250:ℚ) * 0.31 - 77.5 < (1 / 10 ^ 1 : ℚ) ∧ 77.5 - ((250:ℚ) * 0.31) < (1 / 10 ^ 1 : ℚ) := by sorry\ntheorem final_pos : (250:ℚ) * 0.31 - 77.5 < (1 / 10 ^ 1 : ℚ) ∧ 77.5 - ((250:ℚ) * 0.31) < (1 / 10 ^ 1 : ℚ) := by fv_auto\ntheorem final_neg : ¬ ((250:ℚ) * 0.31 - 77.5 < (1 / 10 ^ 1 : ℚ) ∧ 77.5 - ((250:ℚ) * 0.31) < (1 / 10 ^ 1 : ℚ)) := by fv_auto\n",
+    "lean_latency_s": 4.9607696533203125,
+    "diagnostics": [
+     {
+      "line": 247,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 249,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\na✝ : 250 * 0.31 = 77.5\n⊢ False\nfailed"
+     },
+     {
+      "line": 251,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 253,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     }
+    ],
+    "cache_hits": 0
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "77.5 دينار",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 54.75,
+ "memory": {
+  "lean_hits": 0,
+  "formalizer_hits": 0
+ }
+}

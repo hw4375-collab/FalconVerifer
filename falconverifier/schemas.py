@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -11,6 +12,9 @@ class Verdict(str, Enum):
     UNKNOWN = "unknown"  # well-formed, but automation could neither prove nor refute
     ILL_FORMED = "ill_formed"  # the Lean statement itself does not type-check
     SKIPPED = "skipped"  # step carries no checkable mathematical content
+    # a world-knowledge premise ("Mecca is in Saudi Arabia") — Lean has no fact base, so it is
+    # neither checked nor refuted; only the inference drawn from it is
+    UNVERIFIED_PREMISE = "unverified_premise"
 
 
 class ReasoningStep(BaseModel):
@@ -33,7 +37,7 @@ class FormalStep(BaseModel):
     """Lean 4 rendering of one reasoning step."""
 
     index: int
-    kind: str = Field(description="arith | algebra | logic | skip")
+    kind: str = Field(description="arith | algebra | logic | fact | skip")
     lean_prop: str | None = Field(description="A Lean 4 `Prop` (no `theorem`, no proof)")
     note: str = ""
 
@@ -42,6 +46,9 @@ class Formalization(BaseModel):
     problem_prop: str | None = Field(
         default=None,
         description="Lean Prop asserting the problem's final answer claim (if formalizable)",
+    )
+    problem_note: str = Field(
+        default="", description="`pregroup: …` derivation certificate when the grammar produced it"
     )
     steps: list[FormalStep]
     raw: str = ""
@@ -60,6 +67,7 @@ class StepResult(BaseModel):
     lean_prop: str | None
     step_text: str
     detail: str = ""  # Lean message that justified the verdict (for refuted/ill_formed)
+    cached: bool = False  # verdict served from kernel memory (same prop decided earlier)
 
 
 class VerificationReport(BaseModel):
@@ -69,6 +77,7 @@ class VerificationReport(BaseModel):
     lean_file: str
     lean_latency_s: float
     diagnostics: list[LeanDiagnostic] = []
+    cache_hits: int = 0  # claims answered from kernel memory instead of recompiling
 
     @property
     def refuted(self) -> list[StepResult]:
@@ -110,9 +119,13 @@ class Trace(BaseModel):
     formalizer_model: str
     rounds: list[Round]
     final_answer: str | None
-    status: str  # verified | refuted | unknown | max_rounds
+    status: str  # verified | refuted | unknown | max_rounds | unverified (baseline run)
     assurance_score: float = Field(ge=0, le=1)
     total_latency_s: float = 0.0
+    memory: dict[str, Any] = Field(
+        default_factory=dict,
+        description="kernel/formalizer cache hits and prior sightings of this problem",
+    )
 
     @property
     def n_rounds(self) -> int:

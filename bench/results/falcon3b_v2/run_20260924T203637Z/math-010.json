@@ -1,0 +1,376 @@
+{
+ "problem": "Warehouse A stores 49 crates of 16 kg each. Warehouse B stores 49 crates of 23 kg each. How many more kilograms does the heavier warehouse hold than the lighter one?",
+ "expected_answer": "343",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "FINAL ANSWER: 121 kg\n",
+    "reasoning": null,
+    "steps": [],
+    "final_answer": "121 kg",
+    "latency_s": 3.9013564586639404,
+    "tokens": 12
+   },
+   "formalization": {
+    "problem_prop": "(49:ℕ) * 23 - (49:ℕ) * 16 = 121",
+    "steps": [],
+    "raw": "{\n  \"problem_prop\": \"(49:ℕ) * 23 - (49:ℕ) * 16 = 121\",\n  \"steps\": []\n}\n",
+    "latency_s": 8.207288980484009
+   },
+   "report": {
+    "steps": [],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "Lean proved the negation of this claim.",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem final_wf : (49:ℕ) * 23 - (49:ℕ) * 16 = 121 := by sorry\ntheorem final_pos : (49:ℕ) * 23 - (49:ℕ) * 16 = 121 := by fv_auto\ntheorem final_neg : ¬ ((49:ℕ) * 23 - (49:ℕ) * 16 = 121) := by fv_auto\n",
+    "lean_latency_s": 3.70302677154541,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 42,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\n⊢ 49 * 23 - 49 * 16 = 121"
+     }
+    ]
+   },
+   "feedback": "The proof assistant PROVED that your FINAL ANSWER is inconsistent with the problem data. Formal check: `(49:ℕ) * 23 - (49:ℕ) * 16 = 121` is FALSE.\nRecompute the refuted steps carefully (do the arithmetic digit by digit, or re-derive the logical inference from the premises) and give a corrected solution."
+  },
+  {
+   "round_index": 2,
+   "answer": {
+    "raw": "FINAL ANSWER: 121 kg\n\nLet's recompute the solution step by step to ensure accuracy:\n\n**Step 1: Calculate the total weight stored in Warehouse A.**\n- Warehouse A stores 49 crates, each weighing 16 kg.\n- Total weight for Warehouse A = 49 crates * 16 kg/crate = 784 kg\n\n**Step 2: Calculate the total weight stored in Warehouse B.**\n- Warehouse B stores 49 crates, each weighing 23 kg.\n- Total weight for Warehouse B = 49 crates * 23 kg/crate = 1127 kg\n\n**Step 3: Determine the difference in weight between the heavier and the lighter warehouse.**\n- Difference = Total weight of Warehouse B - Total weight of Warehouse A\n- Difference = 1127 kg - 784 kg = 343 kg\n\nThe corrected solution shows that the heavier warehouse (Warehouse B) holds 343 kg more than the lighter warehouse (Warehouse A).\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Let's recompute the solution step by step to ensure accuracy:"
+     },
+     {
+      "index": 2,
+      "text": "**Step 1: Calculate the total weight stored in Warehouse A.**\n- Warehouse A stores 49 crates, each weighing 16 kg.\n- Total weight for Warehouse A = 49 crates * 16 kg/crate = 784 kg"
+     },
+     {
+      "index": 3,
+      "text": "**Step 2: Calculate the total weight stored in Warehouse B.**\n- Warehouse B stores 49 crates, each weighing 23 kg.\n- Total weight for Warehouse B = 49 crates * 23 kg/crate = 1127 kg"
+     },
+     {
+      "index": 4,
+      "text": "**Step 3: Determine the difference in weight between the heavier and the lighter warehouse.**\n- Difference = Total weight of Warehouse B - Total weight of Warehouse A\n- Difference = 1127 kg - 784 kg = 343 kg"
+     },
+     {
+      "index": 5,
+      "text": "The corrected solution shows that the heavier warehouse (Warehouse B) holds 343 kg more than the lighter warehouse (Warehouse A)."
+     }
+    ],
+    "final_answer": "121 kg",
+    "latency_s": 7.273280143737793,
+    "tokens": 277
+   },
+   "formalization": {
+    "problem_prop": "(49:ℕ) * 23 - (49:ℕ) * 16 = 343",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "recomputation statement"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(49:ℕ) * 16 = 784",
+      "note": "total weight of A"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(49:ℕ) * 23 = 1127",
+      "note": "total weight of B"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "1127 - 784 = 343",
+      "note": "difference"
+     },
+     {
+      "index": 5,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "conclusion"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(49:ℕ) * 23 - (49:ℕ) * 16 = 343\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"recomputation statement\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(49:ℕ) * 16 = 784\", \"note\": \"total weight of A\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(49:ℕ) * 23 = 1127\", \"note\": \"total weight of B\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"1127 - 784 = 343\", \"note\": \"difference\"},\n    {\"index\": 5, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"conclusion\"}\n  ]\n}\n",
+    "latency_s": 13.557100057601929
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Let's recompute the solution step by step to ensure accuracy:",
+      "detail": "recomputation statement"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(49:ℕ) * 16 = 784",
+      "step_text": "**Step 1: Calculate the total weight stored in Warehouse A.**\n- Warehouse A stores 49 crates, each weighing 16 kg.\n- Total weight for Warehouse A = 49 crates * 16 kg/crate = 784 kg",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(49:ℕ) * 23 = 1127",
+      "step_text": "**Step 2: Calculate the total weight stored in Warehouse B.**\n- Warehouse B stores 49 crates, each weighing 23 kg.\n- Total weight for Warehouse B = 49 crates * 23 kg/crate = 1127 kg",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "1127 - 784 = 343",
+      "step_text": "**Step 3: Determine the difference in weight between the heavier and the lighter warehouse.**\n- Difference = Total weight of Warehouse B - Total weight of Warehouse A\n- Difference = 1127 kg - 784 kg = 343 kg",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "The corrected solution shows that the heavier warehouse (Warehouse B) holds 343 kg more than the lighter warehouse (Warehouse A).",
+      "detail": "conclusion"
+     }
+    ],
+    "final_answer_verdict": "refuted",
+    "final_answer_detail": "inconsistent final answer: Lean verified `(49:ℕ) * 23 - (49:ℕ) * 16 = 343`, which does not contain the stated FINAL ANSWER '121 kg'",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s2_wf : (49:ℕ) * 16 = 784 := by sorry\ntheorem s2_pos : (49:ℕ) * 16 = 784 := by fv_auto\ntheorem s2_neg : ¬ ((49:ℕ) * 16 = 784) := by fv_auto\n\ntheorem s3_wf : (49:ℕ) * 23 = 1127 := by sorry\ntheorem s3_pos : (49:ℕ) * 23 = 1127 := by fv_auto\ntheorem s3_neg : ¬ ((49:ℕ) * 23 = 1127) := by fv_auto\n\ntheorem s4_wf : 1127 - 784 = 343 := by sorry\ntheorem s4_pos : 1127 - 784 = 343 := by fv_auto\ntheorem s4_neg : ¬ (1127 - 784 = 343) := by fv_auto\n\ntheorem final_wf : (49:ℕ) * 23 - (49:ℕ) * 16 = 343 := by sorry\ntheorem final_pos : (49:ℕ) * 23 - (49:ℕ) * 16 = 343 := by fv_auto\ntheorem final_neg : ¬ ((49:ℕ) * 23 - (49:ℕ) * 16 = 343) := by fv_auto\n",
+    "lean_latency_s": 3.780630350112915,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 49 * 16 = 784\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 49 * 23 = 1127\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1127 - 784 = 343\n⊢ False"
+     },
+     {
+      "line": 53,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 55,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 49 * 23 - 49 * 16 = 343\n⊢ False"
+     }
+    ]
+   },
+   "feedback": "Your FINAL ANSWER does not match what your own steps derive. Lean 4 verified `(49:ℕ) * 23 - (49:ℕ) * 16 = 343` — the number after FINAL ANSWER must be the result of that computation, so re-read your steps and state the value they actually produce.\nSteps verified correct by Lean 4: 2, 3, 4.\nRecompute the refuted steps carefully (do the arithmetic digit by digit, or re-derive the logical inference from the premises) and give a corrected solution."
+  },
+  {
+   "round_index": 3,
+   "answer": {
+    "raw": "FINAL ANSWER: 343 kg\n\nLet's recompute the solution step by step to ensure accuracy, addressing the concerns raised by the formal proof assistant (Lean 4):\n\n**Step 1: Calculate the total weight stored in Warehouse A.**\n- Warehouse A stores 49 crates, each weighing 16 kg.\n- Total weight for Warehouse A = 49 crates * 16 kg/crate = 784 kg\n\n**Step 2: Calculate the total weight stored in Warehouse B.**\n- Warehouse B stores 49 crates, each weighing 23 kg.\n- Total weight for Warehouse B = 49 crates * 23 kg/crate = 1127 kg\n\n**Step 3: Determine the difference in weight between the heavier and the lighter warehouse.**\n- Difference = Total weight of Warehouse B - Total weight of Warehouse A\n- Difference = 1127 kg - 784 kg = 343 kg\n\nThe corrected solution shows that the heavier warehouse (Warehouse B) holds 343 kg more than the lighter warehouse (Warehouse A).\n\nThis solution aligns with the verified steps by Lean 4, which correctly compute the difference as 343 kg.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "Let's recompute the solution step by step to ensure accuracy, addressing the concerns raised by the formal proof assistant (Lean 4):"
+     },
+     {
+      "index": 2,
+      "text": "**Step 1: Calculate the total weight stored in Warehouse A.**\n- Warehouse A stores 49 crates, each weighing 16 kg.\n- Total weight for Warehouse A = 49 crates * 16 kg/crate = 784 kg"
+     },
+     {
+      "index": 3,
+      "text": "**Step 2: Calculate the total weight stored in Warehouse B.**\n- Warehouse B stores 49 crates, each weighing 23 kg.\n- Total weight for Warehouse B = 49 crates * 23 kg/crate = 1127 kg"
+     },
+     {
+      "index": 4,
+      "text": "**Step 3: Determine the difference in weight between the heavier and the lighter warehouse.**\n- Difference = Total weight of Warehouse B - Total weight of Warehouse A\n- Difference = 1127 kg - 784 kg = 343 kg"
+     },
+     {
+      "index": 5,
+      "text": "The corrected solution shows that the heavier warehouse (Warehouse B) holds 343 kg more than the lighter warehouse (Warehouse A)."
+     },
+     {
+      "index": 6,
+      "text": "This solution aligns with the verified steps by Lean 4, which correctly compute the difference as 343 kg."
+     }
+    ],
+    "final_answer": "343 kg",
+    "latency_s": 7.579333782196045,
+    "tokens": 320
+   },
+   "formalization": {
+    "problem_prop": "(49:ℕ) * 23 - (49:ℕ) * 16 = 343",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "recomputation note"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(49:ℕ) * 16 = 784",
+      "note": "total weight for A"
+     },
+     {
+      "index": 3,
+      "kind": "arith",
+      "lean_prop": "(49:ℕ) * 23 = 1127",
+      "note": "total weight for B"
+     },
+     {
+      "index": 4,
+      "kind": "arith",
+      "lean_prop": "1127 - 784 = 343",
+      "note": "difference"
+     },
+     {
+      "index": 5,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "conclusion"
+     },
+     {
+      "index": 6,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "verification note"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"(49:ℕ) * 23 - (49:ℕ) * 16 = 343\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"recomputation note\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(49:ℕ) * 16 = 784\", \"note\": \"total weight for A\"},\n    {\"index\": 3, \"kind\": \"arith\", \"lean_prop\": \"(49:ℕ) * 23 = 1127\", \"note\": \"total weight for B\"},\n    {\"index\": 4, \"kind\": \"arith\", \"lean_prop\": \"1127 - 784 = 343\", \"note\": \"difference\"},\n    {\"index\": 5, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"conclusion\"},\n    {\"index\": 6, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"verification note\"}\n  ]\n}\n",
+    "latency_s": 12.675387859344482
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "Let's recompute the solution step by step to ensure accuracy, addressing the concerns raised by the formal proof assistant (Lean 4):",
+      "detail": "recomputation note"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(49:ℕ) * 16 = 784",
+      "step_text": "**Step 1: Calculate the total weight stored in Warehouse A.**\n- Warehouse A stores 49 crates, each weighing 16 kg.\n- Total weight for Warehouse A = 49 crates * 16 kg/crate = 784 kg",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "(49:ℕ) * 23 = 1127",
+      "step_text": "**Step 2: Calculate the total weight stored in Warehouse B.**\n- Warehouse B stores 49 crates, each weighing 23 kg.\n- Total weight for Warehouse B = 49 crates * 23 kg/crate = 1127 kg",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "1127 - 784 = 343",
+      "step_text": "**Step 3: Determine the difference in weight between the heavier and the lighter warehouse.**\n- Difference = Total weight of Warehouse B - Total weight of Warehouse A\n- Difference = 1127 kg - 784 kg = 343 kg",
+      "detail": ""
+     },
+     {
+      "index": 5,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "The corrected solution shows that the heavier warehouse (Warehouse B) holds 343 kg more than the lighter warehouse (Warehouse A).",
+      "detail": "conclusion"
+     },
+     {
+      "index": 6,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "This solution aligns with the verified steps by Lean 4, which correctly compute the difference as 343 kg.",
+      "detail": "verification note"
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; nlinarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done))\n\n\ntheorem s2_wf : (49:ℕ) * 16 = 784 := by sorry\ntheorem s2_pos : (49:ℕ) * 16 = 784 := by fv_auto\ntheorem s2_neg : ¬ ((49:ℕ) * 16 = 784) := by fv_auto\n\ntheorem s3_wf : (49:ℕ) * 23 = 1127 := by sorry\ntheorem s3_pos : (49:ℕ) * 23 = 1127 := by fv_auto\ntheorem s3_neg : ¬ ((49:ℕ) * 23 = 1127) := by fv_auto\n\ntheorem s4_wf : 1127 - 784 = 343 := by sorry\ntheorem s4_pos : 1127 - 784 = 343 := by fv_auto\ntheorem s4_neg : ¬ (1127 - 784 = 343) := by fv_auto\n\ntheorem final_wf : (49:ℕ) * 23 - (49:ℕ) * 16 = 343 := by sorry\ntheorem final_pos : (49:ℕ) * 23 - (49:ℕ) * 16 = 343 := by fv_auto\ntheorem final_neg : ¬ ((49:ℕ) * 23 - (49:ℕ) * 16 = 343) := by fv_auto\n",
+    "lean_latency_s": 3.701828718185425,
+    "diagnostics": [
+     {
+      "line": 41,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 43,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 49 * 16 = 784\n⊢ False"
+     },
+     {
+      "line": 45,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 47,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 49 * 23 = 1127\n⊢ False"
+     },
+     {
+      "line": 49,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 51,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 1127 - 784 = 343\n⊢ False"
+     },
+     {
+      "line": 53,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 55,
+      "severity": "error",
+      "message": "Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce\n\nx✝ : 49 * 23 - 49 * 16 = 343\n⊢ False"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "343 kg",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 68.09
+}

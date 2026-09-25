@@ -1,0 +1,151 @@
+{
+ "problem": "ستة أشخاص، كل واحد منهم يعرف اثنين من الآخرين بالضبط والتعارف متبادل. هل يمكن ذلك؟ أجب بنعم أو لا.",
+ "expected_answer": "نعم",
+ "student_model": "falcon-h1-arabic-3b-instruct",
+ "formalizer_model": "falcon-h1-arabic-34b-instruct",
+ "rounds": [
+  {
+   "round_index": 1,
+   "answer": {
+    "raw": "الجواب النهائي: نعم، من الممكن.\n\nالخطوة 1: فهم السيناريو\n- لدينا ستة أشخاص، كل شخص يعرف اثنين من الآخرين.\n- هذا يعني أن كل شخص لديه شبكة من العلاقات الثنائية.\n\nالخطوة 2: تحليل العلاقات\n- إذا كان كل شخص يعرف اثنين، فهناك 6 أشخاص × 2 = 12 علاقة معروفة.\n- كل علاقة هي بين شخصين، لذا فإن العدد الكلي للعلاقات هو 12 ÷ 2 = 6 علاقات.\n\nالخطوة 3: التحقق من التماسك\n- إذا كانت الشبكة تحتوي على 6 علاقات، فإنها تشكل رسماً بيانياً ثنائياً بــ 6 حواف.\n- في نظرية الرسوم البيانية، الرسم البياني الثنائي مع n عقد (n = 6 في هذه الحالة) يجب أن يحتوي على 3 مجموعات من الحواف المتصلة (أو أكثر، طالما أن الرسم البياني لا يحتوي على دورات فردية).\n- هذا السيناريو يتوافق مع مفهوم \"رسم بياني ثنائي كامل\" (complete bipartite graph)، والذي يكون دائماً قابلاً للتعرف عليه.\n\nالخطوة 4: الاستنتاج\n- بما أن الرسم البياني الثنائي الكامل مع 6 عقد ممكن نظرياً، فإنه يعني أن ستة أشخاص يمكنهم التعارف بحيث يعرف كل واحد اثنين من الآخرين دون تكرار أو عزلة.\n\nالجواب النهائي: نعم، من الممكن.\n",
+    "reasoning": null,
+    "steps": [
+     {
+      "index": 1,
+      "text": "الخطوة 1: فهم السيناريو\n- لدينا ستة أشخاص، كل شخص يعرف اثنين من الآخرين.\n- هذا يعني أن كل شخص لديه شبكة من العلاقات الثنائية."
+     },
+     {
+      "index": 2,
+      "text": "الخطوة 2: تحليل العلاقات\n- إذا كان كل شخص يعرف اثنين، فهناك 6 أشخاص × 2 = 12 علاقة معروفة.\n- كل علاقة هي بين شخصين، لذا فإن العدد الكلي للعلاقات هو 12 ÷ 2 = 6 علاقات."
+     },
+     {
+      "index": 3,
+      "text": "الخطوة 3: التحقق من التماسك\n- إذا كانت الشبكة تحتوي على 6 علاقات، فإنها تشكل رسماً بيانياً ثنائياً بــ 6 حواف.\n- في نظرية الرسوم البيانية، الرسم البياني الثنائي مع n عقد (n = 6 في هذه الحالة) يجب أن يحتوي على 3 مجموعات من الحواف المتصلة (أو أكثر، طالما أن الرسم البياني لا يحتوي على دورات فردية).\n- هذا السيناريو يتوافق مع مفهوم \"رسم بياني ثنائي كامل\" (complete bipartite graph)، والذي يكون دائماً قابلاً للتعرف عليه."
+     },
+     {
+      "index": 4,
+      "text": "الخطوة 4: الاستنتاج\n- بما أن الرسم البياني الثنائي الكامل مع 6 عقد ممكن نظرياً، فإنه يعني أن ستة أشخاص يمكنهم التعارف بحيث يعرف كل واحد اثنين من الآخرين دون تكرار أو عزلة."
+     }
+    ],
+    "final_answer": "نعم، من الممكن",
+    "latency_s": 5.319573879241943,
+    "tokens": 343
+   },
+   "formalization": {
+    "problem_prop": "∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2",
+    "problem_note": "pregroup: regular-graph fragment: n := ستة (6); k := اثنين (2); relation := acquaintance (symmetry stated («متبادلة»)); question := possible; Lean: handshake lemma / circulant witness",
+    "steps": [
+     {
+      "index": 1,
+      "kind": "skip",
+      "lean_prop": null,
+      "note": "describes the problem"
+     },
+     {
+      "index": 2,
+      "kind": "arith",
+      "lean_prop": "(6:ℕ) * 2 = 12 ∧ 12 / 2 = 6",
+      "note": "counting relations"
+     },
+     {
+      "index": 3,
+      "kind": "logic",
+      "lean_prop": "∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2",
+      "note": "graph theory application"
+     },
+     {
+      "index": 4,
+      "kind": "logic",
+      "lean_prop": "∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2",
+      "note": "conclusion"
+     }
+    ],
+    "raw": "{\n  \"problem_prop\": \"∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2\",\n  \"steps\": [\n    {\"index\": 1, \"kind\": \"skip\", \"lean_prop\": null, \"note\": \"describes the problem\"},\n    {\"index\": 2, \"kind\": \"arith\", \"lean_prop\": \"(6:ℕ) * 2 = 12 ∧ 12 / 2 = 6\", \"note\": \"counting relations\"},\n    {\"index\": 3, \"kind\": \"logic\", \"lean_prop\": \"∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2\", \"note\": \"graph theory application\"},\n    {\"index\": 4, \"kind\": \"logic\", \"lean_prop\": \"∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2\", \"note\": \"conclusion\"}\n  ]\n}\n",
+    "latency_s": 9.20880937576294
+   },
+   "report": {
+    "steps": [
+     {
+      "index": 1,
+      "verdict": "skipped",
+      "lean_prop": null,
+      "step_text": "الخطوة 1: فهم السيناريو\n- لدينا ستة أشخاص، كل شخص يعرف اثنين من الآخرين.\n- هذا يعني أن كل شخص لديه شبكة من العلاقات الثنائية.",
+      "detail": "describes the problem"
+     },
+     {
+      "index": 2,
+      "verdict": "verified",
+      "lean_prop": "(6:ℕ) * 2 = 12 ∧ 12 / 2 = 6",
+      "step_text": "الخطوة 2: تحليل العلاقات\n- إذا كان كل شخص يعرف اثنين، فهناك 6 أشخاص × 2 = 12 علاقة معروفة.\n- كل علاقة هي بين شخصين، لذا فإن العدد الكلي للعلاقات هو 12 ÷ 2 = 6 علاقات.",
+      "detail": ""
+     },
+     {
+      "index": 3,
+      "verdict": "verified",
+      "lean_prop": "∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2",
+      "step_text": "الخطوة 3: التحقق من التماسك\n- إذا كانت الشبكة تحتوي على 6 علاقات، فإنها تشكل رسماً بيانياً ثنائياً بــ 6 حواف.\n- في نظرية الرسوم البيانية، الرسم البياني الثنائي مع n عقد (n = 6 في هذه الحالة) يجب أن يحتوي على 3 مجموعات من الحواف المتصلة (أو أكثر، طالما أن الرسم البياني لا يحتوي على دورات فردية).\n- هذا السيناريو يتوافق مع مفهوم \"رسم بياني ثنائي كامل\" (complete bipartite graph)، والذي يكون دائماً قابلاً للتعرف عليه.",
+      "detail": ""
+     },
+     {
+      "index": 4,
+      "verdict": "verified",
+      "lean_prop": "∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2",
+      "step_text": "الخطوة 4: الاستنتاج\n- بما أن الرسم البياني الثنائي الكامل مع 6 عقد ممكن نظرياً، فإنه يعني أن ستة أشخاص يمكنهم التعارف بحيث يعرف كل واحد اثنين من الآخرين دون تكرار أو عزلة.",
+      "detail": ""
+     }
+    ],
+    "final_answer_verdict": "verified",
+    "final_answer_detail": "",
+    "lean_file": "import Mathlib\nimport FalconVerifier.Graph\nset_option maxHeartbeats 400000\nset_option linter.all false\nset_option autoImplicit false\n\nmacro \"fv_auto\" : tactic => `(tactic| first\n  | (decide; done)\n  | (norm_num; done)\n  | (omega; done)\n  | (simp; done)\n  | (rfl; done)\n  | (intros; tauto; done)\n  | (intros; omega; done)\n  | (intros; linarith; done)\n  | (intros; simp_all; done)\n  | (intros; norm_num at *; done)\n  | (intros; simp_all; omega; done)\n  | (intros; simp_all; linarith; done)\n  | (intros; simp_all; nlinarith; done)\n  | (intros; aesop; done)\n  | (ring_nf; done)\n  | (norm_num; ring_nf; done)\n  | (field_simp; ring_nf; done)\n  | (positivity; done)\n  | (intros; decide; done)\n  | (intros; simp_all; decide; done)\n  | (simp; decide; done)\n  | (push Not; intros; simp_all; decide; done)\n  | (push Not; norm_num; done)\n  | (push Not; decide; done)\n  | (push Not; intros; simp_all; done)\n  | (push Not; intros; simp_all; omega; done)\n  | (push Not; intros; simp_all; linarith; done)\n  | (push Not; intros; aesop; done)\n  | (push Not; refine ⟨0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, ?_⟩; decide; done)\n  | (push Not; refine ⟨4, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨4, ?_⟩; omega; done)\n  | (push Not; refine ⟨4, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, ?_⟩; decide; done)\n  | (push Not; refine ⟨6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨6, ?_⟩; omega; done)\n  | (push Not; refine ⟨6, ?_⟩; decide; done)\n  | (push Not; refine ⟨7, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨7, ?_⟩; omega; done)\n  | (push Not; refine ⟨7, ?_⟩; decide; done)\n  | (push Not; refine ⟨8, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨8, ?_⟩; omega; done)\n  | (push Not; refine ⟨8, ?_⟩; decide; done)\n  | (push Not; refine ⟨9, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨9, ?_⟩; omega; done)\n  | (push Not; refine ⟨9, ?_⟩; decide; done)\n  | (push Not; refine ⟨10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨10, ?_⟩; omega; done)\n  | (push Not; refine ⟨10, ?_⟩; decide; done)\n  | (push Not; refine ⟨12, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨12, ?_⟩; omega; done)\n  | (push Not; refine ⟨12, ?_⟩; decide; done)\n  | (push Not; refine ⟨15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨15, ?_⟩; omega; done)\n  | (push Not; refine ⟨15, ?_⟩; decide; done)\n  | (push Not; refine ⟨21, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨21, ?_⟩; omega; done)\n  | (push Not; refine ⟨21, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨0, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 0, ?_⟩; decide; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨1, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 1, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 3, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 2, ?_⟩; decide; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; omega; done)\n  | (push Not; refine ⟨2, 15, ?_⟩; decide; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; omega; done)\n  | (push Not; refine ⟨3, 10, ?_⟩; decide; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; norm_num; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; omega; done)\n  | (push Not; refine ⟨5, 6, ?_⟩; decide; done)\n  | (intro x; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; nlinarith [sq_nonneg (x - 1), sq_nonneg (x + 1)]; done)\n  | (rintro ⟨x, hx⟩; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intro x; intro hx; nlinarith [mul_self_nonneg x, sq_nonneg x]; done)\n  | (intros; nlinarith; done))\nmacro \"fv_graph\" : tactic => `(tactic| first\n  | (exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_odd (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_odd (by decide); done)\n  | (exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.no_regular_of_ge (by decide); done)\n  | (push Not; exact FalconVerifier.not_regular_of_ge (by decide); done)\n  | (exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 1, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 2, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 3, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 4, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 5, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 6, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 7, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 8, by decide⟩; done)\n  | (push Not; exact ⟨FalconVerifier.circulant _ 9, by decide⟩; done))\n\n\ntheorem s2_wf : (6:ℕ) * 2 = 12 ∧ 12 / 2 = 6 := by sorry\ntheorem s2_pos : (6:ℕ) * 2 = 12 ∧ 12 / 2 = 6 := by fv_auto\ntheorem s2_neg : ¬ ((6:ℕ) * 2 = 12 ∧ 12 / 2 = 6) := by fv_auto\n\ntheorem s3_wf : ∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2 := by sorry\ntheorem s3_pos : ∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2 := by fv_graph\ntheorem s3_neg : ¬ (∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2) := by fv_graph\n\ntheorem s4_wf : ∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2 := by sorry\ntheorem s4_pos : ∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2 := by fv_graph\ntheorem s4_neg : ¬ (∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2) := by fv_graph\n\ntheorem final_wf : ∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2 := by sorry\ntheorem final_pos : ∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2 := by fv_graph\ntheorem final_neg : ¬ (∃ f : Fin 6 → Fin 6 → Bool, FalconVerifier.Regular f 2) := by fv_graph\n",
+    "lean_latency_s": 4.206486701965332,
+    "diagnostics": [
+     {
+      "line": 142,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 144,
+      "severity": "error",
+      "message": "linarith failed to find a contradiction\n⊢ False\nfailed"
+     },
+     {
+      "line": 146,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 148,
+      "severity": "error",
+      "message": "Invalid `⟨...⟩` notation: The expected type\n  ∀ (f : Fin 6 → Fin 6 → Bool), ¬FalconVerifier.Regular f 2\nis not an inductive type\n\nNote: This notation can only be used when the expected type is an inductive type with a single constructor"
+     },
+     {
+      "line": 150,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 152,
+      "severity": "error",
+      "message": "Invalid `⟨...⟩` notation: The expected type\n  ∀ (f : Fin 6 → Fin 6 → Bool), ¬FalconVerifier.Regular f 2\nis not an inductive type\n\nNote: This notation can only be used when the expected type is an inductive type with a single constructor"
+     },
+     {
+      "line": 154,
+      "severity": "warning",
+      "message": "declaration uses `sorry`"
+     },
+     {
+      "line": 156,
+      "severity": "error",
+      "message": "Invalid `⟨...⟩` notation: The expected type\n  ∀ (f : Fin 6 → Fin 6 → Bool), ¬FalconVerifier.Regular f 2\nis not an inductive type\n\nNote: This notation can only be used when the expected type is an inductive type with a single constructor"
+     }
+    ]
+   },
+   "feedback": null
+  }
+ ],
+ "final_answer": "نعم، من الممكن",
+ "status": "verified",
+ "assurance_score": 1.0,
+ "total_latency_s": 18.74
+}
