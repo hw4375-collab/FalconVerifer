@@ -12,6 +12,7 @@ from __future__ import annotations
 import base64
 import html
 import json
+import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -165,7 +166,7 @@ table{{border-collapse:collapse;width:100%;font-size:1.25vw}}th,td{{padding:.8vh
 .foot img{{height:2.4vh;vertical-align:middle;margin-right:.6vw}}
 .brand{{display:flex;align-items:center;gap:1.4vw;margin-bottom:4vh}}.brand img{{height:9vh}}
 .note{{font-size:1.1vw;color:var(--muted);margin-top:auto}}
-.fig{{width:100%;height:auto;margin-top:1vh}}
+.fig{{width:100%;height:auto;max-height:66vh;margin-top:1vh}}
 @media print{{@page{{size:1600px 900px;margin:0}}html,body{{height:auto}}.deck{{height:auto;overflow:visible}}
 .slide{{display:flex!important;position:relative;inset:auto;width:1600px;height:900px;page-break-after:always;break-after:page;padding:54px 112px 44px;overflow:hidden}}
 .foot{{position:absolute;bottom:20px;left:112px;right:112px}}
@@ -194,123 +195,456 @@ def ar(text: str, gloss: str) -> str:
     return f'<p class="ar">{html.escape(text)}</p><p class="gloss">{html.escape(gloss)}</p>'
 
 
+def _svg(w: int, h: int, body: str) -> str:
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" class="fig" font-family="Inter, system-ui, sans-serif">'
+        '<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">'
+        f'<path d="M0 0L10 5L0 10z" fill="{NAVY}"/></marker>'
+        '<marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">'
+        f'<path d="M0 0L10 5L0 10z" fill="{BAD}"/></marker></defs>{body}</svg>'
+    )
+
+
+def _t(x, y, text, size=14, fill=NAVY, anchor="start", weight=400, serif=False, extra=""):
+    ff = ' font-family="Cormorant Garamond, Georgia, serif"' if serif else ""
+    return f'<text x="{x}" y="{y}" font-size="{size}" fill="{fill}" text-anchor="{anchor}" font-weight="{weight}"{ff} {extra}>{html.escape(str(text))}</text>'
+
+
+def _arrow(x1, y1, x2, y2, color=NAVY, dash="", marker="ah"):
+    d = f' stroke-dasharray="{dash}"' if dash else ""
+    return f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="1.6"{d} marker-end="url(#{marker})"/>'
+
+
+def _box(x, y, w, h, title, sub="", fill="#fff", stroke=NAVY, sw=1):
+    out = f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="6" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"/>'
+    out += _t(
+        x + w / 2,
+        y + h / 2 + (2 if not sub else -4),
+        title,
+        20,
+        anchor="middle",
+        weight=600,
+        serif=True,
+    )
+    if sub:
+        out += _t(x + w / 2, y + h / 2 + 16, sub, 11.5, MUTED, "middle")
+    return out
+
+
+def gap_svg(baseline: float) -> str:
+    """Language share of Falcon training data → first-try Arabic accuracy."""
+    rows = [
+        ("Falcon 7B–180B · RefinedWeb", 0.75, 0.0, "75% English · Arabic not listed"),
+        ("Falcon-H1 · ~18T tokens", 0.61, 0.02, "~11T English · Arabic ⊂ 17-language pool"),
+        ("Falcon-H1-Arabic · +300B", 0.33, 0.33, "~100B Arabic ≈ <1% of what the base saw"),
+    ]
+    b = []
+    x0, bw = 40, 620
+    for i, (label, en, ar_, note) in enumerate(rows):
+        y = 40 + i * 80
+        b.append(_t(x0, y - 8, label, 13, MUTED))
+        b.append(
+            f'<rect x="{x0}" y="{y}" width="{bw}" height="26" fill="#f6f8fc" stroke="{LINE}"/>'
+        )
+        b.append(f'<rect x="{x0}" y="{y}" width="{bw * en}" height="26" fill="{NAVY}"/>')
+        b.append(f'<rect x="{x0 + bw * en}" y="{y}" width="{bw * ar_}" height="26" fill="{OK}"/>')
+        b.append(_t(x0 + 8, y + 18, "English", 12, "#fff"))
+        if ar_ > 0.05:
+            b.append(_t(x0 + bw * en + 8, y + 18, "Arabic", 12, "#fff"))
+        b.append(_t(x0, y + 44, note, 12, MUTED))
+    b.append(_arrow(690, 150, 760, 150))
+    b.append(f'<circle cx="900" cy="150" r="105" fill="#fff" stroke="{BAD}" stroke-width="2"/>')
+    b.append(_t(900, 145, pct(baseline), 58, BAD, "middle", 600, True))
+    b.append(_t(900, 178, "Falcon 3B · Arabic", 12, MUTED, "middle"))
+    b.append(_t(900, 196, "first try · 244 problems", 11.5, MUTED, "middle"))
+    b.append(
+        _t(
+            900,
+            290,
+            "language of the training data ≠ language of the users",
+            15,
+            NAVY,
+            "middle",
+            600,
+            True,
+        )
+    )
+    return _svg(1080, 310, "".join(b))
+
+
+def idea_svg() -> str:
+    b = []
+    b.append(_box(20, 60, 300, 110, "", ""))
+    b.append(
+        f'<text x="170" y="108" font-size="22" fill="{NAVY}" text-anchor="middle" font-family="Noto Naskh Arabic, Amiri, serif">{html.escape("خُفِّض ٨٠٠ بنسبة ١٠٪ ثم ٢٠٪ → ٦٨٠")}</text>'
+    )
+    b.append(_t(170, 140, "Falcon says (Arabic)", 12, MUTED, "middle"))
+    b.append(_arrow(322, 115, 388, 115))
+    b.append(_t(355, 50, "translate", 11, MUTED, "middle"))
+    b.append(_box(390, 60, 330, 110, "", ""))
+    b.append(
+        f'<text x="555" y="110" font-size="15" fill="{NAVY}" text-anchor="middle" font-family="ui-monospace, Menlo, monospace">(800:ℝ)·(1-0.10)·(1-0.20) = 680</text>'
+    )
+    b.append(_t(555, 140, "Lean 4 proposition P", 12, MUTED, "middle"))
+    b.append(_arrow(722, 115, 788, 115))
+    b.append(_t(755, 50, "kernel", 11, MUTED, "middle"))
+    b.append(_box(790, 60, 270, 110, "Lean 4 kernel", "tries P and ¬P", fill="#f6f8fc", sw=1.8))
+    # three outcomes
+    outs = [
+        ("verified", OK, "⊢ P"),
+        ("refuted", BAD, "⊢ ¬P"),
+        ("unknown", "#a8690b", "no proof either way"),
+    ]
+    for i, (lab, col, sub) in enumerate(outs):
+        x = 780 + i * 100
+        b.append(
+            _arrow(
+                925,
+                172,
+                x + 40,
+                215,
+                col if col != OK else NAVY,
+                marker="ah" if col != BAD else "ahr",
+            )
+        )
+        b.append(
+            f'<rect x="{x - 4}" y="218" width="88" height="24" rx="12" fill="#fff" stroke="{col}"/>'
+        )
+        b.append(_t(x + 40, 235, lab, 11.5, col, "middle"))
+        b.append(_t(x + 40, 262, sub, 11, MUTED, "middle"))
+    b.append(
+        _t(
+            540,
+            235,
+            "truth of a math claim does not depend on its language",
+            17,
+            NAVY,
+            "middle",
+            600,
+            True,
+        )
+    )
+    b.append(
+        _t(540, 262, "so we do not ask a second LLM — we ask a proof kernel", 13, MUTED, "middle")
+    )
+    return _svg(1080, 285, "".join(b))
+
+
+def pregroup_svg() -> str:
+    """Type cancellation for  كتب أحمد الدرس  (VSO) drawn with under-links, plus the 5-friends graph."""
+    b = []
+    words = [("كتب", "s · oˡ · πˡ", "wrote"), ("أحمد", "π", "Ahmad"), ("الدرس", "o", "the lesson")]
+    xs = [120, 300, 460]
+    for (w, ty, gl), x in zip(words, xs, strict=True):
+        b.append(
+            f'<text x="{x}" y="50" font-size="30" fill="{NAVY}" text-anchor="middle" font-family="Noto Naskh Arabic, Amiri, serif">{w}</text>'
+        )
+        b.append(_t(x, 72, gl, 11, MUTED, "middle"))
+        b.append(
+            _t(x, 105, ty, 17, NAVY, "middle", extra='font-family="ui-monospace, Menlo, monospace"')
+        )
+    # links: πˡ (right part of first) with π ; oˡ with o
+    b.append(f'<path d="M165 112 Q 232 160 300 112" fill="none" stroke="{OK}" stroke-width="1.8"/>')
+    b.append(f'<path d="M140 112 Q 300 200 460 112" fill="none" stroke="{OK}" stroke-width="1.8"/>')
+    b.append(_t(232, 150, "πˡ·π → 1", 11, OK, "middle"))
+    b.append(_t(300, 195, "oˡ·o → 1", 11, OK, "middle"))
+    b.append(_arrow(300, 215, 300, 245))
+    b.append(_t(300, 268, "s", 26, NAVY, "middle", 600, True))
+    b.append(
+        _t(
+            300,
+            288,
+            "types cancel ⇒ sentence ⇒ the same derivation is the translation",
+            12,
+            MUTED,
+            "middle",
+        )
+    )
+    # SVO variant note
+    b.append(
+        _t(
+            300,
+            312,
+            "أحمد كتب الدرس  (SVO) — different word order, same meaning: proved in Lean (vso_svo_same_meaning)",
+            11.5,
+            MUTED,
+            "middle",
+        )
+    )
+    # right: five friends graph
+    cx, cy, r = 830, 150, 95
+    pts = [
+        (
+            cx + r * math.cos(2 * math.pi * k / 5 - math.pi / 2),
+            cy + r * math.sin(2 * math.pi * k / 5 - math.pi / 2),
+        )
+        for k in range(5)
+    ]
+    for i in range(5):
+        for j in range(i + 1, 5):
+            b.append(
+                f'<line x1="{pts[i][0]}" y1="{pts[i][1]}" x2="{pts[j][0]}" y2="{pts[j][1]}" stroke="{LINE}" stroke-width="1.2"/>'
+            )
+    for x, y in pts:
+        b.append(
+            f'<circle cx="{x}" cy="{y}" r="16" fill="#fff" stroke="{NAVY}" stroke-width="1.5"/>'
+        )
+        b.append(_t(x, y + 5, "3", 14, NAVY, "middle", 600))
+    b.append(_t(cx, 290, "each claims 3 friends  ⇒  Σ deg = 5 × 3 = 15  (odd)", 14, NAVY, "middle"))
+    b.append(
+        _t(
+            cx,
+            312,
+            "handshake lemma: Σ deg = 2·|E| is even  ⇒  impossible  ⇒  someone lies  ✓",
+            12.5,
+            MUTED,
+            "middle",
+        )
+    )
+    b.append(
+        f'<text x="{cx}" y="{cy + 5}" font-size="20" fill="{BAD}" text-anchor="middle" font-weight="600">∄</text>'
+    )
+    b.append(
+        _t(
+            cx,
+            40,
+            "∀ f : Fin 5 → Fin 5 → Bool, ¬ Regular f 3",
+            14,
+            NAVY,
+            "middle",
+            extra='font-family="ui-monospace, Menlo, monospace"',
+        )
+    )
+    b.append(
+        f'<rect x="{cx + 100}" y="{cy - 11}" width="92" height="22" rx="11" fill="#fff" stroke="{OK}"/>'
+    )
+    b.append(_t(cx + 146, cy + 4, "verified · 18 s", 11, OK, "middle"))
+    b.append(f'<line x1="600" y1="20" x2="600" y2="320" stroke="{LINE}"/>')
+    return _svg(1080, 330, "".join(b))
+
+
+def live_svg() -> str:
+    b = []
+    # example 1 chain
+    chain1 = [
+        ("Falcon 3B", "٦٨٠", BAD),
+        ("Lean", "⊢ ¬P", BAD),
+        ("feedback", "بالعربية", NAVY),
+        ("Falcon 3B", "٥٧٦", OK),
+        ("Lean", "⊢ P", OK),
+    ]
+    b.append(_t(20, 30, "1 · catch → teach → correct", 20, NAVY, weight=600, serif=True))
+    b.append(
+        f'<text x="1060" y="30" font-size="17" fill="{NAVY}" text-anchor="end" font-family="Noto Naskh Arabic, Amiri, serif">{html.escape("هاتف بـ 800 درهم، خُفِّض 10٪ ثم 20٪")}</text>'
+    )
+    for i, (lab, val, col) in enumerate(chain1):
+        x = 20 + i * 212
+        b.append(
+            f'<rect x="{x}" y="50" width="170" height="70" rx="6" fill="#fff" stroke="{col}" stroke-width="1.5"/>'
+        )
+        b.append(_t(x + 85, 74, lab, 12, MUTED, "middle"))
+        b.append(
+            f'<text x="{x + 85}" y="106" font-size="24" fill="{col}" text-anchor="middle" font-weight="600" font-family="Noto Naskh Arabic, Cormorant Garamond, serif">{val}</text>'
+        )
+        if i < 4:
+            b.append(
+                _arrow(
+                    x + 172,
+                    85,
+                    x + 210,
+                    85,
+                    BAD if i < 2 else NAVY,
+                    marker="ahr" if i < 2 else "ah",
+                )
+            )
+    b.append(_t(20, 145, "round 1", 11, MUTED))
+    b.append(_t(656, 145, "round 2 · assurance 1.0", 11, MUTED))
+    b.append(f'<line x1="20" y1="165" x2="1060" y2="165" stroke="{LINE}"/>')
+    # example 2 chain
+    b.append(_t(20, 195, "2 · prove without understanding", 20, NAVY, weight=600, serif=True))
+    b.append(
+        f'<text x="1060" y="195" font-size="17" fill="{NAVY}" text-anchor="end" font-family="Noto Naskh Arabic, Amiri, serif">{html.escape("خمسة طلاب، كل واحد له ثلاثة أصدقاء — هل يكذب أحدهم؟")}</text>'
+    )
+    chain2 = [
+        ("Falcon 3B", "نعم", NAVY),
+        ("pregroup grammar", "¬ Regular f 3", NAVY),
+        ("handshake lemma", "Σdeg even", NAVY),
+        ("Lean", "⊢ P", OK),
+        ("ask again", "memory · 0 s", MUTED),
+    ]
+    for i, (lab, val, col) in enumerate(chain2):
+        x = 20 + i * 212
+        b.append(
+            f'<rect x="{x}" y="215" width="170" height="70" rx="6" fill="{"#f6f8fc" if i == 4 else "#fff"}" stroke="{col}" stroke-width="1.5"/>'
+        )
+        b.append(_t(x + 85, 239, lab, 12, MUTED, "middle"))
+        fam = "Noto Naskh Arabic, serif" if i == 0 else "ui-monospace, Menlo, monospace"
+        b.append(
+            f'<text x="{x + 85}" y="{270 if i else 272}" font-size="{22 if i == 0 else 15}" fill="{col}" text-anchor="middle" font-weight="600" font-family="{fam}">{html.escape(val)}</text>'
+        )
+        if i < 4:
+            b.append(_arrow(x + 172, 250, x + 210, 250, NAVY if i < 3 else MUTED))
+    b.append(
+        _t(
+            20,
+            310,
+            "no LLM writes the Lean · nobody defines “friend” · the kernel verdict is reusable, Falcon's answer is not",
+            12,
+            MUTED,
+        )
+    )
+    return _svg(1080, 325, "".join(b))
+
+
+def evidence_svg(a86: dict, a244: dict) -> str:
+    b = []
+    groups = [("Arabic curated · 86", a86), ("Arabic scale · 244", a244)]
+    x0, gw, bw, h0, hmax = 60, 300, 110, 250, 200
+    for gi, (lab, s) in enumerate(groups):
+        gx = x0 + gi * gw
+        for k, (key, col, name) in enumerate(
+            (("baseline_accuracy", "#c9d2e3", "baseline"), ("verified_accuracy", NAVY, "verified"))
+        ):
+            v = s[key]
+            x = gx + k * (bw + 14)
+            b.append(
+                f'<rect x="{x}" y="{h0 - hmax * v}" width="{bw}" height="{hmax * v}" fill="{col}"/>'
+            )
+            b.append(
+                _t(
+                    x + bw / 2,
+                    h0 - hmax * v - 8,
+                    pct(v),
+                    20,
+                    NAVY if k else MUTED,
+                    "middle",
+                    600,
+                    True,
+                )
+            )
+            b.append(_t(x + bw / 2, h0 + 18, name, 11.5, MUTED, "middle"))
+        b.append(_t(gx + bw + 7, h0 + 40, lab, 13, NAVY, "middle", 600))
+        b.append(
+            _arrow(
+                gx + bw / 2 + 10,
+                h0 - hmax * s["baseline_accuracy"] - 30,
+                gx + bw + 14 + bw / 2 - 10,
+                h0 - hmax * s["verified_accuracy"] - 30,
+                OK,
+            )
+        )
+    b.append(f'<line x1="{x0 - 10}" y1="{h0}" x2="{x0 + 2 * gw - 40}" y2="{h0}" stroke="{NAVY}"/>')
+    # KPI column
+    kx = 700
+    kpis = [
+        (pct(a244["detection_recall"]), "wrong answers caught by Lean", NAVY),
+        (
+            f"{a244['fixed_after_feedback']}/{a244['wrong_baseline']}",
+            "fixed after one Arabic feedback",
+            NAVY,
+        ),
+        (str(a244["regressions"]), "correct answers made wrong", OK),
+        (str(a244["false_alarms_on_correct"]), f"false alarm in {a244['n']}", OK),
+    ]
+    for i, (n, lab, col) in enumerate(kpis):
+        y = 55 + i * 62
+        b.append(_t(kx, y, n, 34, col, "start", 600, True))
+        b.append(_t(kx + 150, y - 4, lab, 13, MUTED))
+        b.append(f'<line x1="{kx}" y1="{y + 14}" x2="1060" y2="{y + 14}" stroke="{LINE}"/>')
+    b.append(
+        _t(
+            kx,
+            292,
+            "3B student · 34B Arabic formalizer · Lean 4 + Mathlib",
+            11.5,
+            MUTED,
+        )
+    )
+    return _svg(1080, 300, "".join(b))
+
+
+def product_svg() -> str:
+    b = []
+    b.append(_box(20, 40, 180, 80, "your app", "chat · tutor · agent"))
+    b.append(_arrow(202, 80, 268, 80))
+    b.append(
+        _t(
+            235,
+            68,
+            "POST /api/solve",
+            10.5,
+            MUTED,
+            "middle",
+            extra='font-family="ui-monospace, Menlo, monospace"',
+        )
+    )
+    b.append(_box(270, 40, 220, 80, "FalconVerifier", "middleware", fill="#f6f8fc", sw=1.8))
+    b.append(_arrow(492, 65, 558, 65))
+    b.append(_arrow(558, 95, 492, 95))
+    b.append(_box(560, 40, 160, 80, "Falcon", "unchanged"))
+    b.append(_arrow(380, 122, 380, 165))
+    b.append(_box(270, 168, 220, 70, "Lean 4", "verdicts, not vibes", fill="#fff"))
+    b.append(_arrow(268, 80, 202, 80, OK))
+    b.append(_t(235, 138, "answer + assurance", 10.5, OK, "middle"))
+    # flywheel
+    b.append(_arrow(492, 203, 558, 203, BAD, marker="ahr"))
+    b.append(_box(560, 168, 160, 70, "DPO pairs", "294 · Lean-labelled", stroke=BAD))
+    b.append(_arrow(640, 166, 640, 124, BAD, "4 4", "ahr"))
+    b.append(_t(665, 150, "train", 11, BAD))
+    # right column: deploy
+    b.append(f'<line x1="770" y1="30" x2="770" y2="245" stroke="{LINE}"/>')
+    items = [
+        ("⬢", "Docker · Lean + Mathlib inside"),
+        ("🔒", "HTTPS · rate limits · access token"),
+        ("⟲", "memory · repeated claims in 0 s"),
+        ("⌥", "web UI · CLI · API · open source"),
+    ]
+    for i, (ic, txt) in enumerate(items):
+        y = 55 + i * 50
+        b.append(_t(800, y, ic, 20, NAVY))
+        b.append(_t(835, y - 2, txt, 14, NAVY))
+    return _svg(1080, 250, "".join(b))
+
+
 def build() -> str:
     a86 = summary("falcon3b_arabic")
     a244 = summary("falcon3b_arabic_scale")
     mark = (STATIC / "mark.png").resolve().as_uri()
     logo = (STATIC / "chaosbutterfly_logo.png").resolve().as_uri()
-    fig = pipeline_svg()
+    foot = f'<div class="foot"><span><img src="{mark}" alt="">ChaosButterfly · FalconVerifier</span><span class="pg"></span></div>'
     slides = [
-        # 1 — title (0:00)
         f"""<section class="slide"><div class="brand"><img src="{logo}" alt="ChaosButterfly"></div>
         <h1>FalconVerifier</h1>
-        <p class="lede">Falcon says it. Lean 4 proves it — or refutes it. In Arabic.</p>
-        <p style="color:var(--muted)">A verification middleware that turns Falcon's Arabic math and logic answers into kernel-checked claims, teaches Falcon from what the kernel refutes, and keeps an auditable trace of every step.</p>
-        <p class="note">ChaosButterfly · Hub71 Fish Tank · 5 minutes</p>
-        <div class="foot"><span><img src="{mark}" alt="">ChaosButterfly · FalconVerifier</span><span class="pg"></span></div></section>""",
-        # 2 — problem (0:30)
+        <p class="lede">Falcon says it → Lean 4 proves it, or refutes it → Falcon learns. In Arabic.</p>
+        <p class="note">ChaosButterfly · Hub71 Fish Tank · 5 min</p>{foot}</section>""",
         slide(
-            "01 · The gap",
-            """<h2>Falcon is the region's model. Its users write Arabic. Its training data mostly did not.</h2>
-            <div class="cols"><div>
-            <ul><li>Falcon-7B/40B/180B: 3.5T tokens, <b>75% English</b> RefinedWeb; Arabic not among the listed languages.</li>
-            <li>Falcon-H1: ~11T English web tokens; Arabic is one of 17 languages sharing a 3,000 GT pool.</li>
-            <li>Falcon-H1-Arabic: ~100B Arabic tokens of continued pre-training — under 1% of what the base saw.</li></ul>
-            </div><div class="card"><h3>What that looks like</h3>"""
-            + ar(
-                "سعر ٨٠٠ درهم خُفِّض ١٠٪ ثم ٢٠٪. السعر النهائي؟",
-                "A price of 800 AED is reduced 10% then 20%. Final price?",
-            )
-            + '<p>Falcon 3B (first try, benchmark): <b class="bad">680</b> — it added the discounts. Correct: <b class="ok">576</b>.</p>'
-            + '<p style="color:var(--muted)">Baseline first-try accuracy on our 244 Arabic problems: <b>'
-            + pct(a244["baseline_accuracy"])
-            + "</b>.</p></div></div>",
+            "01 · the gap",
+            "<h2>Region's model · Arabic users · English data</h2>"
+            + gap_svg(a244["baseline_accuracy"]),
         ),
-        # 3 — idea (1:00)
-        slide(
-            "02 · The idea",
-            """<h2>The truth of a math claim does not depend on the language it was written in.</h2>
-            <p class="lede">So don't ask a second LLM whether Falcon is right. Translate each sentence of Falcon's reasoning into a Lean 4 proposition and let the proof kernel decide.</p>
-            <div class="cols3">
-            <div class="card"><h3><span class="pill ok">verified</span></h3><p>The kernel proved <code>P</code>. Not "confident" — proved.</p></div>
-            <div class="card"><h3><span class="pill bad">refuted</span></h3><p>The kernel proved <code>¬P</code>. Falcon gets told, in Arabic, what is false and why.</p></div>
-            <div class="card"><h3><span class="pill" style="color:#a8690b">unknown</span></h3><p>No proof either way. We say so. Never "probably right".</p></div>
-            </div>""",
-        ),
-        # 4 — pipeline figure (1:40)
-        slide(
-            "03 · Pipeline",
-            '<h2>One loop, six stages</h2><div class="fig">' + fig + "</div>",
-        ),
-        # 5 — Arabic → Lean without understanding (2:20)
+        slide("02 · the idea", "<h2>Don't ask another LLM. Ask a proof kernel.</h2>" + idea_svg()),
+        slide("03 · pipeline", "<h2>One loop, six stages</h2>" + pipeline_svg()),
         slide(
             "04 · Arabic → Lean, deterministically",
-            """<h2>For the common fragments, no LLM writes the Lean at all</h2>
-            <div class="cols"><div>
-            <p>A <b>pregroup grammar</b> (Lambek) gives every Arabic word a type; a sentence is well-formed when the types cancel. The same derivation is a functor into meaning — so the translation is a <em>proof</em>, not a guess.</p>
-            <pre>kataba : s · oˡ · πˡ      (verb, VSO)
-ahmad  : π                (subject)
-alDarsa: o                (object)
-s · oˡ · πˡ · π · o  ⟶  s   ✓</pre>
-            <p>Fragments covered: arithmetic, quantifier logic, symmetric relations & counting. Everything else goes to Falcon-H1-Arabic-34B with a round-trip faithfulness audit — a mismatch downgrades to <em>unknown</em>.</p>
-            </div><div class="card"><h3>Five friends</h3>"""
-            + ar(
-                "خمسة طلاب يجلسون في الفصل، ويقول كل واحد منهم إن ثلاثة من الأربعة الباقين أصدقاؤه. هل يلزم أن أحدهم يكذب؟",
-                "Five students sit in class; each says three of the other four are his friends. Must one of them be lying?",
-            )
-            + """<pre>∀ f : Fin 5 → Fin 5 → Bool, ¬ Regular f 3</pre>
-            <p>Lean proves it via the handshake lemma (odd degree sum) — no enumeration, and nobody had to understand the word "friend". <span class="pill ok">verified</span> in 18 s.</p></div></div>""",
+            "<h2>Pregroup grammar: types cancel ⇒ translation is a proof</h2>" + pregroup_svg(),
         ),
-        # 6 — live demo plan (3:00)
+        slide("05 · live", "<h2>Two examples, one screen</h2>" + live_svg()),
         slide(
-            "05 · Live",
-            """<h2>Two examples, one screen</h2>
-            <div class="cols">
-            <div class="card"><h3>1 · Catch and correct</h3>"""
-            + ar("هاتف بـ 800 درهم، خُفِّض 10٪ ثم 20٪", "A phone at 800 AED, −10% then −20%")
-            + """<p>Falcon 3B answers → step 3 turns <span class="pill bad">refuted</span> with the kernel's <code>(800:ℝ)·0.9·0.8 = 576</code> → Arabic feedback → round 2 <span class="pill ok">verified</span>, assurance 1.0.</p>
-            <p style="color:var(--muted)">If 3B happens to be right first time: every step is still green with its proof — that <em>is</em> the product.</p></div>
-            <div class="card"><h3>2 · Prove without understanding</h3>"""
-            + ar("خمسة طلاب، كل واحد له ثلاثة أصدقاء", "Five students, each with three friends")
-            + """<p>Deterministic grammar → handshake theorem → answer «نعم» (yes, someone lies) <span class="pill ok">verified</span>. Open "Lean 4 source (audit)": that is the exact file the kernel checked.</p>
-            <p style="color:var(--muted)">Ask it again: the kernel verdict comes from memory in 0 s — Falcon's answer is still fresh.</p></div>
-            </div>""",
+            "06 · evidence",
+            "<h2>Falcon verifies Falcon — 0 regressions</h2>"
+            + evidence_svg(a86, a244)
+            + '<p class="note">every bar links to its problems, traces and Lean sources on /benchmark</p>',
         ),
-        # 7 — numbers (3:50)
         slide(
-            "06 · Evidence",
-            f"""<h2>Falcon 3B, Arabic, Falcon-34B as formalizer — Falcon verifies Falcon</h2>
-            <div class="kpis">
-            <div class="kpi"><div class="n" style="font-size:3.4vw;white-space:nowrap">{pct(a244["baseline_accuracy"])} → {pct(a244["verified_accuracy"])}</div><div class="l">accuracy, {a244["n"]} problems</div></div>
-            <div class="kpi"><div class="n">{pct(a244["detection_recall"])}</div><div class="l">wrong answers caught by Lean</div></div>
-            <div class="kpi"><div class="n">{a244["regressions"]}</div><div class="l">correct answers made wrong</div></div>
-            <div class="kpi"><div class="n">{a244["false_alarms_on_correct"]}</div><div class="l">false alarm in {a244["n"]}</div></div>
-            </div>
-            <table><thead><tr><th>set</th><th>n</th><th>baseline</th><th>verified</th><th>caught</th><th>fixed</th><th>regressions</th></tr></thead><tbody>
-            <tr><td>Arabic curated</td><td>{a86["n"]}</td><td>{pct(a86["baseline_accuracy"])}</td><td><b>{pct(a86["verified_accuracy"])}</b></td><td>{a86["wrong_detected_by_lean"]}/{a86["wrong_baseline"]}</td><td>{a86["fixed_after_feedback"]}/{a86["wrong_baseline"]}</td><td>{a86["regressions"]}</td></tr>
-            <tr><td>Arabic scale</td><td>{a244["n"]}</td><td>{pct(a244["baseline_accuracy"])}</td><td><b>{pct(a244["verified_accuracy"])}</b></td><td>{a244["wrong_detected_by_lean"]}/{a244["wrong_baseline"]}</td><td>{a244["fixed_after_feedback"]}/{a244["wrong_baseline"]}</td><td>{a244["regressions"]}</td></tr>
-            </tbody></table>
-            <p class="note">Every row links to its problems, traces and Lean sources on the /benchmark page. 294 Lean-labelled preference pairs already exported for DPO.</p>""",
+            "07 · product",
+            "<h2>Middleware, not a model</h2>"
+            + product_svg()
+            + '<p class="note">limits, said out loud: Lean checks what was formalized · out-of-fragment steps depend on the 34B formalizer · proof-style problems → unknown</p>',
         ),
-        # 8 — product (4:20)
-        slide(
-            "07 · Product",
-            """<h2>Middleware, not a model</h2>
-            <div class="cols3">
-            <div class="card"><h3>For any Falcon app</h3><pre>POST /api/solve
-{ "problem": "...", "rounds": 3 }
-→ verdicts, feedback, trace</pre><p>One call adds a kernel-backed assurance score to Falcon output.</p></div>
-            <div class="card"><h3>For TII</h3><p>Every refutation is a training signal labelled by a proof, not by a human or an LLM judge. The flywheel is already a file.</p></div>
-            <div class="card"><h3>Open & deployable</h3><p>Docker image with Lean + Mathlib, HTTPS, rate limits, memory. Web UI, CLI, API — all in the repo.</p></div>
-            </div>
-            <p class="note">Limits we state out loud: Lean checks what was formalized, not the prose; out-of-fragment steps depend on the 34B formalizer; proof-style problems are "unknown" today.</p>""",
-        ),
-        # 9 — close (4:50)
         f"""<section class="slide"><div class="brand"><img src="{logo}" alt="ChaosButterfly"></div>
         <h1>Trust in Arabic, proved in Lean.</h1>
-        <p class="lede">A regional model has to lead in its own language. We give Falcon a kernel that never bluffs — and a way to learn from it.</p>
-        <p style="color:var(--muted)">github.com/hw4375-collab/FalconVerifer · live demo on the next screen</p>
-        <div class="foot"><span><img src="{mark}" alt="">ChaosButterfly · FalconVerifier</span><span class="pg"></span></div></section>""",
+        <p class="lede">Falcon → Lean 4 → Falcon</p>
+        <p style="color:var(--muted)">github.com/hw4375-collab/FalconVerifer · live demo →</p>{foot}</section>""",
     ]
     doc = (
         '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>FalconVerifier — 5-minute pitch</title>'
