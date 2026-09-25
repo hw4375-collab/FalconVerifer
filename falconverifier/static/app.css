@@ -60,6 +60,8 @@ button:disabled { opacity: .5; cursor: wait; }
 .examples button { background: var(--surface); color: var(--fg); font-weight: 500; font-size: 12px; padding: 6px 10px; border: 1px solid var(--line); text-transform: none; letter-spacing: normal; }
 .examples button:hover { border-color: var(--navy); background: #fff; }
 .status { padding: 10px 16px; border-radius: 3px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; display: flex; gap: 12px; align-items: center; }
+.memnote { margin-top: 6px; padding: 8px 16px; border-left: 2px solid var(--navy); font-size: 13px; color: var(--muted); }
+.memnote b { color: var(--navy); }
 .status .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--navy); animation: pulse 1s infinite; }
 @keyframes pulse { 50% { opacity: .3; } }
 .hidden { display: none !important; }

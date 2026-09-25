@@ -155,6 +155,7 @@ async function run(baselineOnly = false) {
   state.rounds = {};
   $("#roundlist").innerHTML = "";
   $("#result").classList.add("hidden");
+  $("#memnote").classList.add("hidden");
   if (location.search) history.replaceState(null, "", location.pathname);
   $("#run").disabled = $("#baseline").disabled = true;
   $("#stop").classList.remove("hidden");
@@ -222,7 +223,7 @@ function handle(kind, p) {
     case "verified": renderReport(roundCard(p.round), p.report); break;
     case "feedback": renderFeedback(roundCard(p.round), p.feedback); setStatus(`round ${p.round}: teaching Falcon what Lean refuted…`); break;
     case "done": { const m = p.trace.memory || {}; const hits = (m.lean_hits || 0) + (m.formalizer_hits || 0); renderResult(p.trace); setStatus(`done — ${p.trace.status} in ${p.trace.total_latency_s}s` + (hits ? ` · memory: ${m.lean_hits || 0} kernel verdicts, ${m.formalizer_hits || 0} translations reused` : ""), false); break; }
-    case "memory": setStatus(`seen this problem ${p.seen_before}× before (last: ${p.last_status}) — Falcon still answers afresh; only kernel verdicts and translations are reused`); break;
+    case "memory": { const m = $("#memnote"); m.classList.remove("hidden"); m.innerHTML = `<b>Seen ${p.seen_before}× before</b> (last outcome: ${esc(p.last_status || "–")}${p.expected_answer_from_memory ? ", expected answer recalled" : ""}). Falcon still answers afresh — only kernel verdicts and type-checked translations are reused, and each reuse is marked.`; break; }
     case "status": setStatus(p.message); break;
     case "saved": break;
     case "error": setStatus("error: " + p.message, false); break;
