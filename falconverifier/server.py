@@ -15,8 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel
 
 from .agent import VerifyAndTeachAgent
@@ -24,15 +23,9 @@ from .config import PROVIDER_PRESETS, Settings
 from .lean_runner import LeanRunner
 from .memory import memory_from_env
 
-STATIC_DIR = Path(__file__).parent / "static"
+STATIC_DIR = Path(__file__).parent / "static"  # built web app (see web/)
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BENCH_RESULTS = REPO_ROOT / "bench" / "results"
-PAGES = {
-    "/": "index.html",
-    "/why": "why.html",
-    "/benchmark": "benchmark.html",
-    "/about": "about.html",
-}
 
 
 def _github_blob_base() -> str:
@@ -62,7 +55,6 @@ GITHUB_BLOB_BASE = _github_blob_base()
 _SAFE_NAME = re.compile(r"^[A-Za-z0-9_.-]+$")
 
 app = FastAPI(title="FalconVerifier", version="0.1.0")
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Deployment knobs: Lean is CPU/RAM heavy, so bound how many loops run at once; bound how
 # many solves a single client may start per hour; optional shared token for the API.
@@ -184,26 +176,6 @@ def _run_stream(req: SolveRequest) -> Iterator[str]:
             break
         kind, payload = item
         yield _sse(kind, payload)
-
-
-@app.get("/", response_class=HTMLResponse)
-def index() -> FileResponse:
-    return FileResponse(STATIC_DIR / PAGES["/"])
-
-
-@app.get("/why", response_class=HTMLResponse)
-def why_page() -> FileResponse:
-    return FileResponse(STATIC_DIR / PAGES["/why"])
-
-
-@app.get("/benchmark", response_class=HTMLResponse)
-def benchmark_page() -> FileResponse:
-    return FileResponse(STATIC_DIR / PAGES["/benchmark"])
-
-
-@app.get("/about", response_class=HTMLResponse)
-def about_page() -> FileResponse:
-    return FileResponse(STATIC_DIR / PAGES["/about"])
 
 
 @app.get("/healthz")
@@ -416,3 +388,19 @@ def bench_trace(sub: str, run: str, problem_id: str) -> FileResponse:
     if not path.is_file():
         raise HTTPException(404, "trace not found")
     return FileResponse(path, media_type="application/json")
+
+
+@app.get("/{path:path}", include_in_schema=False)
+def web_app(path: str) -> FileResponse:
+    """The web app built from web/ into static/: a built file by path, any other route -> index.html
+    (client-side routing: /, /demo, /results). Declared last so /api/* and /healthz win."""
+    if path.startswith("api/"):
+        raise HTTPException(404, "not found")
+    root = STATIC_DIR.resolve()
+    target = (STATIC_DIR / path).resolve()
+    if path and target.is_file() and target.is_relative_to(root):
+        return FileResponse(target)
+    index = STATIC_DIR / "index.html"
+    if not index.is_file():
+        raise HTTPException(404, "web app not built: run `npm run build` in web/")
+    return FileResponse(index)

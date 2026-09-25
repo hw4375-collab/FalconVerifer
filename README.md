@@ -42,6 +42,20 @@ falconverifier bench --dataset bench/problems_ar.jsonl --workers 4   # Arabic se
 falconverifier serve            # web UI on http://localhost:8000
 ```
 
+### Website
+
+`falconverifier serve` also serves the NYU Falcon site built from `web/` (committed in
+`falconverifier/static/`): `/` tells the story, `/demo` puts baseline Falcon beside Falcon + Lean 4,
+and `/results` shows every benchmark run. Recorded runs replay committed traces with no model calls;
+typed questions run live when the server has `FALCON_API_KEY` and a built Lean project.
+
+```bash
+cd web && npm install
+npm run dev      # http://localhost:5173, proxies /api and /healthz to :8000 (FV_API overrides)
+npm run data     # re-export bench/results into web/public/data after a new benchmark run
+npm run build    # typecheck and build into falconverifier/static/ (commit the output)
+```
+
 ### Deploy as a public website
 
 One Docker image bundles the server and Lean 4 + Mathlib; `deploy/` adds Caddy for HTTPS,
@@ -189,7 +203,9 @@ falconverifier/
   arabic_word.py  Arabic quantity word problems (boxes, compound discount, averages …)
   arabic_daily.py everyday Arabic dialogue: weekday, clock, currency/unit, bills
   bench.py        baseline vs verified evaluation
-  cli.py / server.py   CLI and FastAPI web UI
+  cli.py / server.py   CLI and FastAPI server
+  static/         built website (output of web/)
+web/              React site: story, demo, results (see web/DESIGN.md)
 lean/             Lake project: Mathlib + FalconVerifier/Prelude.lean (fv_auto)
 bench/            dataset generator, problems.jsonl, results
 ```
@@ -222,6 +238,7 @@ Where to read first:
 | `docs/DPO.md` | exporting Lean-refuted traces as preference pairs |
 | `docs/DEPLOY.md` | Docker / Caddy / GHCR deployment |
 | `docs/PITCH.md`, `docs/pitch.html` | 5-minute pitch + live-demo script |
+| `web/README.md`, `web/DESIGN.md` | the NYU Falcon website: pages, build, design system |
 
 Design rules that every change must keep: Lean is the only verdict authority; deterministic
 fragments fail closed (return `None` rather than guess); a refutation from an LLM translation

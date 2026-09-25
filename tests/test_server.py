@@ -59,9 +59,17 @@ def test_formalizer_choice_does_not_mutate_process_env(client, monkeypatch):
 
 
 def test_pages_served(client):
-    for path in ("/", "/why", "/benchmark", "/about"):
+    for path in ("/", "/demo", "/results"):
         r = client.get(path)
-        assert r.status_code == 200 and "ChaosButterfly" in r.text
+        assert r.status_code == 200 and "NYU Falcon" in r.text
+
+
+def test_web_app_files_and_fallback(client):
+    data = client.get("/data/bench.json")
+    assert data.status_code == 200 and data.json()["arms"]
+    assert client.get("/api/nope").status_code == 404
+    leaked = client.get("/..%2F..%2Fpyproject.toml")
+    assert leaked.status_code in (200, 404) and "[project]" not in leaked.text
 
 
 def test_bench_runs_payload_links_to_evidence(client):

@@ -28,7 +28,7 @@ build-backend = "setuptools.build_meta"
 include = ["falconverifier*"]
 
 [tool.setuptools.package-data]
-falconverifier = ["static/*"]
+falconverifier = ["static/*", "static/**/*"]
 
 [tool.ruff]
 line-length = 100

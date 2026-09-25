@@ -1,4 +1,4 @@
-"""Build the 5-minute pitch deck (docs/pitch.html) and the pipeline figure (static/pipeline.svg).
+"""Build the 5-minute pitch deck (docs/pitch.html) and the pipeline figure (docs/pipeline.svg).
 
 Same visual language as the web UI: white, navy #0f2247, Cormorant serif headings, hairlines.
 Numbers are read from bench/results/*/latest.json; nothing is typed by hand.
@@ -17,9 +17,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "bench" / "results"
-STATIC = ROOT / "falconverifier" / "static"
+MARK = ROOT / "web" / "public" / "brand" / "chaosbutterfly-mark.png"
+LOGO = ROOT / "docs" / "assets" / "chaosbutterfly_logo.png"
 OUT = ROOT / "docs" / "pitch.html"
-SVG_OUT = STATIC / "pipeline.svg"
+SVG_OUT = ROOT / "docs" / "pipeline.svg"
 
 NAVY = "#0f2247"
 MUTED = "#5b6b8c"
@@ -609,8 +610,8 @@ def product_svg() -> str:
 def build() -> str:
     a86 = summary("falcon3b_arabic")
     a244 = summary("falcon3b_arabic_scale")
-    mark = (STATIC / "mark.png").resolve().as_uri()
-    logo = (STATIC / "chaosbutterfly_logo.png").resolve().as_uri()
+    mark = MARK.resolve().as_uri()
+    logo = LOGO.resolve().as_uri()
     foot = f'<div class="foot"><span><img src="{mark}" alt="">ChaosButterfly · FalconVerifier</span><span class="pg"></span></div>'
     slides = [
         f"""<section class="slide"><div class="brand"><img src="{logo}" alt="ChaosButterfly"></div>
@@ -659,7 +660,7 @@ def main() -> None:
     SVG_OUT.write_text(pipeline_svg())
     doc = build()
     # inline the images so the HTML is self-contained
-    for p in (STATIC / "mark.png", STATIC / "chaosbutterfly_logo.png"):
+    for p in (MARK, LOGO):
         b64 = base64.b64encode(p.read_bytes()).decode()
         doc = doc.replace(p.resolve().as_uri(), f"data:image/png;base64,{b64}")
     OUT.write_text(doc)
