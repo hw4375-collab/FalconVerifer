@@ -150,6 +150,28 @@ def bench_regrade(
         print_summary(regrade_run(d)["summary"])
 
 
+@app.command("export-dpo")
+def export_dpo(
+    roots: list[Path] = typer.Argument(
+        None, help="Trace files or directories (default: bench/results and runs)"
+    ),
+    out: Path = typer.Option(Path("data/dpo_pairs.jsonl"), help="Output JSONL"),
+    allow_unlabeled: bool = typer.Option(
+        False, help="Also use traces without a gold answer (chosen = Lean-verified only)"
+    ),
+) -> None:
+    """Export Lean-refuted -> Lean-verified answer pairs as DPO preference data."""
+    from .dpo_export import export
+
+    stats = export(
+        roots or [Path("bench/results"), Path("runs")], out, require_expected=not allow_unlabeled
+    )
+    console.print(
+        f"[green]{stats['pairs']} pairs[/] ({stats['ar']} ar / {stats['en']} en) from "
+        f"{stats['traces']} traces, {stats['duplicates']} duplicates dropped -> {out}"
+    )
+
+
 @app.command()
 def serve(
     host: str = typer.Option("0.0.0.0"), port: int = typer.Option(8000), reload: bool = False
