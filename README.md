@@ -212,12 +212,12 @@ bench/            dataset generator, problems.jsonl, results
 
 ## For contributors
 
-All current work lives on the PR branch `devin/1790279948-web-ui-tests`
-(<https://github.com/hw4375-collab/FalconVerifer/pull/1>); `main` still holds the initial
-scaffold until that PR is merged.
+All work is on `main`: PR #1 (<https://github.com/hw4375-collab/FalconVerifer/pull/1>, the
+engine, benchmarks and docs) was squash-merged, and the NYU Falcon website followed on top. Start
+with `HANDOVER.md` and `docs/repo-map.html`; coding agents also read `AGENTS.md`.
 
 ```bash
-git clone -b devin/1790279948-web-ui-tests https://github.com/hw4375-collab/FalconVerifer.git
+git clone https://github.com/hw4375-collab/FalconVerifer.git
 cd FalconVerifer            # then follow Quickstart (venv, elan + lake, .env)
 
 # before every push
@@ -238,6 +238,8 @@ Where to read first:
 | `docs/DPO.md` | exporting Lean-refuted traces as preference pairs |
 | `docs/DEPLOY.md` | Docker / Caddy / GHCR deployment |
 | `docs/PITCH.md`, `docs/pitch.html` | 5-minute pitch + live-demo script |
+| `HANDOVER.md` | current state, how to run and deploy, open items |
+| `docs/repo-map.html` | what runs where, and where each part of the code lives (open in a browser) |
 | `web/README.md`, `web/DESIGN.md` | the NYU Falcon website: pages, build, design system |
 
 Design rules that every change must keep: Lean is the only verdict authority; deterministic

@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- NYU Falcon repo map. Open this file in a browser. Web fonts load when online; offline it falls back to system fonts. -->
+<title>NYU Falcon repo map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #fafaf8;
+    --panel: #f1f2ef;
+    --ink: #16181b;
+    --ink-2: #4f555c;
+    --ink-3: #686e75;
+    --rule: #dfe1dd;
+    --rule-strong: #c9ccc7;
+    --new: #0b7a4b;
+    --new-wash: #e3f1e8;
+    --chg: #9a5b00;
+    --chg-wash: #f6ecd9;
+    --gone: #c8381f;
+    --gone-wash: #fae7e2;
+    --sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #121416;
+      --panel: #1b1e21;
+      --ink: #eceeec;
+      --ink-2: #b6bcb8;
+      --ink-3: #8f9692;
+      --rule: #2a2f33;
+      --rule-strong: #3d4348;
+      --new: #4cc38a;
+      --new-wash: #142a20;
+      --chg: #e3ac4c;
+      --chg-wash: #2c2415;
+      --gone: #f0785f;
+      --gone-wash: #301b17;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #121416;
+    --panel: #1b1e21;
+    --ink: #eceeec;
+    --ink-2: #b6bcb8;
+    --ink-3: #8f9692;
+    --rule: #2a2f33;
+    --rule-strong: #3d4348;
+    --new: #4cc38a;
+    --new-wash: #142a20;
+    --chg: #e3ac4c;
+    --chg-wash: #2c2415;
+    --gone: #f0785f;
+    --gone-wash: #301b17;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding-inline: clamp(16px, 4vw, 40px);
+    padding-block: clamp(32px, 6vw, 72px) 72px;
+    display: grid;
+    gap: clamp(48px, 7vw, 88px);
+  }
+  h1, h2 { margin: 0; text-wrap: balance; letter-spacing: -0.025em; }
+  h1 { font-size: clamp(34px, 5vw, 56px); line-height: 1.04; font-weight: 600; }
+  h2 { font-size: clamp(24px, 2.6vw, 32px); line-height: 1.15; font-weight: 600; }
+  p { margin: 0; }
+  code, .path { font-family: var(--mono); font-size: 0.86em; }
+  .lede { max-width: 62ch; margin-top: 16px; font-size: clamp(17px, 1.6vw, 20px); color: var(--ink-2); text-wrap: pretty; }
+  section { display: grid; gap: 20px; }
+  .note { max-width: 70ch; color: var(--ink-2); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .swatch { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid; }
+  .swatch.new { background: var(--new-wash); border-color: var(--new); }
+  .swatch.chg { background: var(--chg-wash); border-color: var(--chg); }
+  .swatch.same { background: var(--panel); border-color: var(--rule-strong); }
+
+  .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .diagram { display: block; width: 100%; min-width: 960px; height: auto; }
+  .diagram text { font-family: var(--sans); }
+  .grp rect { fill: none; stroke: var(--rule-strong); stroke-width: 1.2; stroke-dasharray: 5 5; }
+  .grp text { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; fill: var(--ink-3); }
+  .box rect { fill: var(--panel); stroke: var(--rule-strong); stroke-width: 1.2; }
+  .box.new rect { fill: var(--new-wash); stroke: var(--new); }
+  .box.chg rect { fill: var(--chg-wash); stroke: var(--chg); }
+  .box .t { font-family: var(--mono); font-size: 15.5px; font-weight: 600; fill: var(--ink); }
+  .box .s { font-size: 13.5px; fill: var(--ink-2); }
+  .box .m { font-family: var(--mono); font-size: 12.5px; fill: var(--ink-2); }
+  .box .tag { font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; fill: var(--ink-3); }
+  .box.new .tag { fill: var(--new); }
+  .box.chg .tag { fill: var(--chg); }
+  .edge { fill: none; stroke: var(--ink-3); stroke-width: 1.6; }
+  .edge.loop { stroke-dasharray: 5 4; }
+  .arrowhead { fill: none; stroke: var(--ink-3); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .lbl { font-size: 12.5px; font-weight: 500; fill: var(--ink-3); paint-order: stroke; stroke: var(--bg); stroke-width: 5px; stroke-linejoin: round; }
+  .browser rect { fill: var(--ink); }
+  .browser text { fill: var(--bg); font-size: 14.5px; font-weight: 600; }
+
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 14px; max-width: 78ch; }
+  ol.steps li { counter-increment: step; display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: baseline; }
+  ol.steps li::before {
+    content: counter(step);
+    font-family: var(--mono); font-size: 13px; font-weight: 600;
+    width: 26px; height: 26px; border-radius: 999px; display: grid; place-items: center;
+    background: var(--panel); color: var(--ink-2); border: 1px solid var(--rule-strong);
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 720px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 14px 12px 0; border-bottom: 1px solid var(--rule); }
+  thead th { font-size: 13px; font-weight: 600; color: var(--ink-3); border-bottom: 1px solid var(--ink); padding-top: 0; }
+  td:first-child { width: 34%; }
+  td .path { color: var(--ink); overflow-wrap: anywhere; }
+  td:nth-child(2) { color: var(--ink-2); }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; border: 1px solid; }
+  .pill.new { color: var(--new); background: var(--new-wash); border-color: color-mix(in srgb, var(--new) 35%, transparent); }
+  .pill.chg { color: var(--chg); background: var(--chg-wash); border-color: color-mix(in srgb, var(--chg) 35%, transparent); }
+  .pill.same { color: var(--ink-3); background: var(--panel); border-color: var(--rule-strong); }
+  .pill.gone { color: var(--gone); background: var(--gone-wash); border-color: color-mix(in srgb, var(--gone) 35%, transparent); }
+  .arrow { color: var(--ink-3); padding-inline: 6px; }
+
+  pre {
+    margin: 0; padding: 18px 20px; border-radius: 12px; background: var(--panel); color: var(--ink);
+    font-family: var(--mono); font-size: 13.5px; line-height: 1.7; overflow-x: auto;
+  }
+  pre .c { color: var(--ink-3); }
+  a { color: var(--ink); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<main class="page">
+  <header>
+    <h1>NYU Falcon repo map</h1>
+    <p class="lede">
+      What runs where when NYU Falcon is deployed, how to deploy it, and where each part of the code lives. The
+      website is new; the verification engine under it is the same code as before.
+    </p>
+  </header>
+
+  <section aria-labelledby="runs">
+    <h2 id="runs">Where it runs</h2>
+    <div class="scroll">
+      <svg class="diagram" viewBox="0 0 1200 440" role="img" aria-label="Deployment: pushing to main makes GitHub Actions build a Docker image into GitHub Packages. On an Ubuntu server, a Caddy container terminates HTTPS and proxies to the app container, which runs the FastAPI server with the built site and Lean. The app calls the Falcon API with the key from deploy/.env.production. Browsers reach the server over HTTPS.">
+        <g class="grp"><rect x="20" y="40" width="320" height="384" rx="14" /><text x="38" y="64">GITHUB</text></g>
+        <g class="grp"><rect x="400" y="40" width="460" height="384" rx="14" /><text x="418" y="64">YOUR SERVER · UBUNTU, 8 GB RAM</text></g>
+        <g class="grp"><rect x="900" y="40" width="280" height="384" rx="14" /><text x="918" y="64">OUTSIDE THE SERVER</text></g>
+
+        <g class="box"><rect x="40" y="84" width="280" height="64" rx="10" /><text class="t" x="58" y="110">main branch</text><text class="s" x="58" y="132">each push runs CI: ruff and pytest</text></g>
+        <g class="box"><rect x="40" y="184" width="280" height="64" rx="10" /><text class="t" x="58" y="210">Actions: Docker image</text><text class="s" x="58" y="232">Lean, Mathlib and the built site</text></g>
+        <g class="box new"><rect x="40" y="284" width="280" height="96" rx="10" /><text class="t" x="58" y="310">GitHub Packages</text><text class="m" x="58" y="336">ghcr.io/hw4375-collab/</text><text class="m" x="58" y="358">falconverifer:latest</text></g>
+
+        <g class="box"><rect x="420" y="84" width="420" height="64" rx="10" /><text class="t" x="438" y="110">caddy container</text><text class="s" x="438" y="132">ports 80 and 443, automatic HTTPS for DOMAIN</text></g>
+        <g class="box new">
+          <rect x="420" y="184" width="420" height="150" rx="10" />
+          <text class="t" x="438" y="210">app container</text>
+          <text class="m" x="438" y="236">uvicorn falconverifier.server:app :8000</text>
+          <text class="s" x="438" y="262">serves the built site and the API</text>
+          <text class="s" x="438" y="286">runs Lean 4 + Mathlib from /app/lean</text>
+          <text class="s" x="438" y="310">volume runs/: traces and memory.sqlite</text>
+        </g>
+        <g class="box"><rect x="420" y="360" width="420" height="48" rx="10" /><text class="t" x="438" y="380">deploy/.env.production</text><text class="s" x="438" y="399">DOMAIN, FALCON_API_KEY, rate limits, access token</text></g>
+
+        <g class="box"><rect x="920" y="84" width="240" height="64" rx="10" /><text class="t" x="938" y="110">Browser</text><text class="s" x="938" y="132">judges open https://DOMAIN</text></g>
+        <g class="box"><rect x="920" y="214" width="240" height="84" rx="10" /><text class="t" x="938" y="240">Falcon API (TII)</text><text class="s" x="938" y="262">student and formalizer models</text><text class="m" x="938" y="284">chat.falconllm.tii.ae</text></g>
+        <g class="box"><rect x="920" y="330" width="240" height="78" rx="10" style="stroke-dasharray:5 4" /><text class="t" x="938" y="356">Static page</text><text class="s" x="938" y="378">optional, no server: the demo</text><text class="s" x="938" y="396">replays recorded runs only</text></g>
+
+        <path class="edge" d="M180 148 V 180" /><path class="arrowhead" d="M175 174 L180 181 L185 174" />
+        <text class="lbl" x="190" y="170">on push</text>
+        <path class="edge" d="M180 248 V 280" /><path class="arrowhead" d="M175 274 L180 281 L185 274" />
+        <text class="lbl" x="190" y="270">publishes</text>
+        <path class="edge" d="M320 330 H 370 V 259 H 416" /><path class="arrowhead" d="M410 254 L417 259 L410 264" />
+        <text class="lbl" x="326" y="349">docker pull</text>
+        <path class="edge" d="M920 116 H 844" /><path class="arrowhead" d="M850 111 L843 116 L850 121" />
+        <text class="lbl" x="881" y="108" text-anchor="middle">HTTPS</text>
+        <path class="edge" d="M630 148 V 180" /><path class="arrowhead" d="M625 174 L630 181 L635 174" />
+        <text class="lbl" x="640" y="170">proxy, SSE unbuffered</text>
+        <path class="edge" d="M630 360 V 338" /><path class="arrowhead" d="M625 344 L630 337 L635 344" />
+        <text class="lbl" x="640" y="352">settings</text>
+        <path class="edge" d="M840 256 H 916" /><path class="arrowhead" d="M910 251 L917 256 L910 261" />
+        <text class="lbl" x="878" y="248" text-anchor="middle">API key</text>
+      </svg>
+    </div>
+    <p class="note">
+      Everything that needs a secret or Lean runs in the app container on your server. The browser only downloads the
+      site and talks to that server; it never sees the Falcon key. The built site ships inside the image, so there is no
+      separate frontend to deploy.
+    </p>
+  </section>
+
+  <section aria-labelledby="deploy">
+    <h2 id="deploy">Deploy it</h2>
+    <ol class="steps">
+      <li><p>Wait for the <strong>Docker image</strong> workflow on <code>main</code> to finish (Actions tab, about 15 minutes). It publishes <code>ghcr.io/hw4375-collab/falconverifer:latest</code> with the new site inside.</p></li>
+      <li><p>Make that package public (GitHub, Packages, falconverifer, Change visibility), or run <code>docker login ghcr.io</code> on the server with a read-only token.</p></li>
+      <li><p>Get an Ubuntu 22.04 or 24.04 server with at least 4 vCPUs, 8 GB RAM and 40 GB disk. Open ports 80 and 443 and point a DNS A record at it. Without a domain, <code>1-2-3-4.sslip.io</code> works for IP 1.2.3.4.</p></li>
+      <li><p>On the server, run the installer once. It installs Docker, clones the repo to <code>/opt/falconverifier</code>, creates <code>deploy/.env.production</code> and stops.</p></li>
+      <li><p>Edit <code>/opt/falconverifier/deploy/.env.production</code>: set <code>DOMAIN</code> and <code>FALCON_API_KEY</code>. For a private demo, also set <code>FV_ACCESS_TOKEN</code>.</p></li>
+      <li><p>Run the installer again with <code>FV_IMAGE</code> set. It pulls the image, starts the app and Caddy, waits for the health check and prints the URL.</p></li>
+      <li><p>Open <code>https://DOMAIN/healthz</code>. When <code>lean_project</code> and <code>falcon_key</code> are both true, the demo answers live questions.</p></li>
+    </ol>
+    <pre><span class="c"># step 4, then edit deploy/.env.production (step 5)</span>
+curl -fsSL https://raw.githubusercontent.com/hw4375-collab/FalconVerifer/main/deploy/install.sh | sudo bash
+nano /opt/falconverifier/deploy/.env.production
+
+<span class="c"># step 6</span>
+cd /opt/falconverifier
+sudo FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest bash deploy/install.sh
+
+<span class="c"># updating later: push to main, wait for the image, then on the server</span>
+cd /opt/falconverifier &amp;&amp; git pull
+sudo FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest bash deploy/install.sh</pre>
+  </section>
+
+  <section aria-labelledby="overview">
+    <h2 id="overview">How the code fits together</h2>
+    <div class="legend" aria-label="Legend">
+      <span><i class="swatch new"></i>New with the website</span>
+      <span><i class="swatch chg"></i>Changed for the website</span>
+      <span><i class="swatch same"></i>Unchanged</span>
+    </div>
+    <div class="scroll">
+      <svg class="diagram" viewBox="0 0 1200 620" role="img" aria-label="Architecture: the browser talks to server.py, which serves the built site from falconverifier/static and runs the verification engine in falconverifier/ against the Lean project in lean/. bench/ results feed the site's data through web/scripts/export_data.py.">
+        <!-- groups -->
+        <g class="grp"><rect x="20" y="74" width="340" height="356" rx="14" /><text x="38" y="98">WEBSITE</text></g>
+        <g class="grp"><rect x="400" y="74" width="320" height="356" rx="14" /><text x="418" y="98">SERVER</text></g>
+        <g class="grp"><rect x="760" y="74" width="420" height="530" rx="14" /><text x="778" y="98">VERIFICATION ENGINE</text></g>
+
+        <!-- browser -->
+        <g class="browser"><rect x="500" y="12" width="180" height="40" rx="20" /><text x="590" y="37" text-anchor="middle">Browser</text></g>
+
+        <!-- website -->
+        <g class="box new">
+          <rect x="40" y="112" width="300" height="80" rx="10" />
+          <text class="t" x="58" y="140">web/src/</text>
+          <text class="tag" x="322" y="138" text-anchor="end">NEW</text>
+          <text class="s" x="58" y="163">Story, Demo and Results pages</text>
+          <text class="s" x="58" y="181">React · TypeScript · Tailwind · Motion</text>
+        </g>
+        <g class="box chg">
+          <rect x="40" y="228" width="300" height="80" rx="10" />
+          <text class="t" x="58" y="256">falconverifier/static/</text>
+          <text class="tag" x="322" y="279" text-anchor="end">CHANGED</text>
+          <text class="s" x="58" y="279">the built site, committed</text>
+          <text class="s" x="58" y="297">was the old hand-written UI</text>
+        </g>
+        <g class="box new">
+          <rect x="40" y="344" width="300" height="70" rx="10" />
+          <text class="t" x="58" y="372">web/scripts/export_data.py</text>
+          <text class="tag" x="322" y="394" text-anchor="end">NEW</text>
+          <text class="s" x="58" y="396">bench/results → site data</text>
+        </g>
+
+        <!-- server -->
+        <g class="box chg">
+          <rect x="420" y="150" width="280" height="210" rx="10" />
+          <text class="t" x="438" y="178">server.py</text>
+          <text class="tag" x="682" y="176" text-anchor="end">CHANGED</text>
+          <text class="s" x="438" y="199">FastAPI, falconverifier/</text>
+          <text class="m" x="438" y="232">GET /*           the site</text>
+          <text class="m" x="438" y="257">POST /api/solve/stream</text>
+          <text class="m" x="438" y="282">POST /api/solve, /api/check</text>
+          <text class="m" x="438" y="307">GET /api/bench/* recorded runs</text>
+          <text class="m" x="438" y="332">GET /healthz, /api/memory</text>
+        </g>
+
+        <!-- engine -->
+        <g class="box"><rect x="780" y="112" width="370" height="48" rx="10" /><text class="t" x="798" y="132">agent.py</text><text class="s" x="798" y="151">the verify-and-teach loop</text><text class="tag" x="1132" y="132" text-anchor="end">UNCHANGED</text></g>
+        <g class="box"><rect x="780" y="176" width="370" height="48" rx="10" /><text class="t" x="798" y="196">student.py · llm.py</text><text class="s" x="798" y="215">Falcon answers in numbered steps</text></g>
+        <g class="box"><rect x="780" y="240" width="370" height="48" rx="10" /><text class="t" x="798" y="260">formalizer.py · arabic*.py</text><text class="s" x="798" y="279">each step becomes a Lean proposition</text></g>
+        <g class="box"><rect x="780" y="304" width="370" height="48" rx="10" /><text class="t" x="798" y="324">verifier.py · lean_runner.py</text><text class="s" x="798" y="343">the kernel proves P or ¬P</text></g>
+        <g class="box"><rect x="780" y="368" width="370" height="48" rx="10" /><text class="t" x="798" y="388">feedback.py</text><text class="s" x="798" y="407">a refutation becomes a correction</text></g>
+        <g class="box"><rect x="780" y="432" width="370" height="48" rx="10" /><text class="t" x="798" y="452">memory.py</text><text class="s" x="798" y="471">cached verdicts and translations</text></g>
+        <g class="box"><rect x="780" y="528" width="370" height="56" rx="10" /><text class="t" x="798" y="550">lean/</text><text class="s" x="798" y="571">Lean 4 + Mathlib: Prelude, Arabic pregroup, Graph</text></g>
+
+        <!-- evidence and shipping -->
+        <g class="box">
+          <rect x="20" y="470" width="340" height="134" rx="10" />
+          <text class="t" x="38" y="498">bench/</text>
+          <text class="tag" x="342" y="496" text-anchor="end">UNCHANGED</text>
+          <text class="s" x="38" y="524">problem sets and generators</text>
+          <text class="s" x="38" y="548">results/: 11 recorded runs</text>
+          <text class="s" x="38" y="572">report.py writes BENCHMARK.md</text>
+        </g>
+        <g class="box chg">
+          <rect x="400" y="470" width="320" height="134" rx="10" />
+          <text class="t" x="418" y="498">tests/ · docs/</text>
+          <text class="tag" x="702" y="496" text-anchor="end">CHANGED</text>
+          <text class="s" x="418" y="524">tests/: test_server.py covers the site</text>
+          <text class="s" x="418" y="548">docs/: pitch asset paths updated</text>
+          <text class="s" x="418" y="572">Dockerfile, deploy/, CI: unchanged</text>
+        </g>
+
+        <!-- edges -->
+        <path class="edge" d="M590 52 V 146" /><path class="arrowhead" d="M585 140 L590 147 L595 140" />
+        <text class="lbl" x="600" y="112">pages and questions</text>
+
+        <path class="edge" d="M420 268 H 344" /><path class="arrowhead" d="M350 263 L343 268 L350 273" />
+        <text class="lbl" x="382" y="259" text-anchor="middle">serves</text>
+
+        <path class="edge" d="M190 192 V 224" /><path class="arrowhead" d="M185 218 L190 225 L195 218" />
+        <text class="lbl" x="200" y="213">npm run build</text>
+
+        <path class="edge" d="M190 344 V 312" /><path class="arrowhead" d="M185 318 L190 311 L195 318" />
+        <text class="lbl" x="200" y="333">data files</text>
+
+        <path class="edge" d="M190 470 V 418" /><path class="arrowhead" d="M185 424 L190 417 L195 424" />
+        <text class="lbl" x="200" y="449">recorded runs</text>
+
+        <path class="edge" d="M700 176 H 740 V 136 H 776" /><path class="arrowhead" d="M770 131 L777 136 L770 141" />
+
+        <path class="edge" d="M965 160 V 172" /><path class="arrowhead" d="M960 167 L965 174 L970 167" />
+        <path class="edge" d="M965 224 V 236" /><path class="arrowhead" d="M960 231 L965 238 L970 231" />
+        <path class="edge" d="M965 288 V 300" /><path class="arrowhead" d="M960 295 L965 302 L970 295" />
+        <path class="edge" d="M965 352 V 364" /><path class="arrowhead" d="M960 359 L965 366 L970 359" />
+
+        <path class="edge loop" d="M1150 392 H 1166 V 200 H 1154" /><path class="arrowhead" d="M1160 195 L1153 200 L1160 205" />
+        <text class="lbl" x="1183" y="296" text-anchor="middle" transform="rotate(-90 1183 296)">next round, up to 3</text>
+
+        <path class="edge" d="M780 328 H 768 V 556 H 776" /><path class="arrowhead" d="M770 551 L777 556 L770 561" />
+      </svg>
+    </div>
+    <p class="note">
+      The browser only ever talks to <code>server.py</code>. It serves the built site from
+      <code>falconverifier/static/</code> and runs the engine for live questions. Recorded runs never touch the
+      engine: their traces in <code>bench/results/</code> are exported to static JSON, so the site also works with
+      no server behind it.
+    </p>
+  </section>
+
+  <section aria-labelledby="flow">
+    <h2 id="flow">One live question, step by step</h2>
+    <ol class="steps">
+      <li><p>The Demo page posts the question to <code>/api/solve/stream</code> (<code>web/src/lib/stream.ts</code>).</p></li>
+      <li><p><code>server.py</code> waits for a free Lean worker and starts the loop in <code>agent.py</code>.</p></li>
+      <li><p><code>student.py</code> sends the question to Falcon through <code>llm.py</code> and parses the numbered steps and the final answer.</p></li>
+      <li><p><code>formalizer.py</code> turns each step into a Lean proposition. A deterministic Arabic fragment (<code>arabic*.py</code>) handles it when one matches; otherwise the Falcon-H1-Arabic 34B formalizer writes it and a faithfulness audit checks it.</p></li>
+      <li><p><code>verifier.py</code> and <code>lean_runner.py</code> compile the propositions in <code>lean/</code> and try to prove each one and its negation.</p></li>
+      <li><p><code>feedback.py</code> turns a refutation into a correction for Falcon. The loop runs up to 3 rounds, and <code>memory.py</code> reuses verdicts and translations it has seen before.</p></li>
+      <li><p>Every step streams back as a server-sent event, and <code>stream.ts</code> updates the two answer cards: Falcon alone, and Falcon with Lean.</p></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="where">
+    <h2 id="where">Where the code lives</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Path</th><th>What lives there</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><span class="path">web/src/</span></td><td>The three pages and their parts: <code>pages/</code>, <code>story/</code>, <code>demo/</code>, <code>results/</code>, shared <code>components/</code>, and <code>lib/</code> (data loading, the live stream and the replay engine).</td><td><span class="pill new">New</span></td></tr>
+          <tr><td><span class="path">web/public/</span></td><td>Files the build copies as-is: <code>data/</code> (benchmark JSON and recorded traces), the butterfly mark, fonts and the favicon.</td><td><span class="pill new">New</span></td></tr>
+          <tr><td><span class="path">web/scripts/export_data.py</span></td><td>Turns <code>bench/results/</code> into the site's data files. Run it with <code>npm run data</code> after a new benchmark run.</td><td><span class="pill new">New</span></td></tr>
+          <tr><td><span class="path">web/DESIGN.md, web/PRODUCT.md</span></td><td>The design system (colors, type, motion, components) and the product brief.</td><td><span class="pill new">New</span></td></tr>
+          <tr><td><span class="path">falconverifier/static/</span></td><td>The built site from <code>npm run build</code>, committed so the Docker image needs no Node. It used to hold the hand-written HTML and JavaScript UI.</td><td><span class="pill chg">Changed</span></td></tr>
+          <tr><td><span class="path">falconverifier/server.py</span></td><td>FastAPI: the loop's API plus one catch-all route that serves the built site. The API itself is unchanged.</td><td><span class="pill chg">Changed</span></td></tr>
+          <tr><td><span class="path">falconverifier/ agent.py, student.py, llm.py, formalizer.py, verifier.py, lean_runner.py, feedback.py, schemas.py, config.py</span></td><td>The verify-and-teach engine.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">falconverifier/ arabic.py, arabic_logic.py, arabic_graph.py, arabic_word.py, arabic_daily.py</span></td><td>Deterministic Arabic-to-Lean fragments: arithmetic, logic, counting, word problems and everyday dialogue.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">falconverifier/memory.py</span></td><td>SQLite cache of kernel verdicts, translations and problem history.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">falconverifier/ bench.py, dpo_export.py, cli.py</span></td><td>The benchmark runner, the preference-pair export and the <code>falconverifier</code> command.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">lean/</span></td><td>The Lake project: Mathlib, <code>Prelude.lean</code> (<code>fv_auto</code>), the Arabic pregroup theory and <code>Graph.lean</code>.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">bench/</span></td><td>Problem sets and their generators, <code>report.py</code>, and <code>results/</code> with 11 recorded runs.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">data/dpo_pairs.jsonl</span></td><td>294 preference pairs: Lean-refuted answers paired with their proved corrections.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">tests/</span></td><td>The pytest suite. <code>test_server.py</code> now covers the site's routes and file serving.</td><td><span class="pill chg">Changed</span></td></tr>
+          <tr><td><span class="path">docs/</span></td><td>Reports, the pitch deck and slides. <code>make_pitch.py</code> and <code>PITCH.md</code> follow the new site; the pitch images and <code>pipeline.svg</code> moved here.</td><td><span class="pill chg">Changed</span></td></tr>
+          <tr><td><span class="path">Dockerfile, deploy/, .github/workflows/</span></td><td>The image, Caddy and compose for the server, CI (ruff and pytest) and the image build.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">pyproject.toml, README.md</span></td><td>Package data now ships the site's subfolders; the README has a Website section.</td><td><span class="pill chg">Changed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="replaced">
+    <h2 id="replaced">What the website replaced</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Old</th><th>Now</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><span class="path">static/index.html, app.js, app.css</span></td><td><span class="path">web/src/pages/Demo.tsx</span> and <span class="path">web/src/demo/</span></td><td><span class="pill gone">Removed</span></td></tr>
+          <tr><td><span class="path">static/benchmark.html, benchmark.js</span></td><td><span class="path">web/src/pages/Results.tsx</span> and <span class="path">web/src/results/</span></td><td><span class="pill gone">Removed</span></td></tr>
+          <tr><td><span class="path">static/about.html, why.html</span></td><td><span class="path">web/src/pages/Story.tsx</span> and <span class="path">web/src/story/</span></td><td><span class="pill gone">Removed</span></td></tr>
+          <tr><td><span class="path">static/mark.png, favicon.png</span></td><td><span class="path">web/public/brand/chaosbutterfly-mark.png</span> and <span class="path">web/public/favicon.png</span>, now the new butterfly</td><td><span class="pill chg">Moved</span></td></tr>
+          <tr><td><span class="path">static/chaosbutterfly_logo.png, pipeline.svg</span></td><td><span class="path">docs/assets/</span> and <span class="path">docs/pipeline.svg</span>, used by the pitch deck</td><td><span class="pill chg">Moved</span></td></tr>
+          <tr><td><span class="path">/benchmark, /about, /why, /?trace=</span></td><td>Redirect to <span class="path">/results</span>, <span class="path">/</span>, <span class="path">/</span> and <span class="path">/demo?trace=</span></td><td><span class="pill same">Redirected</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="run">
+    <h2 id="run">Running it</h2>
+    <pre><span class="c"># the site and the API on http://localhost:8000 (the built site is committed)</span>
+pip install -e . &amp;&amp; falconverifier serve
+
+<span class="c"># working on the site</span>
+cd web &amp;&amp; npm install
+npm run dev      <span class="c"># http://localhost:5173, API proxied to :8000</span>
+npm run data     <span class="c"># after a new benchmark run</span>
+npm run build    <span class="c"># writes falconverifier/static</span></pre>
+    <p class="note">Live questions need <code>FALCON_API_KEY</code> and a built <code>lean/</code> project. Without them, the demo replays recorded runs.</p>
+  </section>
+</main>
+</body>
+</html>
