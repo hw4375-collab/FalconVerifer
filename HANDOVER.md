@@ -28,19 +28,18 @@ from the page's Share menu):
 ## State at handover
 
 - `main` holds everything. `35f75ad` is PR #1 (engine, benchmarks, docs), `16edc6c` is the NYU Falcon
-  website, and the commit adding this file follows.
-- CI (ruff and pytest) passed on `16edc6c`. The Docker image workflow for `16edc6c` was still running
-  at handover. It publishes `ghcr.io/hw4375-collab/falconverifer:latest`, which is what a deployment
-  pulls. Check the Actions tab before deploying.
-- Locally in the cloud session: 125 tests passed (11 skipped, the Lean integration tests that need a
-  built `lean/`), ruff was clean, and the web build and typecheck were clean.
+  website, and `7eb8c37` adds this handover, the agent instructions and the repo map.
+- CI and the Docker image workflow passed for `7eb8c37`. The workflow publishes
+  `ghcr.io/hw4375-collab/falconverifer:latest`, which is what a deployment pulls.
+- Rechecked on the local GPT machine: 125 tests passed (11 skipped, the Lean integration tests that
+  need a built `lean/`), ruff was clean, and the web build, typecheck and lint completed successfully.
 
 ## Run it locally
 
 ```bash
-python -m venv .venv && . .venv/bin/activate
+python3 -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"
-cp .env.example .env              # add FALCON_API_KEY for live questions
+cp .env.example .env              # set FALCON_API_KEY for live questions
 falconverifier serve              # site and API on http://localhost:8000
 ```
 
@@ -81,10 +80,11 @@ FV_MEMORY=0 pytest -q
   writes `web/public/data/` (`bench.json`, `examples.json`, `traces/*.json`). The nine recorded demo
   examples are listed in `EXAMPLES` in that script. A new benchmark arm also needs a label in
   `web/src/results/meta.ts` (`ARM_SET`) and a place in `ARM_ORDER`.
-- **Live mode.** `web/src/lib/stream.ts` posts to `/api/solve/stream` and applies the server-sent
-  events (`config`, `status`, `memory`, `round_start`, `student_answer`, `formalized`, `verified`,
-  `feedback`, `done`, `saved`, `error`). The demo goes live when `/healthz` reports both
-  `lean_project` and `falcon_key`. Recorded runs replay through the same reducer.
+- **Live mode.** `web/src/lib/stream.ts` posts to `/api/solve/stream` and applies the interactive
+  server-sent events (`config`, `status`, `memory`, `round_start`, `student_answer`, `formalized`,
+  `verified`, `feedback`, `done`, `error`). Audit-only events (`repair`, `rat_recheck`,
+  `audit_discard`, `saved`) are intentionally ignored by the UI. The demo goes live when `/healthz`
+  reports both `lean_project` and `falcon_key`. Recorded runs replay through the same reducer.
 - **Static page.** `VITE_STATIC=1 npx vite build --base ./` (in `web/`) writes one self-contained
   page to `web/dist/page` for any static host: memory routing, inlined fonts, recorded runs only.
 - **Languages.** English and Arabic with full right-to-left layout. Every string goes through
@@ -92,13 +92,14 @@ FV_MEMORY=0 pytest -q
 
 ## Deploy
 
-One container on a VM, not serverless: Lean needs about 5 GB of Mathlib and 2 to 4 GB of RAM per
-concurrent check. The full walkthrough is in `docs/repo-map.html` ("Deploy it") and `docs/DEPLOY.md`.
+One VM running the app and Caddy containers, not serverless: Lean needs about 5 GB of Mathlib and 2
+to 4 GB of RAM per concurrent check. The full walkthrough is in `docs/repo-map.html` ("Deploy it")
+and `docs/DEPLOY.md`.
 
 ```bash
 # on a fresh Ubuntu 22.04/24.04 server: 4 vCPU, 8 GB RAM, 40 GB disk, ports 80 and 443 open
 curl -fsSL https://raw.githubusercontent.com/hw4375-collab/FalconVerifer/main/deploy/install.sh | sudo bash
-nano /opt/falconverifier/deploy/.env.production     # DOMAIN, FALCON_API_KEY (optional: FV_ACCESS_TOKEN)
+sudo nano /opt/falconverifier/deploy/.env.production # DOMAIN, FALCON_API_KEY (optional: FV_ACCESS_TOKEN)
 cd /opt/falconverifier
 sudo FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest bash deploy/install.sh
 ```
@@ -109,19 +110,17 @@ needs `docker login ghcr.io`. With no domain, use `<ip-with-dashes>.sslip.io`. T
 
 ## Open items
 
-1. **Confirm the image.** Check that the Docker image workflow for `16edc6c` finished green before
-   the first deploy.
-2. **Test live mode end to end.** The cloud session had no Falcon key and no built Lean, so live
+1. **Test live mode end to end.** The cloud session had no Falcon key and no built Lean, so live
    questions were checked only with a mocked server. With a key and `lean/` built, open `/demo` and
    click *Run live: Compound discount* (the answer should end at 576).
-3. **Pitch deck branding.** `docs/pitch.html` and `docs/pitch.pdf` still say FalconVerifier and use the
+2. **Pitch deck branding.** `docs/pitch.html` and `docs/pitch.pdf` still say FalconVerifier and use the
    old title logo (`docs/assets/chaosbutterfly_logo.png`). `python docs/make_pitch.py` rebuilds the
    deck; it reads `bench/results/<arm>/latest.json`, which is gitignored, so copy the latest run's
    `results.json` there first. The slide footers already pick up the new butterfly from
    `web/public/brand/chaosbutterfly-mark.png`.
-4. **Older docs.** `docs/WORK_SUMMARY.md` and `docs/talk.html` describe the old UI pages
+3. **Older docs.** `docs/WORK_SUMMARY.md` and `docs/talk.html` describe the old UI pages
    (`/benchmark`, `/about`). Those addresses now redirect to `/results` and `/`.
-5. **"Caught" vs "detected".** The site counts a wrong answer as caught when Lean refuted a claim in
+4. **"Caught" vs "detected".** The site counts a wrong answer as caught when Lean refuted a claim in
    round 1 (`wrong_detected_by_lean` in `results.json`). `docs/LOGIC20.md` counts any wrong answer that
    triggered another round, so LOGIC-20 Arabic reads 7 of 11 on the site and 10 of 11 in that doc.
 

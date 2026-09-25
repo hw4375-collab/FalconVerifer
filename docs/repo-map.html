@@ -7,7 +7,7 @@
 <title>NYU Falcon repo map</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
 <style>
   :root {
     --bg: #fafaf8;
@@ -219,7 +219,7 @@
     </ol>
     <pre><span class="c"># step 4, then edit deploy/.env.production (step 5)</span>
 curl -fsSL https://raw.githubusercontent.com/hw4375-collab/FalconVerifer/main/deploy/install.sh | sudo bash
-nano /opt/falconverifier/deploy/.env.production
+sudo nano /opt/falconverifier/deploy/.env.production
 
 <span class="c"># step 6</span>
 cd /opt/falconverifier
@@ -278,7 +278,7 @@ sudo FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest bash deploy/install.sh<
           <text class="m" x="438" y="232">GET /*           the site</text>
           <text class="m" x="438" y="257">POST /api/solve/stream</text>
           <text class="m" x="438" y="282">POST /api/solve, /api/check</text>
-          <text class="m" x="438" y="307">GET /api/bench/* recorded runs</text>
+          <text class="m" x="438" y="307">GET /api/bench/*, /api/config</text>
           <text class="m" x="438" y="332">GET /healthz, /api/memory</text>
         </g>
 
@@ -297,7 +297,7 @@ sudo FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest bash deploy/install.sh<
           <text class="t" x="38" y="498">bench/</text>
           <text class="tag" x="342" y="496" text-anchor="end">UNCHANGED</text>
           <text class="s" x="38" y="524">problem sets and generators</text>
-          <text class="s" x="38" y="548">results/: 11 recorded runs</text>
+          <text class="s" x="38" y="548">results/: 11 arms · 16 run directories</text>
           <text class="s" x="38" y="572">report.py writes BENCHMARK.md</text>
         </g>
         <g class="box chg">
@@ -365,18 +365,19 @@ sudo FV_IMAGE=ghcr.io/hw4375-collab/falconverifer:latest bash deploy/install.sh<
       <table>
         <thead><tr><th>Path</th><th>What lives there</th><th>Status</th></tr></thead>
         <tbody>
+          <tr><td><span class="path">HANDOVER.md, AGENTS.md, web/README.md</span></td><td>The local handover, standing instructions for coding agents and the website-specific starting point.</td><td><span class="pill new">New</span></td></tr>
           <tr><td><span class="path">web/src/</span></td><td>The three pages and their parts: <code>pages/</code>, <code>story/</code>, <code>demo/</code>, <code>results/</code>, shared <code>components/</code>, and <code>lib/</code> (data loading, the live stream and the replay engine).</td><td><span class="pill new">New</span></td></tr>
           <tr><td><span class="path">web/public/</span></td><td>Files the build copies as-is: <code>data/</code> (benchmark JSON and recorded traces), the butterfly mark, fonts and the favicon.</td><td><span class="pill new">New</span></td></tr>
           <tr><td><span class="path">web/scripts/export_data.py</span></td><td>Turns <code>bench/results/</code> into the site's data files. Run it with <code>npm run data</code> after a new benchmark run.</td><td><span class="pill new">New</span></td></tr>
           <tr><td><span class="path">web/DESIGN.md, web/PRODUCT.md</span></td><td>The design system (colors, type, motion, components) and the product brief.</td><td><span class="pill new">New</span></td></tr>
           <tr><td><span class="path">falconverifier/static/</span></td><td>The built site from <code>npm run build</code>, committed so the Docker image needs no Node. It used to hold the hand-written HTML and JavaScript UI.</td><td><span class="pill chg">Changed</span></td></tr>
           <tr><td><span class="path">falconverifier/server.py</span></td><td>FastAPI: the loop's API plus one catch-all route that serves the built site. The API itself is unchanged.</td><td><span class="pill chg">Changed</span></td></tr>
-          <tr><td><span class="path">falconverifier/ agent.py, student.py, llm.py, formalizer.py, verifier.py, lean_runner.py, feedback.py, schemas.py, config.py</span></td><td>The verify-and-teach engine.</td><td><span class="pill same">Unchanged</span></td></tr>
-          <tr><td><span class="path">falconverifier/ arabic.py, arabic_logic.py, arabic_graph.py, arabic_word.py, arabic_daily.py</span></td><td>Deterministic Arabic-to-Lean fragments: arithmetic, logic, counting, word problems and everyday dialogue.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">falconverifier/{agent.py, student.py, llm.py, formalizer.py, verifier.py, lean_runner.py, feedback.py, schemas.py, config.py}</span></td><td>The verify-and-teach engine.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">falconverifier/{arabic.py, arabic_logic.py, arabic_graph.py, arabic_word.py, arabic_daily.py}</span></td><td>Deterministic Arabic-to-Lean fragments: arithmetic, logic, counting, word problems and everyday dialogue.</td><td><span class="pill same">Unchanged</span></td></tr>
           <tr><td><span class="path">falconverifier/memory.py</span></td><td>SQLite cache of kernel verdicts, translations and problem history.</td><td><span class="pill same">Unchanged</span></td></tr>
-          <tr><td><span class="path">falconverifier/ bench.py, dpo_export.py, cli.py</span></td><td>The benchmark runner, the preference-pair export and the <code>falconverifier</code> command.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">falconverifier/{bench.py, dpo_export.py, cli.py}</span></td><td>The benchmark runner, the preference-pair export and the <code>falconverifier</code> command.</td><td><span class="pill same">Unchanged</span></td></tr>
           <tr><td><span class="path">lean/</span></td><td>The Lake project: Mathlib, <code>Prelude.lean</code> (<code>fv_auto</code>), the Arabic pregroup theory and <code>Graph.lean</code>.</td><td><span class="pill same">Unchanged</span></td></tr>
-          <tr><td><span class="path">bench/</span></td><td>Problem sets and their generators, <code>report.py</code>, and <code>results/</code> with 11 recorded runs.</td><td><span class="pill same">Unchanged</span></td></tr>
+          <tr><td><span class="path">bench/</span></td><td>Problem sets and their generators, <code>report.py</code>, and <code>results/</code> with 11 benchmark arms and 16 committed run directories. The website exports the latest run from each arm.</td><td><span class="pill same">Unchanged</span></td></tr>
           <tr><td><span class="path">data/dpo_pairs.jsonl</span></td><td>294 preference pairs: Lean-refuted answers paired with their proved corrections.</td><td><span class="pill same">Unchanged</span></td></tr>
           <tr><td><span class="path">tests/</span></td><td>The pytest suite. <code>test_server.py</code> now covers the site's routes and file serving.</td><td><span class="pill chg">Changed</span></td></tr>
           <tr><td><span class="path">docs/</span></td><td>Reports, the pitch deck and slides. <code>make_pitch.py</code> and <code>PITCH.md</code> follow the new site; the pitch images and <code>pipeline.svg</code> moved here.</td><td><span class="pill chg">Changed</span></td></tr>
