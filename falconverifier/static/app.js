@@ -130,9 +130,13 @@ function renderResult(t) {
   const steps = t.rounds.flatMap((r) => [...r.report.steps.map((s) => s.verdict), r.report.final_answer_verdict]);
   const decided = steps.filter((v) => v === "verified" || v === "refuted").length;
   const refuted = steps.filter((v) => v === "refuted").length;
+  const last = t.rounds[t.rounds.length - 1].report;
+  const open = last.steps.filter((s) => s.verdict === "unknown" || s.verdict === "ill_formed").length;
   const story = t.rounds.length > 1 && t.status === "verified"
     ? `round 1 refuted → taught → round ${t.rounds.length} verified`
-    : t.status === "verified" ? "every checkable claim proved in round 1" : `ended ${t.status}`;
+    : t.status !== "verified" ? `ended ${t.status}`
+      : open ? `final answer proved in round 1 · ${open} step${open > 1 ? "s" : ""} left unknown`
+        : "final answer and every checkable step proved in round 1";
   el.innerHTML = `
     <div class="kpi"><div class="muted">status</div><div class="v ${t.status}">${t.status}</div><div class="sub muted">${story}</div></div>
     <div class="kpi"><div class="muted">final answer</div><div class="v" dir="auto">${esc(t.final_answer ?? "—")}</div></div>
@@ -150,6 +154,7 @@ async function run(baselineOnly = false) {
   state.rounds = {};
   $("#roundlist").innerHTML = "";
   $("#result").classList.add("hidden");
+  if (location.search) history.replaceState(null, "", location.pathname);
   $("#run").disabled = $("#baseline").disabled = true;
   $("#stop").classList.remove("hidden");
   state.t0 = Date.now();
@@ -267,7 +272,7 @@ function renderExamples() {
       $("#problem").value = text;
       $("#expected").value = expected;
       $("#translation").textContent = translation ? `English: ${translation}` : "";
-      if (state.hardness[text] && state.hardness[text].wrong) $("#student").value = WEAK_STUDENT;
+      if (translation) $("#student").value = WEAK_STUDENT;
     };
     ex.appendChild(b);
   }
