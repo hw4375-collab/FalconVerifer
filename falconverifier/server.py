@@ -26,7 +26,12 @@ from .lean_runner import LeanRunner
 STATIC_DIR = Path(__file__).parent / "static"
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BENCH_RESULTS = REPO_ROOT / "bench" / "results"
-PAGES = {"/": "index.html", "/benchmark": "benchmark.html", "/about": "about.html"}
+PAGES = {
+    "/": "index.html",
+    "/why": "why.html",
+    "/benchmark": "benchmark.html",
+    "/about": "about.html",
+}
 
 
 def _github_blob_base() -> str:
@@ -172,6 +177,11 @@ def _run_stream(req: SolveRequest) -> Iterator[str]:
 @app.get("/", response_class=HTMLResponse)
 def index() -> FileResponse:
     return FileResponse(STATIC_DIR / PAGES["/"])
+
+
+@app.get("/why", response_class=HTMLResponse)
+def why_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / PAGES["/why"])
 
 
 @app.get("/benchmark", response_class=HTMLResponse)

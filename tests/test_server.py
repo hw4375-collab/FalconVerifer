@@ -59,7 +59,7 @@ def test_formalizer_choice_does_not_mutate_process_env(client, monkeypatch):
 
 
 def test_pages_served(client):
-    for path in ("/", "/benchmark", "/about"):
+    for path in ("/", "/why", "/benchmark", "/about"):
         r = client.get(path)
         assert r.status_code == 200 and "ChaosButterfly" in r.text
 
