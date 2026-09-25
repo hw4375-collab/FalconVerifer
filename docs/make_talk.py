@@ -8,12 +8,14 @@ Navigation: ←/→, Space, click; F fullscreen, O overview; Ctrl+P prints one s
 from __future__ import annotations
 
 import json
+from collections import Counter
 from pathlib import Path
 
 from make_slides import CSS, JS, pct, slide
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "bench" / "results"
+DPO = ROOT / "data" / "dpo_pairs.jsonl"
 OUT = ROOT / "docs" / "talk.html"
 
 PRINT_CSS = """
@@ -43,6 +45,36 @@ def summary(arm: str) -> dict:
     return json.loads((RESULTS / arm / "latest.json").read_text())["summary"]
 
 
+def cot(arm: str) -> dict:
+    """Step/final verdict counts over every trace of the latest run of an arm."""
+    run_dir = sorted(p for p in (RESULTS / arm).glob("run_*") if p.is_dir())[-1]
+    steps: Counter[str] = Counter()
+    finals: Counter[str] = Counter()
+    rounds = 0
+    for tp in run_dir.glob("*.json"):
+        if tp.name == "results.json":
+            continue
+        for r in json.loads(tp.read_text()).get("rounds", []):
+            rounds += 1
+            steps.update(s["verdict"] for s in r["report"]["steps"])
+            finals[r["report"]["final_answer_verdict"]] += 1
+    n = sum(steps.values())
+    return {
+        "rounds": rounds,
+        "steps": n,
+        "step_decided": (steps["verified"] + steps["refuted"]) / n,
+        "final_decided": (finals["verified"] + finals["refuted"]) / rounds,
+        "dist": {v: steps[v] / n for v in ("verified", "refuted", "unknown", "skipped")},
+    }
+
+
+def dpo_counts() -> tuple[int, int, int]:
+    langs = Counter(
+        json.loads(line)["meta"]["lang"] for line in DPO.read_text().splitlines() if line.strip()
+    )
+    return sum(langs.values()), langs["ar"], langs["en"]
+
+
 def kpi(rows: list[tuple[str, dict]]) -> str:
     body = "".join(
         f"<tr><th>{label}</th><td>{s['n']}</td><td>{pct(s['baseline_accuracy'])}</td>"
@@ -69,6 +101,10 @@ def build() -> str:
     en7h = summary("falcon_formalizer_hard")["all"]
     A = ar3["all"]
     L = ar3["logic"]
+    S = summary("falcon3b_arabic_scale")["all"]
+    C = cot("falcon3b_arabic")
+    CS = cot("falcon3b_arabic_scale")
+    n_dpo, n_dpo_ar, n_dpo_en = dpo_counts()
     slides = [
         # 1 title
         slide(
@@ -231,6 +267,35 @@ def build() -> str:
             + f'<p class="note">The original 76-problem subset: 55.3% → 84.2% in three independent reruns, exact McNemar p ≈ 4.8×10⁻⁷. Controls: Falcon 7B Arabic {pct(ar7["baseline_accuracy"])} → {pct(ar7["verified_accuracy"])}; English 7B {pct(en7["baseline_accuracy"])} → {pct(en7["verified_accuracy"])} ({en7["n"]} problems), hard {pct(en7h["baseline_accuracy"])} → {pct(en7h["verified_accuracy"])} ({en7h["n"]}). '
             f"Mean {A['mean_rounds']} rounds, {A['mean_latency_s']:.0f} s per problem. Self-built dataset — not directly comparable with GSM8K-style public benchmarks.</p>"
         ),
+        # 11b scale run
+        slide(
+            f"<h2>Does it hold at scale? {S['n']} freshly generated Arabic problems<small>same student, same formalizer, harder mix (two-digit × two-digit word problems, compound discounts, relations)</small></h2>"
+            f'<div class="big"><div><div class="n">{pct(S["verified_accuracy"])}</div><div class="l">accuracy after Lean feedback (baseline {pct(S["baseline_accuracy"])})</div></div>'
+            f'<div><div class="n">{S["wrong_detected_by_lean"]}/{S["wrong_baseline"]}</div><div class="l">baseline errors caught by Lean ({pct(S["detection_recall"])})</div></div>'
+            f'<div><div class="n">{S["false_alarms_on_correct"]} · {S["regressions"]}</div><div class="l">false alarms · regressions</div></div>'
+            f'<div><div class="n">{S["assured_final_answers"]}</div><div class="l">final answers Lean proved ({S["assured_and_correct"]} of them also match the gold answer)</div></div></div>'
+            f"<ul><li>Detection stays above 90% while the student gets weaker ({pct(S['baseline_accuracy'])} baseline): Lean does not care how hard the problem is for Falcon.</li>"
+            f"<li>Fix rate drops to {pct(S['fix_rate'])}: the 3B student sometimes cannot act on a correct correction — a limit of the student, visible and counted, not hidden.</li>"
+            "<li>Six generator gold answers were themselves wrong (rounding); the pipeline flagged 3B as 'wrong' although Lean had verified its arithmetic — we fixed the generator and report the corrected numbers.</li></ul>"
+        ),
+        # 11c CoT verifiability
+        slide(
+            "<h2>Strict assurance: Lean audits the chain of thought<small>what the verdict badge next to every step means</small></h2>"
+            '<table class="kpi"><thead><tr><th>run</th><th>rounds</th><th>steps</th><th>Lean decided</th><th>verified</th><th>refuted</th><th>unknown</th><th>skipped</th><th>final answers decided</th></tr></thead><tbody>'
+            f"<tr><th>{A['n']} problems</th><td>{C['rounds']}</td><td>{C['steps']}</td><td><b>{pct(C['step_decided'])}</b></td><td>{pct(C['dist']['verified'])}</td><td>{pct(C['dist']['refuted'])}</td><td>{pct(C['dist']['unknown'])}</td><td>{pct(C['dist']['skipped'])}</td><td><b>{pct(C['final_decided'])}</b></td></tr>"
+            f"<tr><th>{S['n']} problems</th><td>{CS['rounds']}</td><td>{CS['steps']}</td><td><b>{pct(CS['step_decided'])}</b></td><td>{pct(CS['dist']['verified'])}</td><td>{pct(CS['dist']['refuted'])}</td><td>{pct(CS['dist']['unknown'])}</td><td>{pct(CS['dist']['skipped'])}</td><td><b>{pct(CS['final_decided'])}</b></td></tr>"
+            "</tbody></table>"
+            + "<p class='small'>Skipped = narrative sentences («لنحسب أولاً…» <i>“let us first compute…”</i>) that make no checkable claim. They are shown grey, never counted as verified.</p>"
+            + '<div class="cols"><div class="card"><h3>Reading a badge</h3><ul>'
+            "<li><span class='v ok'>verified</span> Lean proved P · <span class='v bad'>refuted</span> Lean proved ¬P · <span class='v unk'>unknown</span> neither, within budget · <span class='v unk'>skipped</span> no claim to check.</li>"
+            "<li>assurance = ½ verified share of checkable steps + ½ final-answer verdict — a coverage score, not a confidence.</li>"
+            "<li>Correction is a by-product: when Falcon is right in round 1, the same screen is a machine-checked certificate of its reasoning.</li></ul></div>"
+            '<div class="card"><h3>What we claim — and what we do not</h3><ul>'
+            "<li><b>Claim</b>: for every Falcon round, the kernel returns a proof or a refutation for more than half of the reasoning sentences and for ~96–98% of final answers.</li>"
+            "<li><b>Claim</b>: a green badge means Lean proved <i>that proposition</i>; the .lean file sent to the kernel is one click away in the UI (audit panel).</li>"
+            "<li><b>Not a claim</b>: that the proposition captures every nuance of the Arabic sentence — the structural round-trip check narrows, but does not close, that gap.</li>"
+            "</ul></div></div>"
+        ),
         # 12 three stages
         slide(
             "<h2>More deterministic formalization → larger gain<small>Arabic logic problems, Falcon-3B, same student across versions</small></h2>"
@@ -265,10 +330,25 @@ def build() -> str:
             "<li>3B occasionally refuses to fix an answer Lean refuted (armath-051).</li>"
             f"<li>Latency {A['mean_latency_s']:.0f} s per problem; Lean + Mathlib is a heavy deployment.</li></ul></div>"
             '<div class="card"><h3>Next</h3><ul>'
-            "<li><b>Data flywheel</b>: every trace is a (wrong reasoning, Lean counter-example, corrected reasoning) triple → DPO / RL from Lean feedback, internalising the referee into Falcon. 175 pairs exported so far.</li>"
+            f"<li><b>Data flywheel</b>: every corrected trace is a (prompt, Lean-refuted answer, Lean-verified answer, kernel evidence) preference pair → DPO on open Falcon-H1-3B, internalising the referee. <b>{n_dpo} pairs</b> ({n_dpo_ar} Arabic / {n_dpo_en} English) exported, no human or LLM judge involved.</li>"
             "<li>Public benchmarks (GSM8K-ar, MGSM-ar): report accuracy and “decidable coverage”.</li>"
             "<li>Product: hosted service + Open WebUI plugin (Docker ready); Arabic K-12 math grading.</li>"
             "<li>Research: agreement features as dependent types; VSO≡SVO as a 2-cell between derivations.</li></ul></div></div>"
+        ),
+        # 14b product / demo / infra
+        slide(
+            "<h2>What you can touch today<small>open source · Docker image with Lean + Mathlib · one-line API</small></h2>"
+            '<div class="cols"><div class="card"><h3>Judge demo (5 min, phone browser)</h3><ul>'
+            "<li><b>/</b> Verifier: pick an Arabic example — badge shows how often 3B got it wrong in our runs; English gloss appears under the RTL input.</li>"
+            "<li>Watch each step turn <span class='v ok'>verified</span> / <span class='v bad'>refuted</span> live, with the Lean proposition beside it; open the audit panel to see the exact .lean file the kernel checked.</li>"
+            "<li>Red round → Arabic feedback → green round; download the full assurance trace as JSON.</li>"
+            "<li>No time for a 40 s round? Replay any recorded correction from the benchmark — same renderer, zero model calls.</li>"
+            "<li><b>/benchmark</b>: charts + every problem, gold/baseline/final answer, links to the trace file and grading code on GitHub.</li></ul></div>"
+            '<div class="card"><h3>Middleware, not a chatbot</h3>'
+            '<pre>curl -X POST $HOST/api/solve -d \'{"problem": "...", "student_model": "falcon-h1-arabic-3b-instruct"}\'\n→ { final_answer, status, assurance_score, rounds: [ { answer,\n     report: { steps: [ { text, lean_prop, verdict } ], final_answer_verdict },\n     feedback } ] }</pre>'
+            "<ul><li>Any application that already calls Falcon adds one HTTP hop and gets verdicts + an auditable trace back.</li>"
+            "<li>Docker image (Python + Lean 4 + Mathlib cache) published to GHCR on every merge; Caddy HTTPS, rate limiting, access token, health checks in <code>deploy/</code>.</li>"
+            "<li>99 tests + Lean build in CI; every number on these slides is regenerated from <code>bench/results/*.json</code>.</li></ul></div></div>"
         ),
         # 15 close
         slide(

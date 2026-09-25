@@ -93,6 +93,13 @@ Scroll to the **Benchmark** panel (or open `docs/BENCHMARK.md`):
 
 ## Fallbacks
 
+* 3B answers correctly in round 1 → switch the story to *strict assurance*: every step carries a
+  green badge and its Lean proposition; open "Lean 4 source sent to the kernel (audit)".
+  Or pick a redder example — the badge next to each example (`3B ✗ k/n`, from
+  `/api/bench/hardness`) is how often the 3B student got it wrong in round 1 on our runs.
+* No time for a 40 s round → "Replay a recorded correction" at the bottom of `/` renders a
+  committed benchmark trace (red round → feedback → green round) with zero model calls;
+  `/?trace=<arm>/<run>/<id>` deep-links any trace from `/benchmark`.
 * Falcon endpoint slow → use `--formalizer openai` for the formalizer only; the student stays Falcon.
 * No network → `falconverifier check` on hand-written propositions still demonstrates the Lean oracle,
   and `bench/results/` + `docs/BENCHMARK.md` carry the numbers.
