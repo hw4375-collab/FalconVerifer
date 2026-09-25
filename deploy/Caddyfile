@@ -1,0 +1,11 @@
+{$DOMAIN} {
+	encode zstd gzip
+	reverse_proxy app:8000 {
+		# SSE: never buffer, allow multi-minute Lean rounds
+		flush_interval -1
+		transport http {
+			read_timeout 20m
+			write_timeout 20m
+		}
+	}
+}

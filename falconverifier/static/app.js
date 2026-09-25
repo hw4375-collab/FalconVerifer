@@ -120,10 +120,21 @@ async function run(baselineOnly = false) {
   };
   state.ctrl = new AbortController();
   try {
+    const headers = { "Content-Type": "application/json" };
+    const token = localStorage.getItem("fv_token");
+    if (token) headers["X-FV-Token"] = token;
     const res = await fetch("/api/solve/stream", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body), signal: state.ctrl.signal,
+      method: "POST", headers, body: JSON.stringify(body), signal: state.ctrl.signal,
     });
+    if (!res.ok) {
+      let msg = res.statusText;
+      try { msg = (await res.json()).detail || msg; } catch (_) { /* not json */ }
+      if (res.status === 401) {
+        const t = prompt("This deployment requires an access token:");
+        if (t) { localStorage.setItem("fv_token", t); return run(baselineOnly); }
+      }
+      throw new Error(`${res.status}: ${msg}`);
+    }
     const reader = res.body.getReader();
     const dec = new TextDecoder();
     let buf = "";
@@ -157,6 +168,7 @@ function handle(kind, p) {
     case "verified": renderReport(roundCard(p.round), p.report); break;
     case "feedback": renderFeedback(roundCard(p.round), p.feedback); setStatus(`round ${p.round}: teaching Falcon what Lean refuted…`); break;
     case "done": renderResult(p.trace); setStatus(`done — ${p.trace.status} in ${p.trace.total_latency_s}s`, false); break;
+    case "status": setStatus(p.message); break;
     case "saved": break;
     case "error": setStatus("error: " + p.message, false); break;
   }

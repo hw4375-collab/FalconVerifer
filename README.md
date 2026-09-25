@@ -42,6 +42,19 @@ falconverifier bench --dataset bench/problems_ar.jsonl --workers 4   # Arabic se
 falconverifier serve            # web UI on http://localhost:8000
 ```
 
+### Deploy as a public website
+
+One Docker image bundles the server and Lean 4 + Mathlib; `deploy/` adds Caddy for HTTPS,
+a per-IP rate limit, a Lean concurrency cap and an optional access token. On a fresh
+Ubuntu VPS (≥ 8 GB RAM):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hw4375-collab/FalconVerifer/main/deploy/install.sh | sudo bash
+```
+
+then fill `deploy/.env.production` and re-run. Details and the public API in
+[`docs/DEPLOY.md`](docs/DEPLOY.md).
+
 ## Configuration
 
 | variable | default | meaning |

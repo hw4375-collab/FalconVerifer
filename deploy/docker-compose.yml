@@ -1,0 +1,42 @@
+# Production stack: FalconVerifier (FastAPI + Lean) behind Caddy (automatic HTTPS).
+#
+#   cp deploy/.env.production.example deploy/.env.production   # fill keys + DOMAIN
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env.production up -d --build
+#
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: falconverifier:latest
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      LEAN_PROJECT_DIR: /app/lean
+    volumes:
+      - runs:/app/runs
+    deploy:
+      resources:
+        limits:
+          memory: 12g
+    expose:
+      - "8000"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  runs:
+  caddy_data:
+  caddy_config:

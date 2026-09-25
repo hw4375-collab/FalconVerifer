@@ -10,3 +10,4 @@ lean/scratch/
 runs/
 *.egg-info/
 bench/results/*/latest.json
+deploy/.env.production
