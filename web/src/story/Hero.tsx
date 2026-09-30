@@ -17,15 +17,18 @@ export function Hero() {
     <section className="relative">
       <Container className="grid min-h-[calc(100dvh-4rem)] items-center gap-12 pb-16 pt-10 lg:grid-cols-12 lg:gap-10 lg:pb-20 lg:pt-12">
         <div className="lg:col-span-5">
+          <p className="mb-5 text-[13px] font-medium uppercase tracking-[0.14em] text-ink-2">
+            {t({ en: 'The trust layer for Arabic AI', ar: 'طبقة الثقة للذكاء الاصطناعي العربي' })}
+          </p>
           <h1 className="text-[clamp(44px,5.4vw,78px)] font-semibold leading-[1.02] tracking-[-0.038em]">
-            {t({ en: 'Falcon speaks Arabic.', ar: 'فالكون يتكلّم العربية.' })}
+            {t({ en: 'Falcon answers.', ar: 'فالكون يجيب.' })}
             <br />
-            {t({ en: 'Lean checks its reasoning.', ar: 'وLean يتحقّق من منطقه.' })}
+            {t({ en: 'Lean proves it.', ar: 'وLean يُثبت.' })}
           </h1>
           <p className="mt-6 max-w-[40ch] text-[clamp(17px,1.45vw,20px)] leading-[1.5] text-ink-2">
             {t({
-              en: 'Every step becomes a Lean 4 proposition. The kernel proves or refutes it, and each refutation teaches Falcon.',
-              ar: 'تتحوّل كل خطوة إلى قضية في Lean 4. تُثبتها النواة أو تدحضها، وكل دحضٍ يصبح درساً لفالكون.',
+              en: 'NYU Falcon sits between Falcon and your users. Every reasoning step is checked by the Lean 4 kernel; a wrong step is caught, corrected and re-checked before the answer ships.',
+              ar: 'يقف NYU Falcon بين فالكون ومستخدميك. تفحص نواة Lean 4 كل خطوة استدلال؛ الخطوة الخاطئة تُكتشف وتُصحَّح ويُعاد فحصها قبل أن يصل الجواب.',
             })}
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
