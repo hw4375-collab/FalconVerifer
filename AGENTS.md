@@ -26,7 +26,7 @@ start with `HANDOVER.md`.
 
 ```bash
 # setup
-python -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]"
+python3 -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]"
 cd web && npm install && cd ..                      # Node 20.19+ or 22.12+
 
 # run
