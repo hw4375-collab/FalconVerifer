@@ -5,6 +5,7 @@ import { Hero } from '../story/Hero'
 import { Close, Lesson, Org } from '../story/Lesson'
 import { Loop } from '../story/Loop'
 import { Outcome } from '../story/Outcome'
+import { ArabicCapability, Architecture, UnderHood, UseCases, Value } from '../story/Pitch'
 import { Problem } from '../story/Problem'
 
 export function Story() {
@@ -17,9 +18,14 @@ export function Story() {
       <Hero />
       {arm ? <Problem arm={arm} /> : <div className="h-[80vh]" />}
       <Loop />
+      {arm ? <Value arm={arm} /> : <div className="h-[60vh]" />}
+      <ArabicCapability />
       <Grammar />
       <CounterModel />
       {arm ? <Outcome arm={arm} scale={scale} /> : <div className="h-[90vh]" />}
+      <Architecture />
+      <UseCases />
+      <UnderHood />
       <Lesson />
       <Close />
       <Org />

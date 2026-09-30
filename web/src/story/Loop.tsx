@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScro
 import { useId, useRef, useState } from 'react'
 import { isolateMath } from '../components/ArabicText'
 import { Lean } from '../components/Lean'
-import { Container, Heading } from '../components/Section'
+import { Container, Heading, Lede } from '../components/Section'
 import { VerdictBadge } from '../components/Verdict'
 import type { Text } from '../i18n'
 import { useLang } from '../i18n'
@@ -13,35 +13,35 @@ const EASE = [0.23, 1, 0.32, 1] as const
 
 const STEPS: { title: Text; body: Text }[] = [
   {
-    title: { en: 'Falcon answers.', ar: 'فالكون يجيب.' },
+    title: { en: '1 · Falcon reasons.', ar: '1 · فالكون يستدلّ.' },
     body: {
       en: 'Falcon-H1-Arabic 3B writes its steps in Arabic, then a final answer.',
       ar: 'يكتب Falcon-H1-Arabic 3B خطواته بالعربية، ثم جواباً نهائياً.',
     },
   },
   {
-    title: { en: 'Every claim becomes Lean.', ar: 'كل ادعاء يصبح Lean.' },
+    title: { en: '2 · Verification.', ar: '2 · التحقّق.' },
     body: {
       en: 'Each step, and the final answer, is translated into a Lean 4 proposition.',
       ar: 'تُترجم كل خطوة، والجواب النهائي، إلى قضية في Lean 4.',
     },
   },
   {
-    title: { en: 'The kernel decides.', ar: 'النواة تحكم.' },
+    title: { en: '3 · Error detected.', ar: '3 · اكتُشف الخطأ.' },
     body: {
       en: 'Lean tries to prove each claim and its negation. Both steps are proved. The final answer contradicts them.',
       ar: 'يحاول Lean إثبات كل ادعاء ونفيه. تثبت الخطوتان، والجواب النهائي يناقضهما.',
     },
   },
   {
-    title: { en: 'Lean teaches, in Arabic.', ar: 'Lean يصحّح، بالعربية.' },
+    title: { en: '4 · Correction, in Arabic.', ar: '4 · التصحيح، بالعربية.' },
     body: {
       en: 'The refutation goes back to Falcon as a correction in its own language.',
       ar: 'يعود الدحض إلى فالكون تصحيحاً بلغته.',
     },
   },
   {
-    title: { en: 'Falcon answers again.', ar: 'فالكون يجيب من جديد.' },
+    title: { en: '5 · Verified.', ar: '5 · مُثبَت.' },
     body: {
       en: 'Round two: 2291. Every claim proved, 41 seconds end to end.',
       ar: 'الجولة الثانية: 2291. كل الادعاءات مُثبتة، خلال 41 ثانية.',
@@ -62,7 +62,13 @@ export function Loop() {
   return (
     <section className="relative py-[clamp(72px,10vh,128px)]">
       <Container>
-        <Heading>{t({ en: 'Every step goes to the kernel.', ar: 'كل خطوة تمرّ على النواة.' })}</Heading>
+        <Heading>{t({ en: 'One question, end to end.', ar: 'سؤال واحد، من البداية إلى النهاية.' })}</Heading>
+        <Lede className="mt-5">
+          {t({
+            en: 'Reasoning → verification → error detected → correction → verified. A recorded run, 41 seconds.',
+            ar: 'استدلال ← تحقّق ← اكتشاف الخطأ ← تصحيح ← مُثبَت. تسجيل حقيقي، 41 ثانية.',
+          })}
+        </Lede>
       </Container>
 
       <Container className="mt-4 hidden lg:grid lg:grid-cols-12 lg:gap-12">
