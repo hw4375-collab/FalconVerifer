@@ -91,6 +91,11 @@ curl -s https://DOMAIN/api/solve -H 'Content-Type: application/json' \
 
 ## Alternatives
 
+- **GitHub Pages (static site, no live Falcon)**: `.github/workflows/pages.yml` builds the
+  serverless page (`VITE_STATIC=1 vite build --base ./`) on every push to `main` that touches
+  `web/` and publishes it to `https://hw4375-collab.github.io/FalconVerifer/`. One-time setup:
+  repo **Settings → Pages → Source: GitHub Actions**. Story, results and recorded replays work;
+  the live demo needs the server below.
 - **Fly.io / Railway / Render**: build the same `Dockerfile`; set the env vars in the
   dashboard; pick a machine with ≥ 8 GB RAM. Drop the Caddy service (they terminate TLS).
 - **Local only**: `falconverifier serve` as in the README; `docker compose` also works on
