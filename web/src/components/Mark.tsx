@@ -16,10 +16,10 @@ export function Wordmark({ className = '', collapse = false }: { className?: str
   return (
     <span className={`inline-flex items-center gap-2.5 font-semibold tracking-[-0.02em] ${className}`} dir="ltr">
       <img src={`${BASE}brand/chaosbutterfly-mark.png`} alt="" className="h-[1.55em] w-auto" />
-      <span className={collapse ? 'max-sm:hidden' : ''}>
-        {PRODUCT}
-        <span className="ml-2 font-normal text-ink-2 max-md:hidden">
-          by <span className="font-medium text-ink">{ORG}</span>
+      <span className={`flex flex-col leading-none ${collapse ? 'max-sm:hidden' : ''}`}>
+        <span>{PRODUCT}</span>
+        <span className="mt-1 text-[11px] font-normal uppercase tracking-[0.12em] text-ink-2">
+          Built by <span className="font-medium text-ink">{ORG}</span>
         </span>
       </span>
     </span>
